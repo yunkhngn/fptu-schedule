@@ -698,7 +698,7 @@ window.renderClassSchedule = renderClassSchedule;
   if (docsLink) {
     docsLink.addEventListener("click", (e) => {
       e.preventDefault();
-      chrome.tabs.create({ url: "https://yunkhngn.github.io/fptu-examination/" });
+      chrome.tabs.create({ url: "https://yunkhngn.github.io/fptu-schedule/" });
     });
   }
 

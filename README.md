@@ -57,7 +57,7 @@ Available now: [FPTU Examination on Chrome Web Store](https://chromewebstore.goo
 ### Manual Installation (Developer Mode)
 1. **Clone repository**:
    ```bash
-   git clone https://github.com/yunkhngn/fptu-exam-calendar-exporter.git
+   git clone https://github.com/yunkhngn/fptu-schedule.git
    ```
 2. **Open Chrome Extensions**:
    - Navigate to `chrome://extensions/`
@@ -142,7 +142,7 @@ Automatically detects exam types from:
 ## Project Structure
 
 ```
-fptu-exam-calendar-exporter/
+fptu-schedule/
 ├── manifest.json          # Extension manifest
 ├── popup.html             # Main popup interface
 ├── popup.css              # Styling and themes
@@ -209,9 +209,9 @@ Contributions are welcome! Please:
 4. **Filter not working**: Clear browser data and re-sync
 
 ### Support Resources
-- **Bug Reports**: [GitHub Issues](https://github.com/yunkhngn/fptu-exam-calendar-exporter/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/yunkhngn/fptu-exam-calendar-exporter/discussions)
-- **Documentation**: [Project Website](https://yunkhngn.github.io/fptu-examination/)
+- **Bug Reports**: [GitHub Issues](https://github.com/yunkhngn/fptu-schedule/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/yunkhngn/fptu-schedule/discussions)
+- **Documentation**: [Project Website](https://yunkhngn.github.io/fptu-schedule/)
 
 ## Author
 
