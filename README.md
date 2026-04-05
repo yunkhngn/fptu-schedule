@@ -1,229 +1,153 @@
-# FPTU Examination
+# FPTU Schedule
 
-A modern Chrome extension that helps FPT University students easily extract and manage their exam schedules from the FAP system.
+Chrome extension (Manifest V3) for **FPT University** students: read **exam** and **class** schedules from **FAP**, view them in the popup, and export **`.ics`** calendar files.
 
-## Key Features
+## Key features
 
-### Smart Exam Schedule Management
-- **Tab Interface**: Clear separation between upcoming and completed exams with counters
-- **Countdown Timer**: Visual time remaining until exam with color coding
-  - **Today**: Current day exam (red)
-  - **Tomorrow**: Next day exam (red) 
-  - **Urgent**: 3 days or less (red)
-  - **Future**: More than 3 days (green)
-  - **Completed**: Past exams (gray)
+### Exam schedule
+- **Tabs**: Upcoming (**Chưa thi**) and completed (**Đã thi**) with counters
+- **Countdown**: Color hints for today, tomorrow, urgent (≤3 days), future, completed
+- **Types**: FE, PE, 2NDFE, 2NDPE
+- **Filter**: Modal with select all / none / apply; preference remembered
+- **Time formats**: Vietnamese (`10h00`), colon, dot, hour-only, mixed
+- **Export**: Upcoming exams with a confirmed room (skips TBA / no room); reminders 1 day and 1 hour before
+- **Works offline popup data**: After sync, export can work without staying on FAP (uses stored timetable JSON)
 
-### Automatic Exam Classification
-- **FE** (Final Exam): End-of-term examinations
-- **PE** (Practical Exam): Practical/lab examinations  
-- **2NDFE** (Second Final Exam): Final exam retakes
-- **2NDPE** (Second Practical Exam): Practical exam retakes
+### Class schedule (Lịch học)
+- Weekly view from FAP schedule pages (`https://fap.fpt.edu.vn/Schedule/*`)
+- **Tải lịch** / export class timetable to `.ics`
+- **Multi-week sync**: Background merge across a range of weeks (service worker + `chrome.storage.local` for progress and merged data)
 
-### Smart Filtering System
-- Filter by exam type (FE, PE, 2NDFE, 2NDPE)
-- Automatic filter preference saving
-- Modal interface with utility buttons (Select All, Deselect All, Apply)
-- Filters apply to both upcoming and completed exam tabs
+### Study suggestions (exam cards)
+- **Ôn tập** strip under each exam card: links by **course code** (from `study-sources.json`)
+- Fallback links: Quizlet search and Google search (HTTPS only; opens when you click)
 
-### Flexible Time Format Support
-The extension intelligently handles multiple time formats from different FAP system versions:
-- **Vietnamese format**: `10h00`, `14h30`, `10H00`
-- **Colon format**: `10:00`, `14:30`
-- **Hour only**: `10`, `14` (assumes 00 minutes)
-- **Dot format**: `10.00`, `14.30`
-- **Mixed formats**: Automatically detects and processes different formats
-
-### Modern Design
-- Clean Material Design interface
-- Responsive across different screen sizes
-- Automatic dark mode following system preferences
-- Smooth animations and transitions
-- Tab-based navigation for better organization
-
-### Intelligent Calendar Export
-- **Export only upcoming exams** with confirmed room assignments
-- Skip exams without room numbers or with TBA status
-- Compatible with Apple Calendar, Google Calendar, Outlook
-- Automatic reminders:
-  - 1 day before exam
-  - 1 hour before exam
-- **Works from any website** using stored data (no need to be on FAP page)
+### Design
+- Clean popup UI, system light/dark aware
+- Tab navigation: exams + **Lịch học**
 
 ## Installation
 
-### Chrome Web Store Installation (Recommended)
-Available now: [FPTU Examination on Chrome Web Store](https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm)
+### Chrome Web Store (recommended)
+[FPTU Schedule on Chrome Web Store](https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm) — listing title may still show an older name until the next store update.
 
-### Manual Installation (Developer Mode)
-1. **Clone repository**:
-   ```bash
-   git clone https://github.com/yunkhngn/fptu-schedule.git
-   ```
-2. **Open Chrome Extensions**:
-   - Navigate to `chrome://extensions/`
-   - Enable **Developer mode** in the top right corner
-3. **Load extension**:
-   - Click **Load unpacked**
-   - Select the cloned folder
-
-## Usage Guide
-
-### Step 1: Access FAP System
-1. Open `https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx`
-2. Login with your FPT student account
-
-### Step 2: Sync Exam Schedule
-1. **Click extension icon** in Chrome toolbar
-2. **Auto-sync**: Extension automatically loads when on FAP page
-3. **Manual sync**: Click **Đồng bộ** button to reload data
-
-### Step 3: Manage Exam Schedule
-- **View upcoming exams**: "📅 Chưa thi" tab (shows count)
-- **View exam history**: "✅ Đã thi" tab (shows count)
-- **See countdown**: Each exam shows days remaining with color coding
-- **Filter by type**: Click **Lọc** to select exam types to display
-
-### Step 4: Export Calendar
-1. **Click "📅 Tải xuống lịch .ics"** button
-2. **Wait for download**: `lich-thi.ics` file
-3. **Import to calendar app**:
-   - **macOS**: Open with Calendar app
-   - **Windows**: Open with Outlook
-   - **Mobile**: Google Calendar, Apple Calendar
-
-**Note**: Calendar export works from any website using previously synced data. Only exports upcoming exams with confirmed room assignments.
-
-## Technology Stack
-
-- **Frontend**: Vanilla JavaScript, CSS3, HTML5
-- **Chrome APIs**: Tabs, Scripting, Storage
-- **Standards**: iCalendar (RFC 5545)
-- **Design**: Material Design principles
-- **Storage**: LocalStorage for data persistence
-
-## Smart Features
-
-### Time Format Detection
-The extension automatically handles various time formats from FAP:
-```javascript
-// Supported formats:
-"10h00 - 12h00"    // Vietnamese format
-"10:00 - 12:00"    // Colon format  
-"10.00 - 12.30"    // Dot format
-"10 - 12"          // Hour only
+### Manual (developer mode)
+```bash
+git clone https://github.com/yunkhngn/fptu-schedule.git
+cd fptu-schedule
 ```
+1. Open `chrome://extensions/`
+2. Enable **Developer mode**
+3. **Load unpacked** → select the repo folder
 
-### Exam Type Recognition
-Automatically detects exam types from:
-- Explicit exam type tags in data
-- Form description keywords
-- Mixed Vietnamese/English terminology
+### Pack zip for upload
+```bash
+./zip-extension.sh
+```
+Produces **`fptu-schedule.zip`** (see `manifest.json` for current version).
 
-### Intelligent Export Logic
-- Skips completed exams (past dates)
-- Excludes exams without room assignments
-- Filters out TBA/unscheduled exams
-- Adds appropriate reminders
+## Usage
 
-## Interface Design
+### Exams
+1. Open `https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx` and sign in
+2. Open the extension popup → data syncs on the exam page (or use **Đồng bộ**)
+3. Use **Chưa thi** / **Đã thi**, **Lọc**, and **Tải xuống lịch .ics** (or equivalent) as needed
 
-### Light Theme
-- Primary color: Blue (#3b82f6)
-- Background: White (#ffffff)
-- Text: Dark gray (#1f2937)
+### Class schedule
+1. Open a FAP **Schedule** week page (under `https://fap.fpt.edu.vn/Schedule/`)
+2. In the popup, open the **Lịch học** tab → **Tải lịch** / export as shown
 
-### Component Design
-- **Cards**: 12px border radius, subtle shadows
-- **Tabs**: Active/inactive states with counters
-- **Tags**: Color-coded by exam type and urgency
-- **Modal**: Overlay with backdrop blur
-- **Countdown**: Dynamic color based on urgency
+### Custom study links
+Edit **`study-sources.json`** (keys = course codes like `PRJ301`). Only `https:` URLs are accepted for suggestions.
 
-## Project Structure
+## Tech stack
+
+- **UI**: HTML, CSS, vanilla JavaScript
+- **Chrome**: `tabs`, `scripting`, `storage` (`chrome.storage.local` for cached schedule JSON and sync flags — not website `localStorage`)
+- **Background**: Service worker (`background.js`)
+- **Calendar**: iCalendar (RFC 5545)
+
+## Project structure
 
 ```
 fptu-schedule/
-├── manifest.json          # Extension manifest
-├── popup.html             # Main popup interface
-├── popup.css              # Styling and themes
-├── popup.js               # Main logic and rendering
-├── content.js             # FAP page data extraction
-├── sanitize-utils.js      # Security utilities
-├── icons/                 # Extension icons
-├── docs/                  # Documentation website
-└── README.md              # Documentation
+├── manifest.json
+├── background.js
+├── popup.html
+├── popup.css
+├── popup.js
+├── content.js
+├── sanitize-utils.js
+├── study-sources.json          # Optional per-course study links
+├── study-suggestions.js          # Resolve suggestions + fallbacks
+├── icon-16.png / icon-48.png / icon-128.png
+├── icon.png                    # Source asset (see scripts/build-icons.py)
+├── zip-extension.sh
+├── docs/                       # GitHub Pages site
+├── scripts/build-icons.py
+└── README.md
 ```
 
 ## Contributing
 
-Contributions are welcome! Please:
-
-1. **Fork** the repository
-2. **Create branch** for new feature
-3. **Commit** changes with clear messages
-4. **Push** to branch
-5. **Create Pull Request**
+1. Fork the repo  
+2. Branch → commit → push  
+3. Open a Pull Request  
 
 ## Changelog
 
-### v2.1.0 (Current)
-- Enhanced time format support (Vietnamese, colon, dot, hour-only)
-- Improved exam type detection and classification
-- Added tab system with exam counters
-- Enhanced countdown timer with color coding
-- Smart filtering system with modal interface
-- Export only upcoming exams with confirmed rooms
-- Better error handling and data validation
+### v3.2.0 (current)
+- Exam study splash: white CTA buttons on cards; primary actions use blue accent
+- Manifest **3.2.0**; release zip `fptu-schedule.zip`
 
-### v2.0.0 (2025)
-- Added tab system (Upcoming/Completed exams)
-- Added countdown timer with color coding
-- Added exam type filtering system
-- New Material Design interface
-- Calendar export works from any website
+### v3.x (high level)
+- **Lịch học** tab, class timetable extraction and `.ics` export  
+- Multi-week background sync and merge  
+- Study suggestions module + `study-sources.json`  
+- MV3 service worker, narrowed permissions and safer study URLs (HTTPS-only)
 
-### v1.0.0 (2024)
-- Initial release
-- Basic exam schedule export
-- Exam type recognition
+### v2.1.0
+- Richer time formats and exam typing  
+- Tabs with counters, countdown styling, filter modal  
+- Export rules for rooms / upcoming only  
 
-## Browser Support
+### v2.0.0
+- Upcoming / completed tabs, countdown, filters, Material-style UI  
 
-- **Chrome**: v88+ (Manifest V3)
-- **Edge**: v88+ (Chromium-based)
-- **Other Chromium browsers**: Compatible
+### v1.0.0
+- Initial exam export and type detection  
 
-## Data Privacy
+## Browser support
 
-- **Local Storage Only**: All data stored locally in browser
-- **No External Servers**: No data sent to third parties
-- **Secure Processing**: Data sanitization and validation
-- **User Control**: Complete control over data export and deletion
+- **Chrome** / **Edge** and other **Chromium** browsers with Manifest V3 support (roughly v88+)
+
+## Privacy
+
+- Timetable data is processed and cached **locally** in the browser (`chrome.storage.local` / popup flow).  
+- Study links open only **on click**; suggested URLs are restricted to **https**.  
+- No separate analytics server from this repo; FAP remains the source of truth for auth and pages.
 
 ## Troubleshooting
 
-### Common Issues
-1. **No data syncing**: Ensure you're on the correct FAP exam page
-2. **Time format errors**: Extension automatically handles multiple formats
-3. **Export issues**: Check if exams have confirmed room assignments
-4. **Filter not working**: Clear browser data and re-sync
+| Issue | What to try |
+|--------|-------------|
+| No exam data | Open the official exam schedule FAP URL while logged in, then sync |
+| Empty export | Upcoming export skips exams without a room; check filters |
+| Class schedule | Use a `Schedule` week URL under `fap.fpt.edu.vn/Schedule/` |
+| Multi-week sync stuck | Log in again on FAP; reopen popup |
 
-### Support Resources
-- **Bug Reports**: [GitHub Issues](https://github.com/yunkhngn/fptu-schedule/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/yunkhngn/fptu-schedule/discussions)
-- **Documentation**: [Project Website](https://yunkhngn.github.io/fptu-schedule/)
+**Support**: [Issues](https://github.com/yunkhngn/fptu-schedule/issues) · **Docs site**: [yunkhngn.github.io/fptu-schedule](https://yunkhngn.github.io/fptu-schedule/)
 
 ## Author
 
-**Developed with love by:**
-- [@yunkhngn](https://github.com/yunkhngn) - Developer & Designer & Guitarist
+- [@yunkhngn](https://github.com/yunkhngn)
 
-**I 💛 FPTU** - Tôi yêu FPT University
+**I 💛 FPTU**
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-**If this extension helps you manage your exam schedule, please ⭐ star the repository to support the author!**
+If this helps your semester planning, a ⭐ on the repo is appreciated.
