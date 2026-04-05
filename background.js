@@ -92,7 +92,7 @@ function executeFapWeekIndexMain(tabId, weekIndex, callback) {
   );
 }
 
-function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, onComplete) {
+function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onComplete) {
   const lo = Math.min(startIdx, endIdx);
   const hi = Math.max(startIdx, endIdx);
   const total = hi - lo + 1;
@@ -105,44 +105,42 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, onComplete) {
     (weekLabels && weekLabels[i]) || `Tuần #${i}`;
 
   function finish() {
-    chrome.storage.local.get(["classSchedule"], (r) => {
-      let allSchedule = [];
-      try {
-        allSchedule = JSON.parse(r.classSchedule || "[]");
-      } catch (_) {
-        allSchedule = [];
-      }
-      const { uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected);
-      const mergedJson = JSON.stringify(merged);
-      const failMsg =
-        failedWeeks.length > 0
-          ? ` • Tuần lỗi: ${failedWeeks.map((f) => f.label).join("; ")}`
-          : "";
-      const toastText = `Đồng bộ xong ${total - failedWeeks.length}/${total} tuần. Mới: ${uniqueNewEvents.length} • Tổng: ${merged.length}${failMsg}`;
-      const statusText = `Xong: ${total - failedWeeks.length}/${total} tuần. Tiết mới: ${uniqueNewEvents.length}.${failedWeeks.length ? " Có tuần lỗi (xem toast)." : ""}`;
+    let allSchedule = [];
+    try {
+      allSchedule = JSON.parse(typeof seedJson === "string" ? seedJson : "[]");
+    } catch (_) {
+      allSchedule = [];
+    }
+    const { uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected);
+    const mergedJson = JSON.stringify(merged);
+    const failMsg =
+      failedWeeks.length > 0
+        ? ` • Tuần lỗi: ${failedWeeks.map((f) => f.label).join("; ")}`
+        : "";
+    const toastText = `Đồng bộ xong ${total - failedWeeks.length}/${total} tuần. Mới: ${uniqueNewEvents.length} • Tổng: ${merged.length}${failMsg}`;
+    const statusText = `Xong: ${total - failedWeeks.length}/${total} tuần. Tiết mới: ${uniqueNewEvents.length}.${failedWeeks.length ? " Có tuần lỗi (xem toast)." : ""}`;
 
-      chrome.storage.local.set(
-        {
-          classSchedule: mergedJson,
-          weekRangeSyncRunning: false,
-          weekRangeLastSummary: { toastText, statusText }
-        },
-        () => {
-          chrome.runtime
-            .sendMessage({
-              type: "WEEK_RANGE_SYNC_DONE",
-              mergedJson,
-              toastText,
-              statusText,
-              uniqueNewCount: uniqueNewEvents.length,
-              totalWeeks: total,
-              failedCount: failedWeeks.length
-            })
-            .catch(() => {});
-          onComplete && onComplete(null, { mergedJson, uniqueNewEvents, failedWeeks });
-        }
-      );
-    });
+    chrome.storage.local.set(
+      {
+        classSchedule: mergedJson,
+        weekRangeSyncRunning: false,
+        weekRangeLastSummary: { toastText, statusText }
+      },
+      () => {
+        chrome.runtime
+          .sendMessage({
+            type: "WEEK_RANGE_SYNC_DONE",
+            mergedJson,
+            toastText,
+            statusText,
+            uniqueNewCount: uniqueNewEvents.length,
+            totalWeeks: total,
+            failedCount: failedWeeks.length
+          })
+          .catch(() => {});
+        onComplete && onComplete(null, { mergedJson, uniqueNewEvents, failedWeeks });
+      }
+    );
   }
 
   function step() {
@@ -216,14 +214,17 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return false;
   }
 
-  const { tabId, startIdx, endIdx, weekLabels } = msg;
+  const { tabId, startIdx, endIdx, weekLabels, seedJson } = msg;
   if (tabId == null || startIdx == null || endIdx == null) {
     sendResponse({ ok: false, error: "bad-payload" });
     return false;
   }
 
+  const seed =
+    typeof seedJson === "string" ? seedJson : JSON.stringify([]);
+
   chrome.storage.local.set({ weekRangeSyncRunning: true }, () => {
-    runWeekRangeSync(tabId, startIdx, endIdx, weekLabels || [], (err) => {
+    runWeekRangeSync(tabId, startIdx, endIdx, weekLabels || [], seed, (err) => {
       if (err && err.message === "login") {
         /* already notified */
       } else if (err) {

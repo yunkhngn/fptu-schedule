@@ -1,7 +1,3 @@
-function hasChromeStorageLocal() {
-  return typeof chrome !== "undefined" && !!chrome.storage && !!chrome.storage.local;
-}
-
 function classScheduleDedupeKey(event) {
   if (event.rawDate) {
     return `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
@@ -30,9 +26,10 @@ function mergeNewClassEventsInto(allSchedule, newEvents) {
 }
 
 function mirrorClassScheduleToStorage(jsonString) {
-  if (!hasChromeStorageLocal()) return;
   try {
-    chrome.storage.local.set({ classSchedule: jsonString });
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ classSchedule: jsonString });
+    }
   } catch (_) {}
 }
 
@@ -49,17 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  if (hasChromeStorageLocal()) {
-    chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
-      if (chrome.runtime.lastError) return;
-      if (r.weekRangeSyncRunning) {
-        weekRangeSyncInProgress = true;
-        setWeekRangeControlsDisabled(true);
-        setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
-        pollWeekRangeSyncUntilIdle();
-      }
-    });
-  }
+  try {
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
+        if (chrome.runtime.lastError) return;
+        if (r.weekRangeSyncRunning) {
+          weekRangeSyncInProgress = true;
+          setWeekRangeControlsDisabled(true);
+          setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
+          pollWeekRangeSyncUntilIdle();
+        }
+      });
+    }
+  } catch (_) { /* no storage API */ }
 
   const syncButton = document.getElementById("syncButton");
   const exportBtn = document.getElementById("exportBtn");
@@ -661,19 +660,21 @@ function renderClassSchedule(schedule) {
 window.renderClassSchedule = renderClassSchedule;
 
   // Sau khi renderClassSchedule đã gắn window; tránh race với callback storage
-  if (hasChromeStorageLocal()) {
-    chrome.storage.local.get(["classSchedule"], (r) => {
-      if (chrome.runtime.lastError || !r.classSchedule) return;
-      if (r.classSchedule === localStorage.getItem("classSchedule")) return;
-      try {
-        persistClassSchedule(r.classSchedule);
-        const parsed = JSON.parse(r.classSchedule);
-        renderClassSchedule(parsed);
-      } catch (e) {
-        console.error("Merge class schedule from storage failed:", e);
-      }
-    });
-  }
+  try {
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(["classSchedule"], (r) => {
+        if (chrome.runtime.lastError || !r.classSchedule) return;
+        if (r.classSchedule === localStorage.getItem("classSchedule")) return;
+        try {
+          persistClassSchedule(r.classSchedule);
+          const parsed = JSON.parse(r.classSchedule);
+          renderClassSchedule(parsed);
+        } catch (e) {
+          console.error("Merge class schedule from storage failed:", e);
+        }
+      });
+    }
+  } catch (_) { /* no storage API */ }
 
   // Documentation link event
   if (docsLink) {
@@ -860,33 +861,29 @@ function handleSyncClassScheduleWeekRange() {
       true
     );
 
-    if (!hasChromeStorageLocal()) {
-      weekRangeSyncInProgress = false;
-      setWeekRangeControlsDisabled(false);
-      setWeekRangeStatus("", false);
-      alert("Extension thiếu quyền storage. Reload extension tại chrome://extensions.");
-      return;
-    }
-    const seed = localStorage.getItem("classSchedule") || "[]";
-    chrome.storage.local.set({ classSchedule: seed }, () => {
-      chrome.runtime.sendMessage(
-        {
-          type: "START_WEEK_RANGE_SYNC",
-          tabId,
-          startIdx,
-          endIdx,
-          weekLabels
-        },
-        (resp) => {
-          if (chrome.runtime.lastError || !resp || !resp.ok) {
-            weekRangeSyncInProgress = false;
-            setWeekRangeControlsDisabled(false);
-            setWeekRangeStatus("", false);
-            alert("Không khởi chạy đồng bộ nền. Thử reload extension (chrome://extensions).");
-          }
+    const seedJson = localStorage.getItem("classSchedule") || "[]";
+    chrome.runtime.sendMessage(
+      {
+        type: "START_WEEK_RANGE_SYNC",
+        tabId,
+        startIdx,
+        endIdx,
+        weekLabels,
+        seedJson
+      },
+      (resp) => {
+        if (chrome.runtime.lastError || !resp || !resp.ok) {
+          weekRangeSyncInProgress = false;
+          setWeekRangeControlsDisabled(false);
+          setWeekRangeStatus("", false);
+          alert(
+            "Không khởi chạy đồng bộ nền: " +
+              (chrome.runtime.lastError && chrome.runtime.lastError.message) +
+              "\nMở chrome://extensions → Service worker → Inspect để xem lỗi."
+          );
         }
-      );
-    });
+      }
+    );
   });
 }
 
@@ -912,7 +909,7 @@ function applyWeekRangeSyncDoneFromBackground(msg) {
 }
 
 function pollWeekRangeSyncUntilIdle() {
-  if (!hasChromeStorageLocal()) return;
+  if (!chrome.storage || !chrome.storage.local) return;
   let ticks = 0;
   const iv = setInterval(() => {
     ticks += 1;
@@ -1196,9 +1193,11 @@ function handleClearClassSchedule() {
   }
   try {
     localStorage.removeItem("classSchedule");
-    if (hasChromeStorageLocal()) {
-      chrome.storage.local.remove(["classSchedule"]);
-    }
+    try {
+      if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.remove(["classSchedule"]);
+      }
+    } catch (_) {}
     // Re-render empty state immediately
     try {
       window.renderClassSchedule && window.renderClassSchedule([]);
