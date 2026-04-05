@@ -1,6 +1,67 @@
 /** Hook for clear-and-sync; DOM is re-scraped each time so no page-side state to clear. */
 function clearExistingExamEvents() {}
 
+function findScheduleOfWeekYearSelect() {
+  return (
+    document.getElementById("ctl00_mainContent_drpYear") ||
+    document.querySelector('select[name*="Year"]')
+  );
+}
+
+function findScheduleOfWeekWeekSelect() {
+  return (
+    document.getElementById("ctl00_mainContent_drpWeek") ||
+    document.getElementById("ctl00_mainContent_ddlWeek") ||
+    document.querySelector('select[id*="mainContent"][id*="drp"][id*="Week"]') ||
+    document.querySelector('select[id*="mainContent"][id*="Week"]') ||
+    document.querySelector('select[name*="drpWeek"]') ||
+    document.querySelector('select[name*="Week"]')
+  );
+}
+
+function getScheduleOfWeekControls() {
+  const weekSelect = findScheduleOfWeekWeekSelect();
+  const yearSelect = findScheduleOfWeekYearSelect();
+  const onWeekPage = /ScheduleOfWeek\.aspx/i.test(window.location.pathname || "");
+
+  if (!weekSelect) {
+    const loginLike =
+      document.querySelector('input[type="password"]') ||
+      document.getElementById("ctl00_mainContent_txtPassword");
+    const loginRequired = !!loginLike;
+    return {
+      ok: false,
+      loginRequired,
+      onWeekPage,
+      error: loginRequired ? "login-required" : "week-select-not-found"
+    };
+  }
+
+  const weeks = Array.from(weekSelect.options).map((opt, idx) => ({
+    index: idx,
+    value: opt.value,
+    label: (opt.textContent || "").trim()
+  }));
+
+  const years = yearSelect
+    ? Array.from(yearSelect.options).map((opt, idx) => ({
+        index: idx,
+        value: opt.value,
+        label: (opt.textContent || "").trim()
+      }))
+    : [];
+
+  return {
+    ok: true,
+    onWeekPage,
+    yearIndex: yearSelect ? yearSelect.selectedIndex : -1,
+    yearValue: yearSelect ? yearSelect.value : "",
+    weekIndex: weekSelect.selectedIndex,
+    weeks,
+    years
+  };
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === "extractSchedule") {
     try {
@@ -176,8 +237,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       sendResponse({ events: [], cleared: false });
     }
     return true;
+  } else if (msg.action === "getWeekScheduleControls") {
+    try {
+      sendResponse(getScheduleOfWeekControls());
+    } catch (e) {
+      sendResponse({ ok: false, error: String(e.message || e) });
+    }
+    return true;
   } else if (msg.action === "extractWeeklySchedule") {
     try {
+      if (!findScheduleOfWeekWeekSelect()) {
+        const loginLike = document.querySelector('input[type="password"]');
+        sendResponse({
+          schedule: [],
+          success: false,
+          loginRequired: !!loginLike
+        });
+        return true;
+      }
       const weeklySchedule = extractWeeklyScheduleFromTable();
       sendResponse({ schedule: weeklySchedule, success: true });
     } catch (e) {
@@ -218,8 +295,7 @@ function extractWeeklyScheduleFromTable() {
   const schedule = [];
   
   // Get correct year for date calculation
-  const yearSelect = document.getElementById('ctl00_mainContent_drpYear') || 
-                   document.querySelector('select[name*="Year"]');
+  const yearSelect = findScheduleOfWeekYearSelect();
   const year = yearSelect ? parseInt(yearSelect.value) : new Date().getFullYear();
   
   console.log("Headers found:", dayHeaders.length);

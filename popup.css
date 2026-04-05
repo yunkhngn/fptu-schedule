@@ -284,6 +284,7 @@ html, body {
 /* ---- Footer actions ---- */
 .popup-actions {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   justify-content: center;
   gap: 8px;
@@ -770,4 +771,121 @@ html, body {
   transition: opacity 0.2s ease;
   pointer-events: none;
   text-align: center;
+}
+
+/* ---- Multi-week class schedule sync ---- */
+.week-range-block {
+  width: 100%;
+  padding: 10px 0 4px;
+  border-top: 1px dashed var(--border);
+  box-sizing: border-box;
+}
+
+.week-range-block[hidden] {
+  display: none !important;
+}
+
+.week-range-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.week-range-title {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.week-range-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.week-range-link:hover {
+  text-decoration: underline;
+}
+
+.week-range-hint {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.week-range-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.week-range-selects {
+  justify-content: flex-start;
+}
+
+.week-range-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.week-range-select {
+  min-width: 140px;
+  max-width: 220px;
+  padding: 6px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.week-range-btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-subtle);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.week-range-btn:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.week-range-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.week-range-btn--primary {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.week-range-btn--primary:hover:not(:disabled) {
+  background: #dbeafe;
+}
+
+.week-range-status {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text-muted);
+  margin: 0;
+  padding: 4px 0 0;
 }

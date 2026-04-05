@@ -26,12 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const examAct = document.getElementById("examActions");
       const schedAct = document.getElementById("scheduleActions");
+      const weekRangeBlock = document.getElementById("scheduleWeekRangeBlock");
       if (name === "schedule") {
         if (examAct) examAct.hidden = true;
         if (schedAct) schedAct.hidden = false;
+        if (weekRangeBlock) weekRangeBlock.hidden = false;
       } else {
         if (examAct) examAct.hidden = false;
         if (schedAct) schedAct.hidden = true;
+        if (weekRangeBlock) weekRangeBlock.hidden = true;
       }
 
       if (name === "schedule") {
@@ -613,7 +616,383 @@ window.renderClassSchedule = renderClassSchedule;
   if (clearBtn) {
     clearBtn.addEventListener("click", handleClearClassSchedule);
   }
+
+  const loadWeekOptionsBtn = document.getElementById("loadWeekOptionsBtn");
+  const syncWeekRangeBtn = document.getElementById("syncWeekRangeBtn");
+  if (loadWeekOptionsBtn) {
+    loadWeekOptionsBtn.addEventListener("click", handleLoadWeekScheduleOptions);
+  }
+  if (syncWeekRangeBtn) {
+    syncWeekRangeBtn.addEventListener("click", handleSyncClassScheduleWeekRange);
+  }
 });
+
+function classScheduleDedupeKey(event) {
+  if (event.rawDate) {
+    return `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
+  }
+  if (event.start) {
+    const start = typeof event.start === "string" ? new Date(event.start) : event.start;
+    if (!isNaN(start.getTime())) {
+      return `${event.title}-${start.getDate()}/${start.getMonth() + 1}-${start.getHours()}:${start.getMinutes()}`;
+    }
+  }
+  return null;
+}
+
+function mergeNewClassEventsInto(allSchedule, newEvents) {
+  const existingKeys = new Set();
+  allSchedule.forEach((event) => {
+    const k = classScheduleDedupeKey(event);
+    if (k) existingKeys.add(k);
+  });
+  const uniqueNewEvents = newEvents.filter((event) => {
+    const k = classScheduleDedupeKey(event);
+    if (k) return !existingKeys.has(k);
+    return true;
+  });
+  return { uniqueNewEvents, merged: allSchedule.concat(uniqueNewEvents) };
+}
+
+function isScheduleOfWeekUrl(url) {
+  return typeof url === "string" && /fap\.fpt\.edu\.vn\/Report\/ScheduleOfWeek\.aspx/i.test(url);
+}
+
+let weekRangeSyncInProgress = false;
+
+function armWaitForTabComplete(tabId, timeoutMs, onDone) {
+  let settled = false;
+  let timer;
+  const listener = (id, info) => {
+    if (id !== tabId || info.status !== "complete") return;
+    if (settled) return;
+    settled = true;
+    chrome.tabs.onUpdated.removeListener(listener);
+    clearTimeout(timer);
+    setTimeout(() => onDone(true), 400);
+  };
+  chrome.tabs.onUpdated.addListener(listener);
+  timer = setTimeout(() => {
+    if (settled) return;
+    settled = true;
+    chrome.tabs.onUpdated.removeListener(listener);
+    onDone(false);
+  }, timeoutMs);
+  return function cancelWait() {
+    if (settled) return;
+    settled = true;
+    chrome.tabs.onUpdated.removeListener(listener);
+    clearTimeout(timer);
+  };
+}
+
+function extractWeeklyScheduleFromTab(tabId, callback) {
+  chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] }, () => {
+    if (chrome.runtime.lastError) {
+      callback(chrome.runtime.lastError.message, null);
+      return;
+    }
+    chrome.tabs.sendMessage(tabId, { action: "extractWeeklySchedule" }, (response) => {
+      if (chrome.runtime.lastError) {
+        callback(chrome.runtime.lastError.message, null);
+        return;
+      }
+      callback(null, response);
+    });
+  });
+}
+
+function executeFapWeekIndexMain(tabId, weekIndex, callback) {
+  chrome.scripting.executeScript(
+    {
+      target: { tabId },
+      world: "MAIN",
+      func: (idx) => {
+        function weekSelectEl() {
+          return (
+            document.getElementById("ctl00_mainContent_drpWeek") ||
+            document.getElementById("ctl00_mainContent_ddlWeek") ||
+            document.querySelector('select[id*="mainContent"][id*="drp"][id*="Week"]') ||
+            document.querySelector('select[id*="mainContent"][id*="Week"]') ||
+            document.querySelector('select[name*="drpWeek"]') ||
+            document.querySelector('select[name*="Week"]')
+          );
+        }
+        const sel = weekSelectEl();
+        if (!sel) return { ok: false, error: "week-select-not-found" };
+        if (idx < 0 || idx >= sel.options.length) return { ok: false, error: "bad-index" };
+        if (sel.selectedIndex === idx) {
+          return { ok: true, skippedPostback: true };
+        }
+        sel.selectedIndex = idx;
+        const oc = sel.getAttribute("onchange") || "";
+        const m = oc.match(/__doPostBack\s*\(\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/);
+        if (typeof __doPostBack === "function") {
+          if (m) __doPostBack(m[1], m[2] !== undefined && m[2] !== null ? m[2] : "");
+          else __doPostBack(sel.name, "");
+          return { ok: true, skippedPostback: false };
+        }
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+        return { ok: true, skippedPostback: false, weak: true };
+      },
+      args: [weekIndex]
+    },
+    (results) => {
+      if (chrome.runtime.lastError) {
+        callback(chrome.runtime.lastError.message, null);
+        return;
+      }
+      const r = results && results[0] && results[0].result;
+      if (!r || !r.ok) {
+        callback((r && r.error) || "unknown", null);
+        return;
+      }
+      callback(null, r);
+    }
+  );
+}
+
+function fillWeekRangeSelectOptions(weeks) {
+  const startSel = document.getElementById("weekRangeStart");
+  const endSel = document.getElementById("weekRangeEnd");
+  const syncBtn = document.getElementById("syncWeekRangeBtn");
+  if (!startSel || !endSel) return;
+  startSel.innerHTML = "";
+  endSel.innerHTML = "";
+  weeks.forEach((w) => {
+    const o1 = document.createElement("option");
+    o1.value = String(w.index);
+    o1.textContent = w.label || `Tuần ${w.index}`;
+    startSel.appendChild(o1);
+    const o2 = document.createElement("option");
+    o2.value = String(w.index);
+    o2.textContent = w.label || `Tuần ${w.index}`;
+    endSel.appendChild(o2);
+  });
+  if (weeks.length) {
+    const last = weeks.length - 1;
+    startSel.selectedIndex = 0;
+    endSel.selectedIndex = last;
+    startSel.disabled = false;
+    endSel.disabled = false;
+    if (syncBtn) syncBtn.disabled = false;
+  }
+}
+
+function setWeekRangeStatus(text, show) {
+  const el = document.getElementById("weekRangeStatus");
+  if (!el) return;
+  el.textContent = text || "";
+  el.hidden = !show;
+}
+
+function setWeekRangeControlsDisabled(disabled) {
+  ["loadWeekOptionsBtn", "syncWeekRangeBtn", "weekRangeStart", "weekRangeEnd"].forEach((id) => {
+    const n = document.getElementById(id);
+    if (n) n.disabled = disabled;
+  });
+}
+
+function handleLoadWeekScheduleOptions() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs && tabs[0];
+    if (!tab || !tab.id) {
+      alert("Không tìm thấy tab đang mở.");
+      return;
+    }
+    if (!tab.url || !tab.url.includes("fap.fpt.edu.vn")) {
+      alert("Vui lòng mở trang FAP (lịch tuần).");
+      return;
+    }
+    if (!isScheduleOfWeekUrl(tab.url)) {
+      alert("Vui lòng mở đúng trang lịch theo tuần:\nhttps://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx");
+      return;
+    }
+    setWeekRangeStatus("Đang đọc danh sách tuần…", true);
+    chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["content.js"] }, () => {
+      if (chrome.runtime.lastError) {
+        setWeekRangeStatus("", false);
+        alert("Không đọc được trang. Thử refresh FAP rồi mở lại popup.");
+        return;
+      }
+      chrome.tabs.sendMessage(tab.id, { action: "getWeekScheduleControls" }, (res) => {
+        if (chrome.runtime.lastError) {
+          setWeekRangeStatus("", false);
+          alert("Không gửi được yêu cầu tới trang. Thử refresh FAP.");
+          return;
+        }
+        if (!res || !res.ok) {
+          setWeekRangeStatus("", false);
+          if (res && res.loginRequired) {
+            chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Default.aspx", active: true });
+            alert("Bạn cần đăng nhập FAP. Đã mở trang đăng nhập.");
+          } else {
+            alert("Không tìm thấy dropdown tuần trên trang. Đảm bảo bạn đang ở lịch tuần.");
+          }
+          return;
+        }
+        if (!res.weeks || !res.weeks.length) {
+          setWeekRangeStatus("", false);
+          alert("Danh sách tuần trống.");
+          return;
+        }
+        fillWeekRangeSelectOptions(res.weeks);
+        setWeekRangeStatus(`Đã tải ${res.weeks.length} tuần. Chọn khoảng rồi nhấn Đồng bộ khoảng.`, true);
+      });
+    });
+  });
+}
+
+function handleSyncClassScheduleWeekRange() {
+  if (weekRangeSyncInProgress) return;
+  const startSel = document.getElementById("weekRangeStart");
+  const endSel = document.getElementById("weekRangeEnd");
+  if (!startSel || !endSel || startSel.disabled) {
+    alert("Nhấn «Tải danh sách tuần» trước khi đồng bộ khoảng.");
+    return;
+  }
+  let startIdx = parseInt(startSel.value, 10);
+  let endIdx = parseInt(endSel.value, 10);
+  if (Number.isNaN(startIdx) || Number.isNaN(endIdx)) {
+    alert("Tuần không hợp lệ.");
+    return;
+  }
+  if (startIdx > endIdx) {
+    const t = startIdx;
+    startIdx = endIdx;
+    endIdx = t;
+  }
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs && tabs[0];
+    if (!tab || !tab.id) {
+      alert("Không tìm thấy tab đang mở.");
+      return;
+    }
+    if (!tab.url || !isScheduleOfWeekUrl(tab.url)) {
+      alert("Giữ tab lịch tuần FAP đang active rồi thử lại.");
+      return;
+    }
+
+    const tabId = tab.id;
+    weekRangeSyncInProgress = true;
+    setWeekRangeControlsDisabled(true);
+    setWeekRangeStatus(`Đang đồng bộ tuần… (0 / ${endIdx - startIdx + 1})`, true);
+
+    const existingData = localStorage.getItem("classSchedule");
+    let allSchedule = [];
+    if (existingData) {
+      try {
+        allSchedule = JSON.parse(existingData);
+      } catch (e) {
+        allSchedule = [];
+      }
+    }
+
+    const failedWeeks = [];
+    let collected = [];
+    let current = startIdx;
+    const total = endIdx - startIdx + 1;
+    let stepIndex = 0;
+
+    const labelForWeek = (i) =>
+      (startSel.options[i] && startSel.options[i].textContent.trim()) || `Tuần #${i}`;
+
+    function updateProgress() {
+      setWeekRangeStatus(`Đang đồng bộ tuần… (${stepIndex} / ${total})`, true);
+    }
+
+    function finish() {
+      weekRangeSyncInProgress = false;
+      setWeekRangeControlsDisabled(false);
+      const { uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected);
+      localStorage.setItem("classSchedule", JSON.stringify(merged));
+      try {
+        window.renderClassSchedule && window.renderClassSchedule(merged);
+      } catch (e) { /* no-op */ }
+      try {
+        document.getElementById("scheduleTabBtn")?.click();
+      } catch (e) { /* no-op */ }
+      const failMsg =
+        failedWeeks.length > 0
+          ? ` • Tuần lỗi: ${failedWeeks.map((f) => f.label).join("; ")}`
+          : "";
+      showToast(`Đồng bộ xong ${total - failedWeeks.length}/${total} tuần. Mới: ${uniqueNewEvents.length} • Tổng: ${merged.length}${failMsg}`, 4200);
+      setWeekRangeStatus(
+        `Xong: ${total - failedWeeks.length}/${total} tuần. Tiết mới: ${uniqueNewEvents.length}.${failedWeeks.length ? " Có tuần lỗi (xem toast)." : ""}`,
+        true
+      );
+    }
+
+    function step() {
+      if (current > endIdx) {
+        finish();
+        return;
+      }
+      const idx = current;
+      const cancelWait = armWaitForTabComplete(tabId, 28000, (loadOk) => {
+        if (!loadOk) {
+          failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "timeout" });
+          stepIndex += 1;
+          current += 1;
+          updateProgress();
+          step();
+          return;
+        }
+        extractWeeklyScheduleFromTab(tabId, (err, response) => {
+          if (err || !response || !response.success) {
+            if (response && response.loginRequired) {
+              failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "login" });
+              weekRangeSyncInProgress = false;
+              setWeekRangeControlsDisabled(false);
+              setWeekRangeStatus("", false);
+              chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Default.aspx", active: true });
+              alert("Phiên đăng nhập hết hạn. Đăng nhập lại FAP rồi thử sync khoảng.");
+              return;
+            }
+            failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err || "extract" });
+          } else {
+            collected = collected.concat(response.schedule || []);
+          }
+          stepIndex += 1;
+          current += 1;
+          updateProgress();
+          step();
+        });
+      });
+
+      executeFapWeekIndexMain(tabId, idx, (err, result) => {
+        if (err) {
+          cancelWait();
+          failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err });
+          stepIndex += 1;
+          current += 1;
+          updateProgress();
+          step();
+          return;
+        }
+        if (result.skippedPostback) {
+          cancelWait();
+          extractWeeklyScheduleFromTab(tabId, (e2, response) => {
+            if (e2 || !response || !response.success) {
+              failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: e2 || "extract" });
+            } else {
+              collected = collected.concat(response.schedule || []);
+            }
+            stepIndex += 1;
+            current += 1;
+            updateProgress();
+            step();
+          });
+          return;
+        }
+        // postback in flight; waitForTabComplete will run extract
+      });
+    }
+
+    step();
+  });
+}
 
 function handleSyncClassSchedule() {
   showToast("Đang sync lịch học...", 1500);
@@ -667,7 +1046,6 @@ function handleSyncClassSchedule() {
           return;
         }
         
-        // Process and save events
         const existingData = localStorage.getItem("classSchedule");
         let allSchedule = [];
         
@@ -680,34 +1058,8 @@ function handleSyncClassSchedule() {
           }
         }
         
-        // Cải thiện phần kiểm tra trùng lặp
-        const existingKeys = new Set();
-        
-        // Tạo các key duy nhất từ lịch đã có
-        allSchedule.forEach(event => {
-          // Sử dụng rawDate nếu có, nếu không thì thử dùng start cũ
-          if (event.rawDate) {
-            const key = `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
-            existingKeys.add(key);
-          } else if (event.start) {
-            // Xử lý với dữ liệu cũ (chuyển đổi sang string nếu cần)
-            const start = typeof event.start === 'string' ? new Date(event.start) : event.start;
-            const key = `${event.title}-${start.getDate()}/${start.getMonth()+1}-${start.getHours()}:${start.getMinutes()}`;
-            existingKeys.add(key);
-          }
-        });
-        
-        // Lọc ra những event mới
-        const uniqueNewEvents = newEvents.filter(event => {
-          if (event.rawDate) {
-            const key = `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
-            return !existingKeys.has(key);
-          }
-          return true; // Nếu không có rawDate, coi như là mới
-        });
-        
-        // Kết hợp dữ liệu cũ và mới
-        allSchedule = [...allSchedule, ...uniqueNewEvents];
+        const { uniqueNewEvents, merged: mergedSchedule } = mergeNewClassEventsInto(allSchedule, newEvents);
+        allSchedule = mergedSchedule;
         localStorage.setItem("classSchedule", JSON.stringify(allSchedule));
         // Re-render UI for the schedule tab
         window.renderClassSchedule && window.renderClassSchedule(allSchedule);

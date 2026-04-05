@@ -105,6 +105,29 @@
           <span class="action-btn__label">Xoá</span>
         </button>
       </div>
+
+      <div id="scheduleWeekRangeBlock" class="week-range-block" hidden>
+        <div class="week-range-header">
+          <span class="week-range-title">Đồng bộ nhiều tuần</span>
+          <a class="week-range-link" href="https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx" target="_blank" rel="noopener">Mở lịch tuần FAP</a>
+        </div>
+        <p class="week-range-hint">Chọn năm học trên FAP nếu cần. Đang ở trang lịch tuần, nhấn «Tải danh sách tuần».</p>
+        <div class="week-range-row">
+          <button type="button" id="loadWeekOptionsBtn" class="week-range-btn">Tải danh sách tuần</button>
+        </div>
+        <div class="week-range-row week-range-selects">
+          <label class="week-range-label">Từ
+            <select id="weekRangeStart" class="week-range-select" disabled aria-label="Tuần bắt đầu"></select>
+          </label>
+          <label class="week-range-label">Đến
+            <select id="weekRangeEnd" class="week-range-select" disabled aria-label="Tuần kết thúc"></select>
+          </label>
+        </div>
+        <div class="week-range-row">
+          <button type="button" id="syncWeekRangeBtn" class="week-range-btn week-range-btn--primary" disabled>Đồng bộ khoảng</button>
+        </div>
+        <div id="weekRangeStatus" class="week-range-status" hidden role="status"></div>
+      </div>
     </div>
 
     <div id="filterModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="filterModalTitle">
