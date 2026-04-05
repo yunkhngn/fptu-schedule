@@ -1,4 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.type === "WEEK_RANGE_SYNC_DONE") {
+      applyWeekRangeSyncDoneFromBackground(msg);
+    }
+    if (msg.type === "WEEK_RANGE_SYNC_ERROR" && msg.message === "login") {
+      weekRangeSyncInProgress = false;
+      setWeekRangeControlsDisabled(false);
+      setWeekRangeStatus("", false);
+      alert("Phiên đăng nhập hết hạn. Đăng nhập lại FAP rồi thử sync khoảng.");
+    }
+  });
+
+  chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
+    if (chrome.runtime.lastError) return;
+    if (r.weekRangeSyncRunning) {
+      weekRangeSyncInProgress = true;
+      setWeekRangeControlsDisabled(true);
+      setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
+      pollWeekRangeSyncUntilIdle();
+    }
+  });
+
   const syncButton = document.getElementById("syncButton");
   const exportBtn = document.getElementById("exportBtn");
   const settingsButton = document.getElementById("settingsButton");
@@ -382,6 +404,17 @@ document.addEventListener("DOMContentLoaded", () => {
       sc.appendChild(empty);
     }
   }
+  // Nếu service worker vừa merge lịch (popup đã đóng lúc sync), đồng bộ từ chrome.storage
+  chrome.storage.local.get(["classSchedule"], (r) => {
+    if (chrome.runtime.lastError || !r.classSchedule) return;
+    if (r.classSchedule === localStorage.getItem("classSchedule")) return;
+    try {
+      persistClassSchedule(r.classSchedule);
+      renderClassSchedule(JSON.parse(r.classSchedule));
+    } catch (e) {
+      console.error("Merge class schedule from storage failed:", e);
+    }
+  });
   // Try to auto-refresh attendance status from the current FAP page (only updates matching items)
   tryAutoRefreshAttendance();
 function renderClassSchedule(schedule) {
@@ -541,7 +574,7 @@ function renderClassSchedule(schedule) {
               return it;
             });
             if (changed) {
-              localStorage.setItem('classSchedule', JSON.stringify(saved));
+              persistClassSchedule(JSON.stringify(saved));
               try { window.renderClassSchedule && window.renderClassSchedule(saved); } catch (_) {}
               // silent update – no toast
             }
@@ -627,31 +660,13 @@ window.renderClassSchedule = renderClassSchedule;
   }
 });
 
-function classScheduleDedupeKey(event) {
-  if (event.rawDate) {
-    return `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
+function persistClassSchedule(jsonString) {
+  try {
+    localStorage.setItem("classSchedule", jsonString);
+  } catch (_) {}
+  if (typeof mirrorClassScheduleToStorage === "function") {
+    mirrorClassScheduleToStorage(jsonString);
   }
-  if (event.start) {
-    const start = typeof event.start === "string" ? new Date(event.start) : event.start;
-    if (!isNaN(start.getTime())) {
-      return `${event.title}-${start.getDate()}/${start.getMonth() + 1}-${start.getHours()}:${start.getMinutes()}`;
-    }
-  }
-  return null;
-}
-
-function mergeNewClassEventsInto(allSchedule, newEvents) {
-  const existingKeys = new Set();
-  allSchedule.forEach((event) => {
-    const k = classScheduleDedupeKey(event);
-    if (k) existingKeys.add(k);
-  });
-  const uniqueNewEvents = newEvents.filter((event) => {
-    const k = classScheduleDedupeKey(event);
-    if (k) return !existingKeys.has(k);
-    return true;
-  });
-  return { uniqueNewEvents, merged: allSchedule.concat(uniqueNewEvents) };
 }
 
 function isScheduleOfWeekUrl(url) {
@@ -659,98 +674,6 @@ function isScheduleOfWeekUrl(url) {
 }
 
 let weekRangeSyncInProgress = false;
-
-function armWaitForTabComplete(tabId, timeoutMs, onDone) {
-  let settled = false;
-  let timer;
-  const listener = (id, info) => {
-    if (id !== tabId || info.status !== "complete") return;
-    if (settled) return;
-    settled = true;
-    chrome.tabs.onUpdated.removeListener(listener);
-    clearTimeout(timer);
-    setTimeout(() => onDone(true), 400);
-  };
-  chrome.tabs.onUpdated.addListener(listener);
-  timer = setTimeout(() => {
-    if (settled) return;
-    settled = true;
-    chrome.tabs.onUpdated.removeListener(listener);
-    onDone(false);
-  }, timeoutMs);
-  return function cancelWait() {
-    if (settled) return;
-    settled = true;
-    chrome.tabs.onUpdated.removeListener(listener);
-    clearTimeout(timer);
-  };
-}
-
-function extractWeeklyScheduleFromTab(tabId, callback) {
-  chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] }, () => {
-    if (chrome.runtime.lastError) {
-      callback(chrome.runtime.lastError.message, null);
-      return;
-    }
-    chrome.tabs.sendMessage(tabId, { action: "extractWeeklySchedule" }, (response) => {
-      if (chrome.runtime.lastError) {
-        callback(chrome.runtime.lastError.message, null);
-        return;
-      }
-      callback(null, response);
-    });
-  });
-}
-
-function executeFapWeekIndexMain(tabId, weekIndex, callback) {
-  chrome.scripting.executeScript(
-    {
-      target: { tabId },
-      world: "MAIN",
-      func: (idx) => {
-        function weekSelectEl() {
-          return (
-            document.getElementById("ctl00_mainContent_drpWeek") ||
-            document.getElementById("ctl00_mainContent_ddlWeek") ||
-            document.querySelector('select[id*="mainContent"][id*="drp"][id*="Week"]') ||
-            document.querySelector('select[id*="mainContent"][id*="Week"]') ||
-            document.querySelector('select[name*="drpWeek"]') ||
-            document.querySelector('select[name*="Week"]')
-          );
-        }
-        const sel = weekSelectEl();
-        if (!sel) return { ok: false, error: "week-select-not-found" };
-        if (idx < 0 || idx >= sel.options.length) return { ok: false, error: "bad-index" };
-        if (sel.selectedIndex === idx) {
-          return { ok: true, skippedPostback: true };
-        }
-        sel.selectedIndex = idx;
-        const oc = sel.getAttribute("onchange") || "";
-        const m = oc.match(/__doPostBack\s*\(\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/);
-        if (typeof __doPostBack === "function") {
-          if (m) __doPostBack(m[1], m[2] !== undefined && m[2] !== null ? m[2] : "");
-          else __doPostBack(sel.name, "");
-          return { ok: true, skippedPostback: false };
-        }
-        sel.dispatchEvent(new Event("change", { bubbles: true }));
-        return { ok: true, skippedPostback: false, weak: true };
-      },
-      args: [weekIndex]
-    },
-    (results) => {
-      if (chrome.runtime.lastError) {
-        callback(chrome.runtime.lastError.message, null);
-        return;
-      }
-      const r = results && results[0] && results[0].result;
-      if (!r || !r.ok) {
-        callback((r && r.error) || "unknown", null);
-        return;
-      }
-      callback(null, r);
-    }
-  );
-}
 
 function fillWeekRangeSelectOptions(weeks) {
   const startSel = document.getElementById("weekRangeStart");
@@ -863,6 +786,11 @@ function handleSyncClassScheduleWeekRange() {
     endIdx = t;
   }
 
+  const weekLabels = [];
+  for (let i = 0; i < startSel.options.length; i++) {
+    weekLabels.push((startSel.options[i].textContent || "").trim());
+  }
+
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs && tabs[0];
     if (!tab || !tab.id) {
@@ -875,123 +803,86 @@ function handleSyncClassScheduleWeekRange() {
     }
 
     const tabId = tab.id;
+    const total = endIdx - startIdx + 1;
     weekRangeSyncInProgress = true;
     setWeekRangeControlsDisabled(true);
-    setWeekRangeStatus(`Đang đồng bộ tuần… (0 / ${endIdx - startIdx + 1})`, true);
+    setWeekRangeStatus(
+      `Đang đồng bộ ${total} tuần trong nền… Bạn có thể đóng popup; mở lại khi xong.`,
+      true
+    );
 
-    const existingData = localStorage.getItem("classSchedule");
-    let allSchedule = [];
-    if (existingData) {
-      try {
-        allSchedule = JSON.parse(existingData);
-      } catch (e) {
-        allSchedule = [];
+    const seed = localStorage.getItem("classSchedule") || "[]";
+    chrome.storage.local.set({ classSchedule: seed }, () => {
+      chrome.runtime.sendMessage(
+        {
+          type: "START_WEEK_RANGE_SYNC",
+          tabId,
+          startIdx,
+          endIdx,
+          weekLabels
+        },
+        (resp) => {
+          if (chrome.runtime.lastError || !resp || !resp.ok) {
+            weekRangeSyncInProgress = false;
+            setWeekRangeControlsDisabled(false);
+            setWeekRangeStatus("", false);
+            alert("Không khởi chạy đồng bộ nền. Thử reload extension (chrome://extensions).");
+          }
+        }
+      );
+    });
+  });
+}
+
+function applyWeekRangeSyncDoneFromBackground(msg) {
+  weekRangeSyncInProgress = false;
+  setWeekRangeControlsDisabled(false);
+  if (msg.mergedJson) {
+    persistClassSchedule(msg.mergedJson);
+    try {
+      const merged = JSON.parse(msg.mergedJson);
+      window.renderClassSchedule && window.renderClassSchedule(merged);
+    } catch (e) { /* no-op */ }
+  }
+  try {
+    document.getElementById("scheduleTabBtn")?.click();
+  } catch (e) { /* no-op */ }
+  if (msg.toastText) {
+    showToast(msg.toastText, 4200);
+  }
+  if (msg.statusText) {
+    setWeekRangeStatus(msg.statusText, true);
+  }
+}
+
+function pollWeekRangeSyncUntilIdle() {
+  const iv = setInterval(() => {
+    chrome.storage.local.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary"], (r) => {
+      if (chrome.runtime.lastError) return;
+      if (r.weekRangeSyncRunning) return;
+      clearInterval(iv);
+      if (r.classSchedule) {
+        const cur = localStorage.getItem("classSchedule");
+        if (cur !== r.classSchedule) {
+          persistClassSchedule(r.classSchedule);
+          try {
+            window.renderClassSchedule && window.renderClassSchedule(JSON.parse(r.classSchedule));
+          } catch (e) { /* no-op */ }
+        }
       }
-    }
-
-    const failedWeeks = [];
-    let collected = [];
-    let current = startIdx;
-    const total = endIdx - startIdx + 1;
-    let stepIndex = 0;
-
-    const labelForWeek = (i) =>
-      (startSel.options[i] && startSel.options[i].textContent.trim()) || `Tuần #${i}`;
-
-    function updateProgress() {
-      setWeekRangeStatus(`Đang đồng bộ tuần… (${stepIndex} / ${total})`, true);
-    }
-
-    function finish() {
+      if (r.weekRangeLastSummary) {
+        if (r.weekRangeLastSummary.toastText) {
+          showToast(r.weekRangeLastSummary.toastText, 4200);
+        }
+        if (r.weekRangeLastSummary.statusText) {
+          setWeekRangeStatus(r.weekRangeLastSummary.statusText, true);
+        }
+        chrome.storage.local.remove(["weekRangeLastSummary"]);
+      }
       weekRangeSyncInProgress = false;
       setWeekRangeControlsDisabled(false);
-      const { uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected);
-      localStorage.setItem("classSchedule", JSON.stringify(merged));
-      try {
-        window.renderClassSchedule && window.renderClassSchedule(merged);
-      } catch (e) { /* no-op */ }
-      try {
-        document.getElementById("scheduleTabBtn")?.click();
-      } catch (e) { /* no-op */ }
-      const failMsg =
-        failedWeeks.length > 0
-          ? ` • Tuần lỗi: ${failedWeeks.map((f) => f.label).join("; ")}`
-          : "";
-      showToast(`Đồng bộ xong ${total - failedWeeks.length}/${total} tuần. Mới: ${uniqueNewEvents.length} • Tổng: ${merged.length}${failMsg}`, 4200);
-      setWeekRangeStatus(
-        `Xong: ${total - failedWeeks.length}/${total} tuần. Tiết mới: ${uniqueNewEvents.length}.${failedWeeks.length ? " Có tuần lỗi (xem toast)." : ""}`,
-        true
-      );
-    }
-
-    function step() {
-      if (current > endIdx) {
-        finish();
-        return;
-      }
-      const idx = current;
-      const cancelWait = armWaitForTabComplete(tabId, 28000, (loadOk) => {
-        if (!loadOk) {
-          failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "timeout" });
-          stepIndex += 1;
-          current += 1;
-          updateProgress();
-          step();
-          return;
-        }
-        extractWeeklyScheduleFromTab(tabId, (err, response) => {
-          if (err || !response || !response.success) {
-            if (response && response.loginRequired) {
-              failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "login" });
-              weekRangeSyncInProgress = false;
-              setWeekRangeControlsDisabled(false);
-              setWeekRangeStatus("", false);
-              chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Default.aspx", active: true });
-              alert("Phiên đăng nhập hết hạn. Đăng nhập lại FAP rồi thử sync khoảng.");
-              return;
-            }
-            failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err || "extract" });
-          } else {
-            collected = collected.concat(response.schedule || []);
-          }
-          stepIndex += 1;
-          current += 1;
-          updateProgress();
-          step();
-        });
-      });
-
-      executeFapWeekIndexMain(tabId, idx, (err, result) => {
-        if (err) {
-          cancelWait();
-          failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err });
-          stepIndex += 1;
-          current += 1;
-          updateProgress();
-          step();
-          return;
-        }
-        if (result.skippedPostback) {
-          cancelWait();
-          extractWeeklyScheduleFromTab(tabId, (e2, response) => {
-            if (e2 || !response || !response.success) {
-              failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: e2 || "extract" });
-            } else {
-              collected = collected.concat(response.schedule || []);
-            }
-            stepIndex += 1;
-            current += 1;
-            updateProgress();
-            step();
-          });
-          return;
-        }
-        // postback in flight; waitForTabComplete will run extract
-      });
-    }
-
-    step();
-  });
+    });
+  }, 500);
 }
 
 function handleSyncClassSchedule() {
@@ -1060,7 +951,7 @@ function handleSyncClassSchedule() {
         
         const { uniqueNewEvents, merged: mergedSchedule } = mergeNewClassEventsInto(allSchedule, newEvents);
         allSchedule = mergedSchedule;
-        localStorage.setItem("classSchedule", JSON.stringify(allSchedule));
+        persistClassSchedule(JSON.stringify(allSchedule));
         // Re-render UI for the schedule tab
         window.renderClassSchedule && window.renderClassSchedule(allSchedule);
         // Chuyển sang tab Lịch học và hiện toast thay vì alert
@@ -1239,6 +1130,7 @@ function handleClearClassSchedule() {
   }
   try {
     localStorage.removeItem("classSchedule");
+    chrome.storage.local.remove(["classSchedule"]);
     // Re-render empty state immediately
     try {
       window.renderClassSchedule && window.renderClassSchedule([]);
@@ -1311,7 +1203,7 @@ function tryAutoRefreshAttendance() {
           });
 
           if (updated > 0) {
-            localStorage.setItem('classSchedule', JSON.stringify(merged));
+            persistClassSchedule(JSON.stringify(merged));
             try { window.renderClassSchedule && window.renderClassSchedule(merged); } catch (_) {}
             // silent update – no toast
           }

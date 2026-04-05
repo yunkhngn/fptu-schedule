@@ -5,8 +5,12 @@
   "version": "3.0.0",
   "permissions": [
     "scripting",
-    "tabs"
+    "tabs",
+    "storage"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": [
     "https://fap.fpt.edu.vn/*"
   ],
