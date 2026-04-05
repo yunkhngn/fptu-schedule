@@ -773,10 +773,10 @@ html, body {
   text-align: center;
 }
 
-/* ---- Multi-week class schedule sync ---- */
+/* ---- Multi-week class schedule sync (compact: collapsible + toolbar) ---- */
 .week-range-block {
   width: 100%;
-  padding: 10px 0 4px;
+  padding: 6px 0 2px;
   border-top: 1px dashed var(--border);
   box-sizing: border-box;
 }
@@ -785,19 +785,45 @@ html, body {
   display: none !important;
 }
 
-.week-range-header {
+.week-range-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
-}
-
-.week-range-title {
+  padding: 2px 0 4px;
+  margin: 0;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
   font-size: 12px;
   font-weight: 650;
   color: var(--text);
   letter-spacing: -0.01em;
+}
+
+.week-range-summary::-webkit-details-marker {
+  display: none;
+}
+
+.week-range-summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 5px;
+  border-color: transparent transparent transparent var(--text-muted);
+  flex-shrink: 0;
+  transform: rotate(0deg);
+  transition: transform 0.15s ease;
+}
+
+.week-range-block[open] > .week-range-summary::before {
+  transform: rotate(90deg);
+}
+
+.week-range-summary__title {
+  flex: 1;
+  min-width: 0;
 }
 
 .week-range-link {
@@ -806,61 +832,72 @@ html, body {
   color: var(--accent);
   text-decoration: none;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .week-range-link:hover {
   text-decoration: underline;
 }
 
+.week-range-body {
+  padding: 0 0 2px 13px;
+}
+
 .week-range-hint {
-  margin: 0 0 8px;
-  font-size: 11px;
-  line-height: 1.35;
+  margin: 0 0 6px;
+  font-size: 10px;
+  line-height: 1.3;
   color: var(--text-muted);
 }
 
-.week-range-row {
+.week-range-toolbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  align-items: flex-end;
+  gap: 6px 8px;
 }
 
-.week-range-selects {
-  justify-content: flex-start;
-}
-
-.week-range-label {
+.week-range-field {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+}
+
+.week-range-micro {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .week-range-select {
-  min-width: 140px;
-  max-width: 220px;
-  padding: 6px 8px;
-  font-size: 12px;
+  min-width: 0;
+  width: 100%;
+  max-width: 200px;
+  padding: 4px 6px;
+  font-size: 11px;
+  line-height: 1.2;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   background: var(--bg-elevated);
   color: var(--text);
 }
 
 .week-range-btn {
-  padding: 7px 12px;
-  font-size: 12px;
+  padding: 5px 10px;
+  font-size: 11px;
   font-weight: 600;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   border: 1px solid var(--border-strong);
   background: var(--bg-subtle);
   color: var(--text);
   cursor: pointer;
   transition: background 0.15s ease;
+  white-space: nowrap;
+  align-self: flex-end;
 }
 
 .week-range-btn:hover:not(:disabled) {
@@ -883,9 +920,9 @@ html, body {
 }
 
 .week-range-status {
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.35;
   color: var(--text-muted);
-  margin: 0;
-  padding: 4px 0 0;
+  margin: 4px 0 0;
+  padding: 0;
 }

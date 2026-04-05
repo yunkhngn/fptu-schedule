@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chrome.runtime.lastError) return;
         if (r.weekRangeSyncRunning) {
           weekRangeSyncInProgress = true;
+          const wrb = document.getElementById("scheduleWeekRangeBlock");
+          if (wrb && wrb.tagName === "DETAILS") wrb.open = true;
           setWeekRangeControlsDisabled(true);
           setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
           pollWeekRangeSyncUntilIdle();
@@ -837,7 +839,7 @@ function handleLoadWeekScheduleOptions() {
           return;
         }
         fillWeekRangeSelectOptions(res.weeks);
-        setWeekRangeStatus(`Đã tải ${res.weeks.length} tuần. Chọn khoảng rồi nhấn Đồng bộ khoảng.`, true);
+        setWeekRangeStatus(`Đã tải ${res.weeks.length} tuần. Chọn khoảng rồi nhấn Đồng bộ.`, true);
       });
     });
   });
@@ -848,7 +850,7 @@ function handleSyncClassScheduleWeekRange() {
   const startSel = document.getElementById("weekRangeStart");
   const endSel = document.getElementById("weekRangeEnd");
   if (!startSel || !endSel || startSel.disabled) {
-    alert("Nhấn «Tải danh sách tuần» trước khi đồng bộ khoảng.");
+    alert("Nhấn «Tải tuần» trước khi đồng bộ khoảng.");
     return;
   }
   let startIdx = parseInt(startSel.value, 10);
@@ -878,6 +880,8 @@ function handleSyncClassScheduleWeekRange() {
 
     const tabId = tab.id;
     const total = endIdx - startIdx + 1;
+    const wrb = document.getElementById("scheduleWeekRangeBlock");
+    if (wrb && wrb.tagName === "DETAILS") wrb.open = true;
     weekRangeSyncInProgress = true;
     setWeekRangeControlsDisabled(true);
     setWeekRangeStatus(
