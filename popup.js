@@ -516,13 +516,13 @@ function renderClassSchedule(schedule) {
     const card = document.createElement("div");
     card.className = "class-card";
 
-    const header = document.createElement("div");
-    header.className = "class-header";
+    const head = document.createElement("div");
+    head.className = "class-card__head";
 
-    const title = document.createElement("div");
-    title.className = "class-title";
-    title.textContent = ev.title || "Môn học";
-    // Attendance status chip next to course code
+    const code = document.createElement("span");
+    code.className = "class-code";
+    code.textContent = ev.title || "Môn học";
+
     const attendanceChip = document.createElement("span");
     attendanceChip.className = "chip attendance";
     const dotAtt = document.createElement("span");
@@ -535,7 +535,9 @@ function renderClassSchedule(schedule) {
     else if (rawStatus.includes("attended")) { statusClass = "attended"; statusLabel = "Attended"; }
     attendanceChip.classList.add(statusClass);
     attendanceChip.appendChild(document.createTextNode(" " + statusLabel));
-    title.appendChild(attendanceChip);
+
+    head.appendChild(code);
+    head.appendChild(attendanceChip);
 
     const tags = document.createElement("div");
     tags.className = "class-tags";
@@ -640,32 +642,32 @@ function renderClassSchedule(schedule) {
       tags.appendChild(linkChip);
     }
 
-    header.appendChild(title);
-    card.appendChild(header);
+    card.appendChild(head);
     card.appendChild(tags);
 
     const meta = document.createElement("div");
     meta.className = "class-meta";
 
     const addMeta = (label, value) => {
-      const l = document.createElement("div");
-      l.className = "label";
-      const strong = document.createElement("strong");
-      strong.textContent = label + ":";
-      l.appendChild(strong);
-      const v = document.createElement("div");
-      v.textContent = value || "—";
-      meta.appendChild(l);
-      meta.appendChild(v);
+      const row = document.createElement("div");
+      row.className = "meta-row";
+      const lab = document.createElement("span");
+      lab.className = "meta-label";
+      lab.textContent = `${label}:`;
+      const val = document.createElement("span");
+      val.className = "meta-value";
+      val.textContent = value || "—";
+      row.appendChild(lab);
+      row.appendChild(val);
+      meta.appendChild(row);
     };
 
     if (ev.rawDate) {
       addMeta("Ngày", fmtDate(ev.rawDate));
-      addMeta("Giờ", `${fmtTime(ev.rawDate.startHour, ev.rawDate.startMinute)} - ${fmtTime(ev.rawDate.endHour, ev.rawDate.endMinute)}`);
+      addMeta("Giờ", `${fmtTime(ev.rawDate.startHour, ev.rawDate.startMinute)} – ${fmtTime(ev.rawDate.endHour, ev.rawDate.endMinute)}`);
     }
 
     card.appendChild(meta);
-    const divLine = document.createElement("div"); divLine.className = "meta-divider"; card.appendChild(divLine);
 
     grid.appendChild(card);
   });
@@ -1507,9 +1509,15 @@ function createExamItem(e) {
 
   const examTitle = document.createElement("div");
   examTitle.className = "exam-title";
-  examTitle.textContent = e.title + " ";
 
-  // Add tags safely
+  const codeSpan = document.createElement("span");
+  codeSpan.className = "exam-code";
+  codeSpan.textContent = e.title;
+  examTitle.appendChild(codeSpan);
+
+  const tagGroup = document.createElement("span");
+  tagGroup.className = "exam-title__tags";
+
   if (tagType) {
     const tagSpan = document.createElement("span");
     tagSpan.className = "tag";
@@ -1526,11 +1534,9 @@ function createExamItem(e) {
       tagSpan.classList.add("fe");
       tagSpan.textContent = "FE";
     }
-    examTitle.appendChild(tagSpan);
-    examTitle.appendChild(document.createTextNode(" "));
+    tagGroup.appendChild(tagSpan);
   }
 
-  // Add countdown tag safely
   const countdownSpan = document.createElement("span");
   countdownSpan.className = "tag countdown";
   if (diffDays < 0) {
@@ -1549,7 +1555,9 @@ function createExamItem(e) {
     countdownSpan.classList.add("future");
     countdownSpan.textContent = "Còn " + diffDays + " ngày";
   }
-  examTitle.appendChild(countdownSpan);
+  tagGroup.appendChild(countdownSpan);
+
+  examTitle.appendChild(tagGroup);
 
   examHeader.appendChild(examTitle);
   examCard.appendChild(examHeader);
@@ -1560,16 +1568,15 @@ function createExamItem(e) {
 
   const createDetailLine = (label, value) => {
     const line = document.createElement("div");
-    line.className = "line";
-    
-    const labelSpan = document.createElement("span");
-    labelSpan.className = "label";
-    const strong = document.createElement("strong");
-    strong.textContent = label + ":";
-    labelSpan.appendChild(strong);
-    
-    line.appendChild(labelSpan);
-    line.appendChild(document.createTextNode(" " + value));
+    line.className = "meta-row";
+    const lab = document.createElement("span");
+    lab.className = "meta-label";
+    lab.textContent = `${label}:`;
+    const val = document.createElement("span");
+    val.className = "meta-value";
+    val.textContent = value;
+    line.appendChild(lab);
+    line.appendChild(val);
     return line;
   };
 

@@ -9,9 +9,6 @@
 <body>
   <!-- SVG symbols: dùng với <use href="#icon-…"> -->
   <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true" focusable="false">
-    <symbol id="icon-calendar" viewBox="0 0 24 24">
-      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
-    </symbol>
     <symbol id="icon-book" viewBox="0 0 24 24">
       <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 3h6a4 4 0 014 4 4 4 0 004-4h6v18H2V3z"/>
       <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 7v14"/>
@@ -46,7 +43,14 @@
     <header class="popup-header">
       <div class="popup-header__brand">
         <div class="popup-header__mark" aria-hidden="true">
-          <svg class="icon icon--md"><use href="#icon-calendar"/></svg>
+          <img
+            class="popup-header__logo"
+            src="icon-128.png"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          />
         </div>
         <div class="popup-header__titles">
           <h1 class="popup-header__title">FPTU Schedule</h1>
@@ -174,6 +178,7 @@
 
     <footer class="popup-footer">
       <p class="popup-footer__line">
+        <span>I</span>
         <span class="footer-heart" aria-hidden="true">
           <svg class="icon icon--xs"><use href="#icon-heart"/></svg>
         </span>

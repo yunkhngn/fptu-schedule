@@ -93,8 +93,17 @@ html, body {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: transparent;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.popup-header__logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
 }
 
 .popup-header__titles {
@@ -199,78 +208,106 @@ html, body {
 /* ---- Exam cards ---- */
 .exam-card {
   background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  border-radius: 14px;
+  padding: 13px 14px 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 6px 16px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
 }
 
 .exam-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
+  display: block;
+  margin: 0;
 }
 
 .exam-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.45;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  width: 100%;
+}
+
+.exam-code {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.exam-title__tags {
+  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 1 1 auto;
 }
 
 .exam-detail {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
 }
 
-.exam-detail .line {
-  display: flex;
-  align-items: flex-start;
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.5;
+/* Shared meta rows (exam + class schedule) */
+.meta-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 38%) 1fr;
+  gap: 6px 12px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
-.exam-detail .line .label {
-  min-width: 92px;
-  color: var(--text);
-  margin-right: 8px;
+.meta-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.meta-value {
+  color: #0f172a;
   font-weight: 600;
+  text-align: right;
+  word-break: break-word;
 }
 
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 9px;
+  padding: 3px 9px;
   border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  border: 1px solid transparent;
   background: var(--bg-subtle);
   color: var(--text-muted);
   white-space: nowrap;
 }
 
-.tag.fe { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
-.tag.pe { color: #0e7490; border-color: #a5f3fc; background: #ecfeff; }
-.tag.secondfe { color: #c2410c; border-color: #fed7aa; background: #fff7ed; }
-.tag.secondpe { color: #6d28d9; border-color: #e9d5ff; background: #faf5ff; }
-.tag.today, .tag.urgent { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
+.tag.fe { color: #1d4ed8; background: #eff6ff; border-color: rgba(37, 99, 235, 0.2); }
+.tag.pe { color: #0f766e; background: #ecfdf5; border-color: rgba(13, 148, 136, 0.22); }
+.tag.secondfe { color: #c2410c; background: #fff7ed; border-color: rgba(234, 88, 12, 0.2); }
+.tag.secondpe { color: #6d28d9; background: #faf5ff; border-color: rgba(124, 58, 237, 0.2); }
+.tag.today, .tag.urgent { color: #b91c1c; background: #fef2f2; border-color: rgba(220, 38, 38, 0.18); }
 
 .tag.countdown {
-  background: #64748b;
+  background: #475569;
   color: #fff;
   border-color: transparent;
 }
@@ -278,8 +315,8 @@ html, body {
 .tag.countdown.past { background: #94a3b8; }
 .tag.countdown.today,
 .tag.countdown.tomorrow,
-.tag.countdown.urgent { background: #ef4444; }
-.tag.countdown.future { background: #10b981; }
+.tag.countdown.urgent { background: #e11d48; }
+.tag.countdown.future { background: #059669; }
 
 /* ---- Footer actions ---- */
 .popup-actions {
@@ -546,7 +583,7 @@ html, body {
 #scheduleTab .schedule-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 @media (min-width: 560px) {
@@ -557,28 +594,31 @@ html, body {
 
 #scheduleTab .class-card {
   background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  border-radius: 14px;
+  padding: 13px 14px 12px;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 6px 16px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+#scheduleTab .class-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-#scheduleTab .class-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-#scheduleTab .class-title {
-  font-weight: 600;
-  font-size: 14px;
+#scheduleTab .class-code {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text);
   line-height: 1.25;
-  margin: 0;
+  min-width: 0;
 }
 
 #scheduleTab .class-tags {
@@ -586,54 +626,51 @@ html, body {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 2px;
+  margin-top: 9px;
 }
 
 #scheduleTab .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
+  gap: 5px;
+  padding: 3px 9px;
   border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 600;
-  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
   background: var(--bg-subtle);
   color: var(--text-muted);
   white-space: nowrap;
-  line-height: 1;
+  line-height: 1.2;
   min-height: 22px;
 }
 
 #scheduleTab .chip .dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 999px;
   background: currentColor;
+  opacity: 0.85;
 }
 
-#scheduleTab .chip.type { color: #c2410c; border-color: #fed7aa; background: #fff7ed; }
-#scheduleTab .chip.room { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
-#scheduleTab .chip.attendance { border-color: var(--border); background: #f3f4f6; color: #374151; }
-#scheduleTab .chip.attendance.notyet { border-color: var(--border); background: #f3f4f6; color: #374151; }
-#scheduleTab .chip.attendance.attended { color: #065f46; border-color: #bbf7d0; background: #ecfdf5; }
-#scheduleTab .chip.attendance.absent { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
+#scheduleTab .chip.type { color: #c2410c; background: #fff7ed; border-color: rgba(234, 88, 12, 0.2); }
+#scheduleTab .chip.room { color: #b91c1c; background: #fef2f2; border-color: rgba(220, 38, 38, 0.18); }
+#scheduleTab .chip.attendance { background: #f1f5f9; color: #475569; border-color: rgba(100, 116, 139, 0.2); }
+#scheduleTab .chip.attendance.notyet { background: #f1f5f9; color: #475569; border-color: rgba(100, 116, 139, 0.2); }
+#scheduleTab .chip.attendance.attended { color: #047857; background: #ecfdf5; border-color: rgba(5, 150, 105, 0.22); }
+#scheduleTab .chip.attendance.absent { color: #b91c1c; background: #fef2f2; border-color: rgba(220, 38, 38, 0.18); }
 
 #scheduleTab .class-meta {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  row-gap: 6px;
-  column-gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
   font-size: 12px;
-  color: var(--text-muted);
-}
-
-#scheduleTab .class-meta .label { color: var(--text); }
-
-#scheduleTab .meta-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
 }
 
 #scheduleTab .schedule-empty {
@@ -688,12 +725,6 @@ html, body {
 
 #scheduleTab .chip.link:hover {
   background: #dbeafe;
-}
-
-#scheduleTab .class-title .chip {
-  margin-left: 8px;
-  vertical-align: middle;
-  margin-top: -2px;
 }
 
 /* Sync banners */
