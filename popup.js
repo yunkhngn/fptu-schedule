@@ -16,27 +16,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const examActionsRow = document.getElementById("examActions");
   const scheduleActionsRow = document.getElementById("scheduleActions");
   const examListSection = document.getElementById("examList");
-  if (examActionsRow) examActionsRow.style.display = "flex";
-  if (scheduleActionsRow) scheduleActionsRow.style.display = "none";
+  if (examActionsRow) examActionsRow.hidden = false;
+  if (scheduleActionsRow) scheduleActionsRow.hidden = true;
 
   if (upcomingContent && completedContent) {
     const activateTab = (name) => {
-      // Remove active from all tab buttons
       [upcomingTab, completedTab, scheduleTabBtn].forEach(btn => btn && btn.classList.remove("active"));
-      // Hide all contents
       [upcomingContent, completedContent, scheduleContent].forEach(c => c && c.classList.remove("active"));
 
-      // Toggle action rows based on tab
+      const examAct = document.getElementById("examActions");
+      const schedAct = document.getElementById("scheduleActions");
       if (name === "schedule") {
-        document.getElementById("examActions").style.display = "none";
-        document.getElementById("scheduleActions").style.display = "flex";
+        if (examAct) examAct.hidden = true;
+        if (schedAct) schedAct.hidden = false;
       } else {
-        document.getElementById("examActions").style.display = "flex";
-        document.getElementById("scheduleActions").style.display = "none";
+        if (examAct) examAct.hidden = false;
+        if (schedAct) schedAct.hidden = true;
       }
 
       if (name === "schedule") {
-        if (scheduleTabBtn) scheduleTabBtn.classList.add("active");
+        if (scheduleTabBtn) {
+          scheduleTabBtn.classList.add("active");
+          scheduleTabBtn.setAttribute("aria-selected", "true");
+        }
+        if (upcomingTab) upcomingTab.setAttribute("aria-selected", "false");
         if (scheduleContent) scheduleContent.classList.add("active");
         if (examListSection) examListSection.classList.remove("exams-two-col");
         const syncLoad = document.getElementById("examSyncLoading");
@@ -44,8 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (syncLoad) syncLoad.hidden = true;
         if (syncErr) syncErr.hidden = true;
       } else {
-        // Unified Exams view: show both columns
-        if (upcomingTab) upcomingTab.classList.add("active");
+        if (upcomingTab) {
+          upcomingTab.classList.add("active");
+          upcomingTab.setAttribute("aria-selected", "true");
+        }
+        if (scheduleTabBtn) scheduleTabBtn.setAttribute("aria-selected", "false");
         upcomingContent.classList.add("active");
         completedContent.classList.add("active");
         if (examListSection) examListSection.classList.add("exams-two-col");
@@ -384,7 +390,11 @@ function renderClassSchedule(schedule) {
 
   // Update tab label with count
   const btn = document.getElementById("scheduleTabBtn");
-  if (btn) btn.textContent = `📚 Lịch học (${Array.isArray(schedule) ? schedule.length : 0})`;
+  const tabText = btn?.querySelector(".tab-btn__text");
+  if (tabText) {
+    const n = Array.isArray(schedule) ? schedule.length : 0;
+    tabText.textContent = n ? `Lịch học (${n})` : "Lịch học";
+  }
 
   // Normalize and sort schedule by date/time ascending
   const toMillis = (ev) => {
@@ -473,7 +483,7 @@ function renderClassSchedule(schedule) {
       const dotLink = document.createElement("span");
       dotLink.className = "dot";
       linkChip.appendChild(dotLink);
-      linkChip.appendChild(document.createTextNode(" Link"));
+      linkChip.appendChild(document.createTextNode(" Chi tiết"));
 
       linkChip.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -1100,21 +1110,22 @@ function renderExamList(events) {
     });
   }
 
-  // Update tab labels with counts
   const upcomingTabBtn = document.getElementById("upcomingTab");
   const completedTabBtn = document.getElementById("completedTab");
-  if (completedTabBtn) completedTabBtn.textContent = `✅ Đã thi (${completedExams.length})`;
-  if (upcomingTabBtn) {
-    // If single Exams tab, show plain title; counts are displayed in column headings below
-    const firstTabId = document.querySelector('.tab-navigation .tab-btn')?.id;
-    if (!completedTabBtn && firstTabId !== 'completedTab') {
-      // Single Exams tab – show plain title; counts are displayed in column headings below
-      upcomingTabBtn.textContent = `🗓️ Kỳ thi`;
+  const completedLabel = completedTabBtn?.querySelector(".tab-btn__text");
+  if (completedLabel) {
+    completedLabel.textContent = `Đã thi (${completedExams.length})`;
+  }
+  const upcomingLabel = upcomingTabBtn?.querySelector(".tab-btn__text");
+  if (upcomingLabel) {
+    const firstTabId = document.querySelector(".tab-navigation .tab-btn")?.id;
+    if (!completedTabBtn && firstTabId !== "completedTab") {
+      upcomingLabel.textContent = "Kỳ thi";
     } else {
-      upcomingTabBtn.textContent = `📅 Chưa thi (${upcomingExams.length})`;
+      upcomingLabel.textContent = `Chưa thi (${upcomingExams.length})`;
     }
   }
-  
+
   // Apply filters after rendering
   setTimeout(() => {
     if (window.applyFilters) {
@@ -1245,18 +1256,7 @@ function showToast(message, duration = 1800) {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'popupToast';
-    toast.style.position = 'fixed';
-    toast.style.top = '12px';
-    toast.style.right = '12px';
-    toast.style.background = '#111827';
-    toast.style.color = '#fff';
-    toast.style.padding = '10px 14px';
-    toast.style.borderRadius = '8px';
-    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-    toast.style.fontSize = '13px';
-    toast.style.zIndex = '9999';
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity .2s ease';
+    toast.className = 'popup-toast';
     document.body.appendChild(toast);
   }
   toast.textContent = message;
