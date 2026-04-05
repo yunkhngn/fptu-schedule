@@ -212,7 +212,9 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, onComplete) {
 }
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.type !== "START_WEEK_RANGE_SYNC") return;
+  if (!msg || msg.type !== "START_WEEK_RANGE_SYNC") {
+    return false;
+  }
 
   const { tabId, startIdx, endIdx, weekLabels } = msg;
   if (tabId == null || startIdx == null || endIdx == null) {

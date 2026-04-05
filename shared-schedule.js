@@ -28,6 +28,8 @@ function mergeNewClassEventsInto(allSchedule, newEvents) {
 
 function mirrorClassScheduleToStorage(jsonString) {
   try {
-    chrome.storage.local.set({ classSchedule: jsonString });
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ classSchedule: jsonString });
+    }
   } catch (_) {}
 }

@@ -1,3 +1,41 @@
+function hasChromeStorageLocal() {
+  return typeof chrome !== "undefined" && !!chrome.storage && !!chrome.storage.local;
+}
+
+function classScheduleDedupeKey(event) {
+  if (event.rawDate) {
+    return `${event.title}-${event.rawDate.day}/${event.rawDate.month}-${event.rawDate.startHour}:${event.rawDate.startMinute}`;
+  }
+  if (event.start) {
+    const start = typeof event.start === "string" ? new Date(event.start) : event.start;
+    if (!isNaN(start.getTime())) {
+      return `${event.title}-${start.getDate()}/${start.getMonth() + 1}-${start.getHours()}:${start.getMinutes()}`;
+    }
+  }
+  return null;
+}
+
+function mergeNewClassEventsInto(allSchedule, newEvents) {
+  const existingKeys = new Set();
+  allSchedule.forEach((event) => {
+    const k = classScheduleDedupeKey(event);
+    if (k) existingKeys.add(k);
+  });
+  const uniqueNewEvents = newEvents.filter((event) => {
+    const k = classScheduleDedupeKey(event);
+    if (k) return !existingKeys.has(k);
+    return true;
+  });
+  return { uniqueNewEvents, merged: allSchedule.concat(uniqueNewEvents) };
+}
+
+function mirrorClassScheduleToStorage(jsonString) {
+  if (!hasChromeStorageLocal()) return;
+  try {
+    chrome.storage.local.set({ classSchedule: jsonString });
+  } catch (_) {}
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "WEEK_RANGE_SYNC_DONE") {
@@ -11,15 +49,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
-    if (chrome.runtime.lastError) return;
-    if (r.weekRangeSyncRunning) {
-      weekRangeSyncInProgress = true;
-      setWeekRangeControlsDisabled(true);
-      setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
-      pollWeekRangeSyncUntilIdle();
-    }
-  });
+  if (hasChromeStorageLocal()) {
+    chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
+      if (chrome.runtime.lastError) return;
+      if (r.weekRangeSyncRunning) {
+        weekRangeSyncInProgress = true;
+        setWeekRangeControlsDisabled(true);
+        setWeekRangeStatus("Đồng bộ nhiều tuần vẫn đang chạy…", true);
+        pollWeekRangeSyncUntilIdle();
+      }
+    });
+  }
 
   const syncButton = document.getElementById("syncButton");
   const exportBtn = document.getElementById("exportBtn");
@@ -91,7 +131,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Load filter preferences
-  const filterPrefs = JSON.parse(localStorage.getItem("examFilter") || '{"FE":true,"PE":true,"2NDFE":true,"2NDPE":true}');
+  let filterPrefs = { FE: true, PE: true, "2NDFE": true, "2NDPE": true };
+  try {
+    filterPrefs = JSON.parse(
+      localStorage.getItem("examFilter") || '{"FE":true,"PE":true,"2NDFE":true,"2NDPE":true}'
+    );
+  } catch (_) {
+    /* keep defaults */
+  }
   
   // Set initial filter states
   if (document.getElementById("filterFE")) {
@@ -404,17 +451,6 @@ document.addEventListener("DOMContentLoaded", () => {
       sc.appendChild(empty);
     }
   }
-  // Nếu service worker vừa merge lịch (popup đã đóng lúc sync), đồng bộ từ chrome.storage
-  chrome.storage.local.get(["classSchedule"], (r) => {
-    if (chrome.runtime.lastError || !r.classSchedule) return;
-    if (r.classSchedule === localStorage.getItem("classSchedule")) return;
-    try {
-      persistClassSchedule(r.classSchedule);
-      renderClassSchedule(JSON.parse(r.classSchedule));
-    } catch (e) {
-      console.error("Merge class schedule from storage failed:", e);
-    }
-  });
   // Try to auto-refresh attendance status from the current FAP page (only updates matching items)
   tryAutoRefreshAttendance();
 function renderClassSchedule(schedule) {
@@ -624,6 +660,21 @@ function renderClassSchedule(schedule) {
 }
 window.renderClassSchedule = renderClassSchedule;
 
+  // Sau khi renderClassSchedule đã gắn window; tránh race với callback storage
+  if (hasChromeStorageLocal()) {
+    chrome.storage.local.get(["classSchedule"], (r) => {
+      if (chrome.runtime.lastError || !r.classSchedule) return;
+      if (r.classSchedule === localStorage.getItem("classSchedule")) return;
+      try {
+        persistClassSchedule(r.classSchedule);
+        const parsed = JSON.parse(r.classSchedule);
+        renderClassSchedule(parsed);
+      } catch (e) {
+        console.error("Merge class schedule from storage failed:", e);
+      }
+    });
+  }
+
   // Documentation link event
   if (docsLink) {
     docsLink.addEventListener("click", (e) => {
@@ -664,9 +715,7 @@ function persistClassSchedule(jsonString) {
   try {
     localStorage.setItem("classSchedule", jsonString);
   } catch (_) {}
-  if (typeof mirrorClassScheduleToStorage === "function") {
-    mirrorClassScheduleToStorage(jsonString);
-  }
+  mirrorClassScheduleToStorage(jsonString);
 }
 
 function isScheduleOfWeekUrl(url) {
@@ -811,6 +860,13 @@ function handleSyncClassScheduleWeekRange() {
       true
     );
 
+    if (!hasChromeStorageLocal()) {
+      weekRangeSyncInProgress = false;
+      setWeekRangeControlsDisabled(false);
+      setWeekRangeStatus("", false);
+      alert("Extension thiếu quyền storage. Reload extension tại chrome://extensions.");
+      return;
+    }
     const seed = localStorage.getItem("classSchedule") || "[]";
     chrome.storage.local.set({ classSchedule: seed }, () => {
       chrome.runtime.sendMessage(
@@ -856,7 +912,17 @@ function applyWeekRangeSyncDoneFromBackground(msg) {
 }
 
 function pollWeekRangeSyncUntilIdle() {
+  if (!hasChromeStorageLocal()) return;
+  let ticks = 0;
   const iv = setInterval(() => {
+    ticks += 1;
+    if (ticks > 600) {
+      clearInterval(iv);
+      weekRangeSyncInProgress = false;
+      setWeekRangeControlsDisabled(false);
+      setWeekRangeStatus("", false);
+      return;
+    }
     chrome.storage.local.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary"], (r) => {
       if (chrome.runtime.lastError) return;
       if (r.weekRangeSyncRunning) return;
@@ -1130,7 +1196,9 @@ function handleClearClassSchedule() {
   }
   try {
     localStorage.removeItem("classSchedule");
-    chrome.storage.local.remove(["classSchedule"]);
+    if (hasChromeStorageLocal()) {
+      chrome.storage.local.remove(["classSchedule"]);
+    }
     // Re-render empty state immediately
     try {
       window.renderClassSchedule && window.renderClassSchedule([]);
