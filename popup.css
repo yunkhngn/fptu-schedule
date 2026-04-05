@@ -263,6 +263,76 @@ html, body {
   border: 1px solid #e2e8f0;
 }
 
+/* Exam study splash (Quizlet-inspired) */
+.exam-splash {
+  margin-top: 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e3a5f 0%, #4257b2 48%, #5c6bc0 100%);
+  box-shadow: 0 4px 14px rgba(30, 58, 95, 0.35);
+}
+
+.exam-splash__inner {
+  padding: 12px 14px 14px;
+  color: #f8fafc;
+}
+
+.exam-splash__kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-bottom: 4px;
+}
+
+.exam-splash__headline {
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+
+.exam-splash__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.exam-splash__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  color: #1e3a5f;
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.exam-splash__btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  color: #0f172a;
+}
+
+.exam-splash__btn--quizlet {
+  background: #fffbeb;
+  color: #854d0e;
+}
+
+.exam-splash__empty {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
 /* Shared meta rows (exam + class schedule) */
 .meta-row {
   display: grid;

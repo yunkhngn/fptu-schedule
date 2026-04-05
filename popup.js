@@ -1586,8 +1586,57 @@ function createExamItem(e) {
   examDetail.appendChild(createDetailLine("Thời gian", formatTime(start) + " - " + formatTime(end)));
 
   examCard.appendChild(examDetail);
+
+  const splash = document.createElement("div");
+  splash.className = "exam-splash";
+  splash.setAttribute("role", "region");
+  splash.setAttribute("aria-label", "Gợi ý ôn tập");
+
+  const splashInner = document.createElement("div");
+  splashInner.className = "exam-splash__inner";
+
+  const splashTitle = document.createElement("div");
+  splashTitle.className = "exam-splash__kicker";
+  splashTitle.textContent = "Ôn tập";
+
+  const splashHeadline = document.createElement("div");
+  splashHeadline.className = "exam-splash__headline";
+
+  const actions = document.createElement("div");
+  actions.className = "exam-splash__actions";
+
+  splashInner.appendChild(splashTitle);
+  splashInner.appendChild(splashHeadline);
+  splashInner.appendChild(actions);
+  splash.appendChild(splashInner);
+  examCard.appendChild(splash);
+
+  if (window.FPTUStudySuggestions && typeof window.FPTUStudySuggestions.getStudySuggestions === "function") {
+    window.FPTUStudySuggestions.getStudySuggestions(e.title || "").then(({ code, items }) => {
+      splashHeadline.textContent = code ? `Gợi ý cho ${code}` : "Gợi ý ôn tập";
+      actions.replaceChildren();
+      if (!items || !items.length) {
+        const empty = document.createElement("span");
+        empty.className = "exam-splash__empty";
+        empty.textContent = "Chưa có liên kết.";
+        actions.appendChild(empty);
+        return;
+      }
+      items.forEach((it) => {
+        const a = document.createElement("a");
+        a.className = "exam-splash__btn";
+        a.href = it.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = it.label || "Mở";
+        if (it.kind === "quizlet") a.classList.add("exam-splash__btn--quizlet");
+        actions.appendChild(a);
+      });
+    });
+  }
+
   row.appendChild(examCard);
-  
+
   return row;
 }
 
