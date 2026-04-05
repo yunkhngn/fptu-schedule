@@ -886,28 +886,34 @@ function handleSyncClassScheduleWeekRange() {
     );
 
     const seedJson = localStorage.getItem("classSchedule") || "[]";
-    chrome.runtime.sendMessage(
-      {
-        type: "START_WEEK_RANGE_SYNC",
-        tabId,
-        startIdx,
-        endIdx,
-        weekLabels,
-        seedJson
-      },
-      (resp) => {
-        if (chrome.runtime.lastError || !resp || !resp.ok) {
+    const payload = {
+      type: "START_WEEK_RANGE_SYNC",
+      tabId,
+      startIdx,
+      endIdx,
+      weekLabels,
+      seedJson
+    };
+    function sendStartWeekRangeSync(attempt) {
+      chrome.runtime.sendMessage(payload, (resp) => {
+        const err = chrome.runtime.lastError;
+        if (err && attempt < 2) {
+          setTimeout(() => sendStartWeekRangeSync(attempt + 1), 250);
+          return;
+        }
+        if (err || !resp || !resp.ok) {
           weekRangeSyncInProgress = false;
           setWeekRangeControlsDisabled(false);
           setWeekRangeStatus("", false);
           alert(
             "Không khởi chạy đồng bộ nền: " +
-              (chrome.runtime.lastError && chrome.runtime.lastError.message) +
-              "\nMở chrome://extensions → Service worker → Inspect để xem lỗi."
+              (err && err.message ? err.message : "unknown") +
+              "\nMở chrome://extensions → Service worker → Inspect để xem lỗi (nếu SW không load, thường do lỗi JS khi khởi động)."
           );
         }
-      }
-    );
+      });
+    }
+    sendStartWeekRangeSync(0);
   });
 }
 
