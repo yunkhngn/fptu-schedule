@@ -1,496 +1,453 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPTU Examination - Tiện ích lịch thi FPT University</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="./icon.png">
-    <meta name="description" content="Tiện ích Chrome giúp sinh viên FPT University xuất lịch thi từ hệ thống FAP ra file .ics với xử lý định dạng thời gian thông minh">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FPTU Schedule — Hướng dẫn &amp; tải extension</title>
+  <meta name="description" content="FPTU Schedule: tiện ích Chrome đồng bộ lịch học và lịch thi từ FAP, xuất .ics, đồng bộ nhiều tuần, giao diện hiện đại." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="./icon.png" />
 </head>
 <body>
-    <header class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <div class="hero-icon">📅</div>
-                    <h1>FPTU Examination</h1>
-                    <p class="hero-subtitle">Tiện ích Chrome hiện đại cho sinh viên FPT University</p>
-                    <p class="hero-description">Trích xuất và quản lý lịch thi từ hệ thống FAP với xử lý định dạng thời gian thông minh</p>
-                    <div class="hero-buttons">
-                        <a href="#download" class="btn-primary">Cài đặt</a>
-                        <a href="#guide" class="btn-secondary">Hướng dẫn sử dụng</a>
-                    </div>
-                </div>
-                <div class="hero-preview">
-                    <div class="extension-mockup">
-                        <div class="mockup-header">
-                            <h3>📅 FPTU Examination</h3>
-                            <div class="mockup-controls">
-                                <button>Đồng bộ</button>
-                                <button>Lọc</button>
-                            </div>
-                        </div>
-                        <div class="mockup-tabs">
-                            <div class="tab active">📅 Chưa thi (9)</div>
-                            <div class="tab">✅ Đã thi (7)</div>
-                        </div>
-                        <div class="mockup-content">
-                            <div class="exam-card">
-                                <div class="exam-title">PRJ301 <span class="tag secondfe">2NDFE</span> <span class="tag urgent">Còn 2 ngày</span></div>
-                                <div class="exam-info">
-                                    <div><strong>Phương thức:</strong> Multiple_choices on EOS</div>
-                                    <div><strong>Phòng:</strong> BE-205</div>
-                                    <div><strong>Ngày thi:</strong> 6/8/2025</div>
-                                    <div><strong>Thời gian:</strong> 12:50 - 14:20</div>
-                                </div>
-                            </div>
-                            <div class="exam-card">
-                                <div class="exam-title">JPD123 <span class="tag secondfe">2NDFE</span> <span class="tag urgent">Còn 3 ngày</span></div>
-                                <div class="exam-info">
-                                    <div><strong>Phương thức:</strong> Speaking</div>
-                                    <div><strong>Phòng:</strong> AL-124</div>
-                                    <div><strong>Ngày thi:</strong> 7/8/2025</div>
-                                    <div><strong>Thời gian:</strong> 08:00 - 10:00</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mockup-actions">
-                            <button class="export-btn">📅 Tải xuống lịch .ics</button>
-                            <button class="docs-btn">📖 Hướng dẫn</button>
-                        </div>
-                        <div class="mockup-footer">
-                            <p>💛 FPTU • Phát triển bởi @yunkhngn • GitHub</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+  <header class="site-top">
+    <div class="site-top__inner">
+      <a class="site-brand" href="#top">
+        <img class="site-brand__logo" src="icon-128.png" alt="" width="36" height="36" />
+        <span class="site-brand__text">
+          <span class="site-brand__name">FPTU Schedule</span>
+          <span class="site-brand__tag">Lịch học &amp; kỳ thi từ FAP</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Điều hướng chính">
+        <a href="#features">Tính năng</a>
+        <a href="#guide">Hướng dẫn</a>
+        <a href="#download">Tải về</a>
+        <a class="site-nav__cta" href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm" target="_blank" rel="noopener">Chrome Web Store</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="features">
-        <div class="container">
-            <h2>Tính năng nổi bật</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Quản lý thông minh</h3>
-                    <p>Phân chia rõ ràng kỳ thi sắp tới và đã hoàn thành với hệ thống tab hiện đại và bộ đếm số lượng</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⏰</div>
-                    <h3>Đếm ngược thời gian</h3>
-                    <p>Hiển thị số ngày còn lại với mã màu trực quan: hôm nay (cam), ngày mai (vàng), khẩn cấp (đỏ), tương lai (xanh)</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🏷️</div>
-                    <h3>Phân loại tự động</h3>
-                    <p>Tự động nhận diện loại kỳ thi: FE, PE, 2NDFE, 2NDPE với màu sắc riêng biệt từ dữ liệu FAP</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Bộ lọc thông minh</h3>
-                    <p>Lọc theo loại kỳ thi, lưu tùy chọn tự động với giao diện modal hiện đại và các nút tiện ích</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🕐</div>
-                    <h3>Xử lý định dạng thời gian linh hoạt</h3>
-                    <p>Tự động nhận diện và xử lý nhiều định dạng: 10h00, 10:00, 10.00, 10 từ các phiên bản FAP khác nhau</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📤</div>
-                    <h3>Xuất lịch thông minh</h3>
-                    <p>Chỉ xuất kỳ thi sắp tới có phòng xác định, hoạt động từ bất kỳ website nào sau khi đồng bộ</p>
-                </div>
-            </div>
+  <main id="top">
+    <section class="hero">
+      <div class="container hero__grid">
+        <div>
+          <p class="hero__kicker">Phiên bản <strong>3.0.9</strong> · Giao diện mới</p>
+          <h1>Lịch học &amp; kỳ thi FPTU trong một tiện ích</h1>
+          <p class="hero__lead">
+            Đồng bộ từ FAP, xem trong popup hiện đại, xuất <strong>.ics</strong> cho Apple Calendar, Google Calendar hay Outlook — kèm đồng bộ nhiều tuần cho lịch học.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#download">Cài đặt extension</a>
+            <a class="btn btn--secondary" href="#guide">Xem hướng dẫn</a>
+          </div>
+          <ul class="hero__bullets">
+            <li>Hai tab chính: <strong>Lịch học</strong> và <strong>Kỳ thi</strong></li>
+            <li>Nút <strong>Tải lịch</strong> xuất file <code>lich-hoc.ics</code> hoặc <code>lich-thi.ics</code></li>
+            <li>Khối <strong>Đồng bộ nhiều tuần</strong> (có thể thu gọn) trên tab lịch học</li>
+          </ul>
         </div>
+        <div class="app-mockup" aria-hidden="true">
+          <div class="app-mockup__head">
+            <img src="icon-128.png" alt="" width="40" height="40" />
+            <div class="app-mockup__titles">
+              <h2>FPTU Schedule</h2>
+              <p>Đồng bộ lịch học &amp; lịch thi từ FAP</p>
+            </div>
+          </div>
+          <div class="app-mockup__tabs">
+            <span class="app-mockup__tab">Lịch học</span>
+            <span class="app-mockup__tab app-mockup__tab--active">Kỳ thi</span>
+          </div>
+          <div class="app-mockup__scroll">
+            <div class="mock-card">
+              <div class="mock-card__head">
+                <span class="mock-card__code">FER202</span>
+                <div class="mock-card__tags">
+                  <span class="mock-pill mock-pill--pe">PE</span>
+                  <span class="mock-pill mock-pill--count">Còn 5 ngày</span>
+                </div>
+              </div>
+              <div class="mock-card__meta">
+                <div class="mock-meta-row">
+                  <span>Phương thức:</span>
+                  <span>Practical_Exam (PEA)</span>
+                </div>
+                <div class="mock-meta-row">
+                  <span>Phòng:</span>
+                  <span>BE-308</span>
+                </div>
+                <div class="mock-meta-row">
+                  <span>Ngày thi:</span>
+                  <span>9/11/2025</span>
+                </div>
+                <div class="mock-meta-row">
+                  <span>Thời gian:</span>
+                  <span>09:40 – 11:40</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-mockup__actions">
+            <span class="mock-action">Đồng bộ lịch thi</span>
+            <span class="mock-action mock-action--primary">Tải lịch</span>
+            <span class="mock-action mock-action--ghost">Lọc</span>
+          </div>
+          <div class="app-mockup__range">
+            <span>Đồng bộ nhiều tuần</span>
+            <span>Mở rộng trên tab Lịch học</span>
+          </div>
+          <div class="app-mockup__foot">FPTU · GitHub · Hướng dẫn</div>
+        </div>
+      </div>
     </section>
 
-    <section class="time-formats">
-        <div class="container">
-            <h2>🕐 Xử lý định dạng thời gian thông minh</h2>
-            <p class="section-description">Extension tự động nhận diện và xử lý nhiều định dạng thời gian khác nhau từ hệ thống FAP:</p>
-            
-            <div class="formats-grid">
-                <div class="format-card">
-                    <div class="format-icon">🇻🇳</div>
-                    <h3>Định dạng Việt Nam</h3>
-                    <div class="format-examples">
-                        <code>10h00 - 12h00</code>
-                        <code>14h30 - 16h00</code>
-                        <code>8H00 - 10H30</code>
-                    </div>
-                    <p>Định dạng truyền thống của Việt Nam với ký tự "h" hoặc "H"</p>
-                </div>
-                
-                <div class="format-card">
-                    <div class="format-icon">🌍</div>
-                    <h3>Định dạng quốc tế</h3>
-                    <div class="format-examples">
-                        <code>10:00 - 12:00</code>
-                        <code>14:30 - 16:00</code>
-                        <code>8:00 - 10:30</code>
-                    </div>
-                    <p>Định dạng chuẩn quốc tế với dấu hai chấm ":"</p>
-                </div>
-                
-                <div class="format-card">
-                    <div class="format-icon">🔢</div>
-                    <h3>Định dạng chỉ giờ</h3>
-                    <div class="format-examples">
-                        <code>10 - 12</code>
-                        <code>14 - 16</code>
-                        <code>8 - 10</code>
-                    </div>
-                    <p>Chỉ hiển thị giờ, tự động thêm ":00" cho phút</p>
-                </div>
-                
-                <div class="format-card">
-                    <div class="format-icon">•</div>
-                    <h3>Định dạng dấu chấm</h3>
-                    <div class="format-examples">
-                        <code>10.00 - 12.30</code>
-                        <code>14.30 - 16.00</code>
-                        <code>8.00 - 10.30</code>
-                    </div>
-                    <p>Sử dụng dấu chấm "." để phân tách giờ và phút</p>
-                </div>
-            </div>
-            
-            <div class="format-note">
-                <h3>💡 Lưu ý quan trọng</h3>
-                <p>Extension tự động phát hiện và xử lý tất cả các định dạng trên mà không cần cấu hình. Điều này đảm bảo tính tương thích với tất cả các phiên bản hệ thống FAP và các cơ sở khác nhau của FPT University.</p>
-            </div>
+    <section id="features" class="section section--surface">
+      <div class="container">
+        <div class="section__head">
+          <h2>Tính năng theo bản mới</h2>
+          <p>Đồng bộ dữ liệu từ FAP, thẻ lịch thiết kế lại, và quy trình xuất lịch rõ ràng hơn.</p>
         </div>
+
+        <div class="preview-grid">
+          <div>
+            <p class="preview-grid__label">Tab Kỳ thi</p>
+            <div class="mock-card">
+              <div class="mock-card__head">
+                <span class="mock-card__code">PRJ301</span>
+                <div class="mock-card__tags">
+                  <span class="mock-pill mock-pill--pe" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe">FE</span>
+                  <span class="mock-pill mock-pill--count">Hôm nay</span>
+                </div>
+              </div>
+              <div class="mock-card__meta">
+                <div class="mock-meta-row"><span>Phòng:</span><span>BE-205</span></div>
+                <div class="mock-meta-row"><span>Thời gian:</span><span>12:50 – 14:20</span></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="preview-grid__label">Tab Lịch học</p>
+            <div class="mock-card">
+              <div class="mock-card__head">
+                <span class="mock-card__code">DBI202</span>
+                <span class="mock-pill mock-pill--att">Attended</span>
+              </div>
+              <div class="mock-pills-row">
+                <span class="mock-pill mock-pill--slot">Slot 1</span>
+                <span class="mock-pill mock-pill--room">DE-C305</span>
+                <span class="mock-pill mock-pill--link">Chi tiết</span>
+              </div>
+              <div class="mock-card__meta">
+                <div class="mock-meta-row"><span>Ngày:</span><span>05/02/2025</span></div>
+                <div class="mock-meta-row"><span>Giờ:</span><span>07:30 – 09:50</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-grid feature-grid--spaced">
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+            </div>
+            <h3>Hai không gian: Lịch học &amp; Kỳ thi</h3>
+            <p>Chuyển tab trên cùng để xem lịch học đã đồng bộ hoặc danh sách kỳ thi từ trang lịch thi FAP.</p>
+          </article>
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/></svg>
+            </div>
+            <h3>Đồng bộ nhiều tuần</h3>
+            <p>Trên tab Lịch học, mở mục <strong>Đồng bộ nhiều tuần</strong>, tải danh sách tuần từ FAP và đồng bộ cả khoảng trong nền (service worker).</p>
+          </article>
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </div>
+            <h3>Tải lịch (.ics)</h3>
+            <p>Nút xanh <strong>Tải lịch</strong> tạo <code>lich-hoc.ics</code> hoặc <code>lich-thi.ics</code> tùy tab đang mở.</p>
+          </article>
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <h3>Điểm danh &amp; chi tiết buổi học</h3>
+            <p>Chip trạng thái và liên kết <strong>Chi tiết</strong> trên từng buổi học; có thể cập nhật điểm danh sau khi mở trang FAP.</p>
+          </article>
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h16"/></svg>
+            </div>
+            <h3>Lọc loại kỳ thi</h3>
+            <p>Modal lọc FE, PE, 2NDFE, 2NDPE; lựa chọn được ghi nhớ cho lần mở sau.</p>
+          </article>
+          <article class="feature-tile">
+            <div class="feature-tile__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3>Định dạng giờ FAP</h3>
+            <p>Tự nhận dạng nhiều kiểu giờ từ FAP (10h00, 10:00, 10.00, …) khi xử lý lịch.</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <section id="download" class="download">
-        <div class="container">
-            <h2>Tải về và cài đặt</h2>
-            <p class="section-subtitle">Phiên bản mới nhất: <span class="version-badge">v2.1.0</span></p>
-            
-            <div class="download-options">
-                <div class="download-card featured">
-                    <div class="card-header">
-                        <div class="card-icon">🏪</div>
-                        <div class="card-badge-container">
-                            <div class="version-tag">v2.1.0</div>
-                            <div class="recommended-badge">Khuyến nghị</div>
-                        </div>
-                    </div>
-                    <h3>Chrome Web Store</h3>
-                    <p class="card-description">Cài đặt dễ dàng với một cú nhấp chuột</p>
-                    <div class="store-badge available">Đã có sẵn</div>
-                    
-                    <div class="features-list">
-                        <div class="feature-item">✓ Tự động cập nhật</div>
-                        <div class="feature-item">✓ Cài đặt an toàn</div>
-                        <div class="feature-item">✓ Đồng bộ cài đặt</div>
-                    </div>
-                    
-                    <a href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm" class="btn-primary large" target="_blank">
-                        <span class="btn-icon">🚀</span>
-                        Cài đặt từ Chrome Web Store
-                    </a>
-                </div>
-                
-                <div class="download-card">
-                    <div class="card-header">
-                        <div class="card-icon">🛠️</div>
-                        <div class="dev-badge">Dev</div>
-                    </div>
-                    <h3>Cài đặt thủ công</h3>
-                    <p class="card-description">Dành cho nhà phát triển và người dùng nâng cao</p>
-                    
-                    <div class="version-info">
-                        <span class="version-label">Phiên bản phát triển</span>
-                        <span class="version-number">v2.1.0+</span>
-                    </div>
-                    
-                    <ol class="install-steps">
-                        <li>
-                            <span class="step-icon">📦</span>
-                            <span>Tải về mã nguồn từ GitHub</span>
-                        </li>
-                        <li>
-                            <span class="step-icon">🔧</span>
-                            <span>Mở <code>chrome://extensions/</code></span>
-                        </li>
-                        <li>
-                            <span class="step-icon">⚡</span>
-                            <span>Bật "Developer mode"</span>
-                        </li>
-                        <li>
-                            <span class="step-icon">📂</span>
-                            <span>Chọn "Load unpacked" và chọn thư mục extension</span>
-                        </li>
-                    </ol>
-                    
-                    <a href="https://github.com/yunkhngn/fptu-examination" class="btn-secondary large" target="_blank">
-                        <span class="btn-icon">📥</span>
-                        Tải từ GitHub
-                    </a>
-                </div>
-            </div>
-            
-            <div class="version-highlights">
-                <h3>🎉 Mới trong v2.1.0</h3>
-                <div class="highlights-grid">
-                    <div class="highlight-item">
-                        <div class="highlight-icon">🕐</div>
-                        <div class="highlight-content">
-                            <h4>Xử lý định dạng thời gian linh hoạt</h4>
-                            <p>Tự động nhận diện: 10h00, 10:00, 10.00, 10 từ các phiên bản FAP khác nhau</p>
-                        </div>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="highlight-icon">📊</div>
-                        <div class="highlight-content">
-                            <h4>Hệ thống Tab với bộ đếm</h4>
-                            <p>Phân chia rõ ràng kỳ thi sắp tới và đã hoàn thành với số lượng hiển thị</p>
-                        </div>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="highlight-icon">⏰</div>
-                        <div class="highlight-content">
-                            <h4>Đếm ngược thời gian nâng cao</h4>
-                            <p>Mã màu chi tiết: hôm nay, ngày mai, khẩn cấp, tương lai</p>
-                        </div>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="highlight-icon">🔍</div>
-                        <div class="highlight-content">
-                            <h4>Bộ lọc thông minh</h4>
-                            <p>Modal interface với Select All, Deselect All, Apply</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="section section--muted" id="time-formats">
+      <div class="container">
+        <div class="section__head">
+          <h2>Xử lý định dạng thời gian</h2>
+          <p>Extension gom và chuẩn hoá giờ từ các phiên bản giao diện FAP khác nhau — bạn không cần chỉnh tay.</p>
         </div>
+        <div class="format-grid">
+          <div class="format-tile">
+            <h3>Kiểu Việt Nam</h3>
+            <div class="format-examples">
+              <code>10h00 - 12h00</code>
+              <code>14h30 - 16h00</code>
+            </div>
+            <p>Dùng chữ <strong>h</strong> / <strong>H</strong> giữa giờ và phút.</p>
+          </div>
+          <div class="format-tile">
+            <h3>Kiểu quốc tế</h3>
+            <div class="format-examples">
+              <code>10:00 - 12:00</code>
+              <code>14:30 - 16:00</code>
+            </div>
+            <p>Dấu hai chấm giữa giờ và phút.</p>
+          </div>
+          <div class="format-tile">
+            <h3>Chỉ có giờ</h3>
+            <div class="format-examples">
+              <code>10 - 12</code>
+              <code>8 - 10</code>
+            </div>
+            <p>Thiếu phút thì mặc định :00.</p>
+          </div>
+          <div class="format-tile">
+            <h3>Dấu chấm</h3>
+            <div class="format-examples">
+              <code>10.00 - 12.30</code>
+            </div>
+            <p>Một số bảng FAP dùng dấu chấm thay cho hai chấm.</p>
+          </div>
+        </div>
+        <div class="callout">
+          <h3>Lưu ý</h3>
+          <p>Không cần cấu hình: extension cố gắng parse đúng định dạng trang bạn đang dùng. Nếu FAP đổi mạnh cấu trúc trang, hãy báo trên GitHub.</p>
+        </div>
+      </div>
     </section>
 
-    <section id="guide" class="guide">
-        <div class="container">
-            <h2>Hướng dẫn sử dụng</h2>
-            <div class="guide-steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Truy cập hệ thống FAP</h3>
-                        <p>Mở <code>https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx</code> và đăng nhập bằng tài khoản sinh viên FPT</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Mở extension</h3>
-                        <p>Nhấn vào icon extension trên thanh công cụ Chrome. Extension sẽ tự động tải lịch thi hoặc bạn có thể nhấn <strong>Sync</strong></p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Quản lý lịch thi</h3>
-                        <p>Xem kỳ thi sắp tới trong tab <strong>"Chưa thi"</strong>, lịch sử trong tab <strong>"Đã thi"</strong>. Sử dụng <strong>Filter</strong> để lọc theo loại kỳ thi</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Xuất lịch</h3>
-                        <p>Nhấn <strong>"Tải xuống lịch .ics"</strong> để tải file lịch. Mở file bằng ứng dụng lịch để import các kỳ thi sắp tới</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="guide-note">
-                <h3>Lưu ý quan trọng</h3>
-                <ul>
-                    <li>Extension chỉ xuất các kỳ thi <strong>sắp tới</strong> và có <strong>phòng thi xác định</strong></li>
-                    <li>Sau khi sync dữ liệu từ FAP, bạn có thể xuất lịch từ <strong>bất kỳ website nào</strong></li>
-                    <li>File .ics tương thích với Apple Calendar, Google Calendar, Outlook</li>
-                    <li>Tự động thiết lập nhắc nhở 1 ngày và 1 giờ trước kỳ thi</li>
-                </ul>
-            </div>
+    <section id="download" class="section">
+      <div class="container">
+        <div class="section__head">
+          <h2>Tải về &amp; cài đặt</h2>
+          <p>Phiên bản tài liệu này căn theo <strong>manifest 3.0.9</strong>. Trên Web Store có thể là số hiệu khác cho đến khi bản mới được duyệt.</p>
         </div>
+        <div class="download-grid">
+          <div class="download-card download-card--featured">
+            <div class="download-card__row">
+              <span class="badge badge--version">v3.x</span>
+              <span class="badge badge--ok">Khuyến nghị</span>
+            </div>
+            <h3>Chrome Web Store</h3>
+            <p>Cài trực tiếp trên Chrome, có cập nhật tự động khi nhà phát hành đẩy bản mới.</p>
+            <ul class="check-list">
+              <li>Một cú nhấp, không cần bật chế độ nhà phát triển</li>
+              <li>Phù hợp hầu hết sinh viên</li>
+            </ul>
+            <a class="btn btn--primary btn--block" href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm" target="_blank" rel="noopener">Mở trang Chrome Web Store</a>
+          </div>
+          <div class="download-card">
+            <div class="download-card__row">
+              <strong style="font-size:1.1rem">Từ mã nguồn</strong>
+              <span class="badge badge--dev">Developer</span>
+            </div>
+            <h3>Load unpacked</h3>
+            <p>Dùng đúng bản trong repo GitHub (gồm lịch học + đồng bộ nhiều tuần).</p>
+            <ol class="install-list">
+              <li>Clone hoặc tải ZIP từ GitHub <code>fptu-examination</code></li>
+              <li>Mở <code>chrome://extensions</code></li>
+              <li>Bật <strong>Developer mode</strong></li>
+              <li><strong>Load unpacked</strong> và chọn thư mục extension</li>
+            </ol>
+            <a class="btn btn--secondary btn--block" href="https://github.com/yunkhngn/fptu-examination" target="_blank" rel="noopener">Mở GitHub</a>
+          </div>
+        </div>
+
+        <div class="release-notes">
+          <h3>Nổi bật ở bản 3.x (so với tài liệu cũ)</h3>
+          <div class="release-grid">
+            <div class="release-item">
+              <strong>Tab Lịch học</strong>
+              <span>Đồng bộ lịch tuần từ FAP, thẻ môn với slot, phòng, điểm danh, link chi tiết.</span>
+            </div>
+            <div class="release-item">
+              <strong>Đồng bộ nhiều tuần</strong>
+              <span>Chạy trong service worker; có thể đóng popup khi đang đồng bộ khoảng tuần.</span>
+            </div>
+            <div class="release-item">
+              <strong>UI mới</strong>
+              <span>Thẻ lịch, nút Tải lịch, header dùng logo extension, khối tuần thu gọn được.</span>
+            </div>
+            <div class="release-item">
+              <strong>Hai file .ics</strong>
+              <span><code>lich-thi.ics</code> từ tab kỳ thi; <code>lich-hoc.ics</code> từ tab lịch học.</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="ics-guide">
-        <div class="container">
-            <h2>Hướng dẫn sử dụng file .ics</h2>
-            <p class="section-description">Sau khi tải file .ics, bạn có thể import vào các ứng dụng lịch phổ biến:</p>
-            
-            <div class="ics-methods">
-                <div class="method-card">
-                    <div class="method-content">
-                        <div class="method-icon">🍎</div>
-                        <h3>macOS - Apple Calendar</h3>
-                        <div class="method-steps">
-                            <p><strong>Cách 1: Mở trực tiếp (Khuyến nghị)</strong></p>
-                            <ol>
-                                <li>Double-click vào file <code>lich-thi.ics</code></li>
-                                <li>Apple Calendar sẽ tự động mở và hiển thị các sự kiện</li>
-                                <li>Chọn calendar muốn import và nhấn <strong>"Add All"</strong></li>
-                            </ol>
-                            
-                            <p><strong>Cách 2: Import thủ công</strong></p>
-                            <ol>
-                                <li>Mở Apple Calendar</li>
-                                <li>File → Import → Chọn file <code>lich-thi.ics</code></li>
-                                <li>Chọn calendar và nhấn <strong>"Import"</strong></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="method-card">
-                    <div class="method-content">
-                        <div class="method-icon">📱</div>
-                        <h3>iPhone/iPad - Apple Calendar</h3>
-                        <div class="method-steps">
-                            <ol>
-                                <li>Gửi file .ics qua AirDrop, email hoặc iCloud</li>
-                                <li>Nhấn vào file .ics trong Mail hoặc Files</li>
-                                <li>Chọn <strong>"Add All"</strong> để thêm vào Calendar</li>
-                                <li>Các sự kiện sẽ xuất hiện trong ứng dụng Calendar</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="method-card">
-                    <div class="method-content">
-                        <div class="method-icon">📧</div>
-                        <h3>Google Calendar</h3>
-                        <div class="method-steps">
-                            <ol>
-                                <li>Mở <a href="https://calendar.google.com" target="_blank">Google Calendar</a></li>
-                                <li>Nhấn vào biểu tượng ⚙️ (Settings) → <strong>"Import & export"</strong></li>
-                                <li>Chọn <strong>"Select file from your computer"</strong></li>
-                                <li>Chọn file <code>lich-thi.ics</code> và calendar đích</li>
-                                <li>Nhấn <strong>"Import"</strong></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="method-card">
-                    <div class="method-content">
-                        <div class="method-icon">📊</div>
-                        <h3>Microsoft Outlook</h3>
-                        <div class="method-steps">
-                            <p><strong>Outlook Desktop:</strong></p>
-                            <ol>
-                                <li>Mở Outlook → File → <strong>"Open & Export"</strong> → <strong>"Import/Export"</strong></li>
-                                <li>Chọn <strong>"Import an iCalendar (.ics) or vCalendar file"</strong></li>
-                                <li>Chọn file <code>lich-thi.ics</code></li>
-                                <li>Chọn <strong>"Import"</strong> hoặc <strong>"Open as New"</strong></li>
-                            </ol>
-                            
-                            <p><strong>Outlook Web (Outlook.com):</strong></p>
-                            <ol>
-                                <li>Mở <a href="https://outlook.com" target="_blank">Outlook.com</a></li>
-                                <li>Calendar → <strong>"Add calendar"</strong> → <strong>"Upload from file"</strong></li>
-                                <li>Chọn file .ics và nhấn <strong>"Import"</strong></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="method-card">
-                    <div class="method-content">
-                        <div class="method-icon">🤖</div>
-                        <h3>Android - Google Calendar</h3>
-                        <div class="method-steps">
-                            <ol>
-                                <li>Import file .ics vào Google Calendar trên máy tính (theo hướng dẫn trên)</li>
-                                <li>Mở ứng dụng Google Calendar trên Android</li>
-                                <li>Đảm bảo đã đăng nhập cùng tài khoản Google</li>
-                                <li>Các sự kiện sẽ tự động đồng bộ</li>
-                            </ol>
-                            
-                            <p><strong>Hoặc sử dụng ứng dụng khác:</strong></p>
-                            <ul>
-                                <li>Samsung Calendar: Mở file .ics từ email hoặc file manager</li>
-                                <li>Any.do, Calendly: Import qua tính năng "Import calendar"</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ics-tips">
-                <h3>💡 Mẹo hữu ích</h3>
-                <div class="tips-grid">
-                    <div class="tip-card">
-                        <h4>🔔 Nhắc nhở tự động</h4>
-                        <p>File .ics đã tích hợp sẵn nhắc nhở 1 ngày và 1 giờ trước kỳ thi. Bạn có thể tùy chỉnh thêm trong ứng dụng lịch.</p>
-                    </div>
-                    <div class="tip-card">
-                        <h4>🔄 Cập nhật lịch thi</h4>
-                        <p>Khi có thay đổi lịch thi, tải file .ics mới và import lại. Các sự kiện cũ sẽ được cập nhật hoặc thay thế.</p>
-                    </div>
-                    <div class="tip-card">
-                        <h4>🎨 Tùy chỉnh màu sắc</h4>
-                        <p>Sau khi import, bạn có thể đặt màu riêng cho calendar "FPTU Examination" để dễ phân biệt.</p>
-                    </div>
-                    <div class="tip-card">
-                        <h4>📱 Đồng bộ đa thiết bị</h4>
-                        <p>Import vào iCloud, Google hoặc Outlook để lịch thi tự động đồng bộ trên tất cả thiết bị của bạn.</p>
-                    </div>
-                </div>
-            </div>
+    <section id="guide" class="section section--surface">
+      <div class="container">
+        <div class="section__head">
+          <h2>Hướng dẫn sử dụng</h2>
+          <p>Tóm tắt quy trình cho cả lịch thi và lịch học.</p>
         </div>
+        <div class="steps">
+          <div class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Đăng nhập FAP</h3>
+              <p>Dùng tài khoản sinh viên trên <strong>fap.fpt.edu.vn</strong>. Với kỳ thi, mở trang lịch thi; với lịch học, dùng trang lịch tuần (Schedule of week).</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>Mở FPTU Schedule</h3>
+              <p>Nhấn biểu tượng extension trên thanh công cụ. Nếu vừa cài, nhấn <strong>Đồng bộ lịch thi</strong> hoặc <strong>Đồng bộ lịch học</strong> tùy tab.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Tab Kỳ thi</h3>
+              <p>Xem các kỳ sắp tới, nhãn loại thi (FE, PE, …), đếm ngày. Dùng <strong>Lọc</strong> để ẩn/hiện loại thi. <strong>Tải lịch</strong> xuất <code>lich-thi.ics</code> (thường chỉ gồm kỳ sắp tới có phòng).</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Tab Lịch học</h3>
+              <p><strong>Đồng bộ lịch học</strong> tải tuần hiện tại từ tab FAP đang mở. Mở rộng <strong>Đồng bộ nhiều tuần</strong> để tải danh sách tuần và đồng bộ cả khoảng. <strong>Tải lịch</strong> xuất <code>lich-hoc.ics</code>. <strong>Xoá</strong> xóa bản lưu cục bộ.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h3>Import vào app lịch</h3>
+              <p>Mở file .ics bằng ứng dụng lịch hoặc import qua Google / Outlook (xem mục dưới).</p>
+            </div>
+          </div>
+        </div>
+        <div class="note-panel">
+          <h3>Lưu ý</h3>
+          <ul>
+            <li>Extension chạy tốt nhất trên <strong>Chrome desktop</strong>; file .ics vẫn dùng được trên điện thoại sau khi import qua cloud.</li>
+            <li>Đồng bộ nhiều tuần cần tab FAP đúng trang lịch tuần; có thể đóng popup trong lúc chạy nền.</li>
+            <li>Dữ liệu lưu cục bộ (storage / local); không gửi lịch lên server của extension.</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
-    <section class="faq">
-        <div class="container">
-            <h2>Câu hỏi thường gặp</h2>
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <h3>Extension có an toàn không?</h3>
-                    <p>Hoàn toàn an toàn. Extension chỉ đọc dữ liệu lịch thi công khai trên FAP và lưu vào Local Storage, không thu thập thông tin cá nhân.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Tại sao một số kỳ thi không được xuất?</h3>
-                    <p>Extension chỉ xuất các kỳ thi sắp tới và có phòng thi xác định. Các kỳ thi chưa có phòng (thường là chưa cần thi lại) sẽ không được bao gồm.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Extension xử lý định dạng thời gian như thế nào?</h3>
-                    <p>Extension tự động nhận diện và xử lý nhiều định dạng: 10h00, 10:00, 10.00, 10 từ các phiên bản FAP khác nhau mà không cần cấu hình.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Extension có hoạt động trên mobile không?</h3>
-                    <p>Extension chỉ hoạt động trên Chrome desktop. Tuy nhiên, file .ics xuất ra có thể mở trên mọi thiết bị.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Làm sao để cập nhật lịch thi mới?</h3>
-                    <p>Truy cập lại trang FAP và nhấn nút Đồng bộ trong extension để tải dữ liệu mới nhất.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Tại sao có các tab "Chưa thi" và "Đã thi"?</h3>
-                    <p>Để dễ quản lý, extension tự động phân chia kỳ thi theo thời gian và hiển thị số lượng. Chỉ kỳ thi sắp tới mới được xuất ra file .ics.</p>
-                </div>
-            </div>
+    <section class="section section--muted" id="ics-guide">
+      <div class="container">
+        <div class="section__head">
+          <h2>Import file .ics</h2>
+          <p>Sau khi tải <code>lich-thi.ics</code> hoặc <code>lich-hoc.ics</code>, bạn có thể thêm vào lịch hệ thống.</p>
         </div>
+        <div class="method-stack">
+          <div class="method-block">
+            <h3>Apple Calendar (macOS)</h3>
+            <ol>
+              <li>Double-click file .ics hoặc kéo vào Calendar.</li>
+              <li>Chọn lịch đích và xác nhận <strong>Add All</strong> / <strong>Import</strong>.</li>
+            </ol>
+          </div>
+          <div class="method-block">
+            <h3>Google Calendar</h3>
+            <ol>
+              <li>Vào Cài đặt → <strong>Import &amp; export</strong>.</li>
+              <li>Chọn file từ máy, chọn lịch đích, nhấn <strong>Import</strong>.</li>
+            </ol>
+          </div>
+          <div class="method-block">
+            <h3>Microsoft Outlook</h3>
+            <ol>
+              <li>Outlook: File → Open &amp; Export → Import/Export → <strong>Import an iCalendar (.ics)</strong>.</li>
+              <li>Outlook web: Calendar → Add calendar → Upload from file.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="tips-grid">
+          <div class="tip">
+            <h4>Nhắc nhở</h4>
+            <p>Sự kiện .ics thường kèm nhắc (ví dụ trước 1 ngày / 1 giờ); chỉnh thêm trong app lịch nếu cần.</p>
+          </div>
+          <div class="tip">
+            <h4>Cập nhật lịch</h4>
+            <p>Khi FAP đổi lịch, đồng bộ lại trong extension rồi tải file .ics mới và import đè hoặc xoá sự kiện cũ.</p>
+          </div>
+          <div class="tip">
+            <h4>Hai file khác nhau</h4>
+            <p>Nên đặt tên / màu lịch khác nhau cho lịch thi và lịch học để dễ phân biệt trên Google hoặc Apple.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-info">
-                    <h3>📅 FPTU Examination</h3>
-                    <p>I 💛 FPTU - Tôi yêu FPT University</p>
-                </div>
-                <div class="footer-links">
-                    <a href="https://github.com/yunkhngn/fptu-examination" target="_blank">GitHub</a>
-                    <a href="https://github.com/yunkhngn" target="_blank">@yunkhngn</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Phát triển bởi <a href="https://github.com/yunkhngn" target="_blank">@yunkhngn</a></p>
-            </div>
+    <section class="section section--surface" id="faq">
+      <div class="container">
+        <div class="section__head">
+          <h2>Câu hỏi thường gặp</h2>
+          <p>Giải đáp nhanh các thắc mắc thường gặp.</p>
         </div>
-    </footer>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3>Extension có thu thập dữ liệu cá nhân không?</h3>
+            <p>Không có máy chủ riêng của extension: dữ liệu đọc từ trang FAP và lưu cục bộ trên trình duyệt của bạn.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Sao một số kỳ thi không vào file .ics?</h3>
+            <p>Logic xuất thường chỉ gồm kỳ <strong>sắp tới</strong> và đã có <strong>phòng</strong>. Kỳ chưa xếp phòng có thể bị bỏ qua.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Đồng bộ nhiều tuần báo lỗi kết nối?</h3>
+            <p>Hãy reload extension trên <code>chrome://extensions</code>. Nếu vẫn lỗi, mở <strong>Service worker → Inspect</strong> và xem console (thường do phiên FAP hết hạn đăng nhập).</p>
+          </div>
+          <div class="faq-item">
+            <h3>Icon trên thanh công cụ vẫn cũ?</h3>
+            <p>Chrome đôi khi cache icon: gỡ và <strong>Load unpacked</strong> lại, hoặc tăng version trong manifest. Trên Web Store, icon chỉ đổi sau khi bản mới được duyệt.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Dùng được trên điện thoại không?</h3>
+            <p>Tiện ích chỉ cài trên Chrome desktop; sau khi có file .ics bạn import vào Google/iCloud rồi xem trên mobile.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div>
+          <div class="footer__brand">FPTU Schedule</div>
+          <div>Lịch học &amp; kỳ thi từ FAP — phát triển bởi cộng đồng sinh viên FPTU.</div>
+        </div>
+        <div class="footer__links">
+          <a href="https://github.com/yunkhngn/fptu-examination" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/yunkhngn" target="_blank" rel="noopener">@yunkhngn</a>
+          <a href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm" target="_blank" rel="noopener">Chrome Web Store</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 · <a href="https://github.com/yunkhngn" target="_blank" rel="noopener">@yunkhngn</a></p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
