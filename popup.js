@@ -25,11 +25,23 @@ function mergeNewClassEventsInto(allSchedule, newEvents) {
   return { uniqueNewEvents, merged: allSchedule.concat(uniqueNewEvents) };
 }
 
-function mirrorClassScheduleToStorage(jsonString) {
+/** Tránh TypeError "reading 'local'" khi chrome.storage chưa có trong context. */
+function getChromeStorageLocal() {
   try {
-    if (chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ classSchedule: jsonString });
-    }
+    if (typeof chrome === "undefined") return null;
+    const stor = chrome.storage;
+    if (!stor || stor.local == null) return null;
+    return stor.local;
+  } catch (_) {
+    return null;
+  }
+}
+
+function mirrorClassScheduleToStorage(jsonString) {
+  const loc = getChromeStorageLocal();
+  if (!loc) return;
+  try {
+    loc.set({ classSchedule: jsonString });
   } catch (_) {}
 }
 
@@ -46,9 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  try {
-    if (chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(["weekRangeSyncRunning"], (r) => {
+  const stInit = getChromeStorageLocal();
+  if (stInit) {
+    try {
+      stInit.get(["weekRangeSyncRunning"], (r) => {
         if (chrome.runtime.lastError) return;
         if (r.weekRangeSyncRunning) {
           weekRangeSyncInProgress = true;
@@ -57,8 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
           pollWeekRangeSyncUntilIdle();
         }
       });
-    }
-  } catch (_) { /* no storage API */ }
+    } catch (_) { /* no storage API */ }
+  }
 
   const syncButton = document.getElementById("syncButton");
   const exportBtn = document.getElementById("exportBtn");
@@ -660,9 +673,10 @@ function renderClassSchedule(schedule) {
 window.renderClassSchedule = renderClassSchedule;
 
   // Sau khi renderClassSchedule đã gắn window; tránh race với callback storage
-  try {
-    if (chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(["classSchedule"], (r) => {
+  const stMerge = getChromeStorageLocal();
+  if (stMerge) {
+    try {
+      stMerge.get(["classSchedule"], (r) => {
         if (chrome.runtime.lastError || !r.classSchedule) return;
         if (r.classSchedule === localStorage.getItem("classSchedule")) return;
         try {
@@ -673,8 +687,8 @@ window.renderClassSchedule = renderClassSchedule;
           console.error("Merge class schedule from storage failed:", e);
         }
       });
-    }
-  } catch (_) { /* no storage API */ }
+    } catch (_) { /* no storage API */ }
+  }
 
   // Documentation link event
   if (docsLink) {
@@ -723,6 +737,26 @@ function isScheduleOfWeekUrl(url) {
   return typeof url === "string" && /fap\.fpt\.edu\.vn\/Report\/ScheduleOfWeek\.aspx/i.test(url);
 }
 
+/** Tab ScheduleOfWeek (có thể không phải tab đang focus). */
+function findScheduleOfWeekTab(done) {
+  chrome.tabs.query({ url: "https://fap.fpt.edu.vn/*" }, (candidates) => {
+    const list = (candidates || []).filter((t) => t.id && isScheduleOfWeekUrl(t.url || ""));
+    if (list.length) {
+      const preferred = list.find((t) => t.active) || list[0];
+      done(null, preferred);
+      return;
+    }
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const t = tabs && tabs[0];
+      if (t && t.id && isScheduleOfWeekUrl(t.url || "")) {
+        done(null, t);
+        return;
+      }
+      done(new Error("no-schedule-tab"), null);
+    });
+  });
+}
+
 let weekRangeSyncInProgress = false;
 
 function fillWeekRangeSelectOptions(weeks) {
@@ -767,18 +801,11 @@ function setWeekRangeControlsDisabled(disabled) {
 }
 
 function handleLoadWeekScheduleOptions() {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs && tabs[0];
-    if (!tab || !tab.id) {
-      alert("Không tìm thấy tab đang mở.");
-      return;
-    }
-    if (!tab.url || !tab.url.includes("fap.fpt.edu.vn")) {
-      alert("Vui lòng mở trang FAP (lịch tuần).");
-      return;
-    }
-    if (!isScheduleOfWeekUrl(tab.url)) {
-      alert("Vui lòng mở đúng trang lịch theo tuần:\nhttps://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx");
+  findScheduleOfWeekTab((err, tab) => {
+    if (err || !tab || !tab.id) {
+      if (confirm("Chưa có tab Lịch tuần FAP. Mở https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx ?")) {
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+      }
       return;
     }
     setWeekRangeStatus("Đang đọc danh sách tuần…", true);
@@ -841,14 +868,11 @@ function handleSyncClassScheduleWeekRange() {
     weekLabels.push((startSel.options[i].textContent || "").trim());
   }
 
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs && tabs[0];
-    if (!tab || !tab.id) {
-      alert("Không tìm thấy tab đang mở.");
-      return;
-    }
-    if (!tab.url || !isScheduleOfWeekUrl(tab.url)) {
-      alert("Giữ tab lịch tuần FAP đang active rồi thử lại.");
+  findScheduleOfWeekTab((err, tab) => {
+    if (err || !tab || !tab.id) {
+      if (confirm("Cần tab Lịch tuần FAP để đồng bộ. Mở ScheduleOfWeek.aspx?")) {
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+      }
       return;
     }
 
@@ -909,7 +933,8 @@ function applyWeekRangeSyncDoneFromBackground(msg) {
 }
 
 function pollWeekRangeSyncUntilIdle() {
-  if (!chrome.storage || !chrome.storage.local) return;
+  const loc = getChromeStorageLocal();
+  if (!loc) return;
   let ticks = 0;
   const iv = setInterval(() => {
     ticks += 1;
@@ -920,52 +945,55 @@ function pollWeekRangeSyncUntilIdle() {
       setWeekRangeStatus("", false);
       return;
     }
-    chrome.storage.local.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary"], (r) => {
-      if (chrome.runtime.lastError) return;
-      if (r.weekRangeSyncRunning) return;
-      clearInterval(iv);
-      if (r.classSchedule) {
-        const cur = localStorage.getItem("classSchedule");
-        if (cur !== r.classSchedule) {
-          persistClassSchedule(r.classSchedule);
+    try {
+      loc.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary"], (r) => {
+        if (chrome.runtime.lastError) return;
+        if (r.weekRangeSyncRunning) return;
+        clearInterval(iv);
+        if (r.classSchedule) {
+          const cur = localStorage.getItem("classSchedule");
+          if (cur !== r.classSchedule) {
+            persistClassSchedule(r.classSchedule);
+            try {
+              window.renderClassSchedule && window.renderClassSchedule(JSON.parse(r.classSchedule));
+            } catch (e) { /* no-op */ }
+          }
+        }
+        if (r.weekRangeLastSummary) {
+          if (r.weekRangeLastSummary.toastText) {
+            showToast(r.weekRangeLastSummary.toastText, 4200);
+          }
+          if (r.weekRangeLastSummary.statusText) {
+            setWeekRangeStatus(r.weekRangeLastSummary.statusText, true);
+          }
           try {
-            window.renderClassSchedule && window.renderClassSchedule(JSON.parse(r.classSchedule));
-          } catch (e) { /* no-op */ }
+            loc.remove(["weekRangeLastSummary"]);
+          } catch (_) {}
         }
-      }
-      if (r.weekRangeLastSummary) {
-        if (r.weekRangeLastSummary.toastText) {
-          showToast(r.weekRangeLastSummary.toastText, 4200);
-        }
-        if (r.weekRangeLastSummary.statusText) {
-          setWeekRangeStatus(r.weekRangeLastSummary.statusText, true);
-        }
-        chrome.storage.local.remove(["weekRangeLastSummary"]);
-      }
+        weekRangeSyncInProgress = false;
+        setWeekRangeControlsDisabled(false);
+      });
+    } catch (_) {
+      clearInterval(iv);
       weekRangeSyncInProgress = false;
       setWeekRangeControlsDisabled(false);
-    });
+    }
   }, 500);
 }
 
 function handleSyncClassSchedule() {
   showToast("Đang sync lịch học...", 1500);
-  
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (!tabs || !tabs[0]) {
-      console.error("No active tab for class schedule sync");
-      alert("Vui lòng mở trang lịch học FAP trước khi sync.");
+
+  findScheduleOfWeekTab((err, tab) => {
+    if (err || !tab || !tab.id) {
+      if (confirm("Cần trang Lịch tuần (ScheduleOfWeek). Mở FAP?")) {
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+      }
       return;
     }
-    
-    if (!tabs[0].url.includes("fap.fpt.edu.vn")) {
-      console.error("Class schedule sync: not on FAP domain");
-      alert("Vui lòng truy cập trang FAP để sync lịch học.");
-      return;
-    }
-    
+
     chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
+      target: { tabId: tab.id },
       files: ["content.js"]
     }, (results) => {
       if (chrome.runtime.lastError) {
@@ -973,8 +1001,8 @@ function handleSyncClassSchedule() {
         alert("Không thể truy cập trang để sync lịch học. Vui lòng refresh trang và thử lại.");
         return;
       }
-      
-      chrome.tabs.sendMessage(tabs[0].id, { action: "extractWeeklySchedule" }, function (response) {
+
+      chrome.tabs.sendMessage(tab.id, { action: "extractWeeklySchedule" }, function (response) {
         if (chrome.runtime.lastError) {
           console.error("extractWeeklySchedule message failed:", chrome.runtime.lastError);
           alert("Có lỗi xảy ra khi sync lịch học. Vui lòng thử lại.");
@@ -1194,9 +1222,8 @@ function handleClearClassSchedule() {
   try {
     localStorage.removeItem("classSchedule");
     try {
-      if (chrome.storage && chrome.storage.local) {
-        chrome.storage.local.remove(["classSchedule"]);
-      }
+      const loc = getChromeStorageLocal();
+      if (loc) loc.remove(["classSchedule"]);
     } catch (_) {}
     // Re-render empty state immediately
     try {
@@ -1219,7 +1246,6 @@ function tryAutoRefreshAttendance() {
   try { saved = JSON.parse(stored); } catch { return; }
   if (!Array.isArray(saved) || saved.length === 0) return;
 
-  const WEEK_URL = 'https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx';
   const keyOf = (ev) => {
     if (ev && ev.rawDate) {
       const rd = ev.rawDate;
@@ -1228,65 +1254,51 @@ function tryAutoRefreshAttendance() {
     return null;
   };
 
-  // Removed: showToast('Đang cập nhật điểm danh tuần...', 1500);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    const activeTab = tabs && tabs[0];
-    const isOnFap = !!(activeTab && activeTab.url && /https?:\/\/fap\.fpt\.edu\.vn/i.test(activeTab.url));
-    const isWeekPage = isOnFap && /\/ScheduleOfWeek\.aspx/i.test(activeTab.url);
-
-    // Helper to extract from a given tabId
-    const extractFromTab = (tabId, onDone) => {
-      chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] }, () => {
-        if (chrome.runtime.lastError) {
-          console.warn('Skip auto attendance refresh (inject error):', chrome.runtime.lastError.message);
+  const extractFromTab = (tabId, onDone) => {
+    chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] }, () => {
+      if (chrome.runtime.lastError) {
+        console.warn('Skip auto attendance refresh (inject error):', chrome.runtime.lastError.message);
+        return onDone && onDone(false);
+      }
+      chrome.tabs.sendMessage(tabId, { action: 'extractWeeklySchedule' }, function (response) {
+        if (chrome.runtime.lastError || !response || !response.success || !Array.isArray(response.schedule)) {
+          if (response && response.loginRequired) {
+            try {
+              chrome.tabs.update(tabId, { active: true });
+            } catch (_) {}
+            showToast('Cần đăng nhập FAP để cập nhật điểm danh. Vui lòng đăng nhập rồi mở lại popup.', 3000);
+          }
           return onDone && onDone(false);
         }
-        chrome.tabs.sendMessage(tabId, { action: 'extractWeeklySchedule' }, function (response) {
-          if (chrome.runtime.lastError || !response || !response.success || !Array.isArray(response.schedule)) {
-            if (response && response.loginRequired) {
-              try {
-                chrome.tabs.update(tabId, { active: true });
-              } catch (_) {}
-              showToast('Cần đăng nhập FAP để cập nhật điểm danh. Vui lòng đăng nhập rồi mở lại popup.', 3000);
-            }
-            return onDone && onDone(false);
-          }
-          const fresh = response.schedule;
-          const freshMap = new Map();
-          fresh.forEach(ev => { const k = keyOf(ev); if (k) freshMap.set(k, ev); });
+        const fresh = response.schedule;
+        const freshMap = new Map();
+        fresh.forEach(ev => { const k = keyOf(ev); if (k) freshMap.set(k, ev); });
 
-          let updated = 0;
-          const merged = saved.map(ev => {
-            const k = keyOf(ev);
-            if (!k) return ev;
-            const f = freshMap.get(k);
-            if (!f) return ev; // only update when matched
-            const attStatus = f.attendanceStatus || f.attendance_status || null;
-            const attColor = f.attendanceColor || f.attendance_color || null;
-            if (attStatus && attStatus !== ev.attendanceStatus) { ev.attendanceStatus = attStatus; updated++; }
-            if (attColor && attColor !== ev.attendanceColor) { ev.attendanceColor = attColor; }
-            return ev;
-          });
-
-          if (updated > 0) {
-            persistClassSchedule(JSON.stringify(merged));
-            try { window.renderClassSchedule && window.renderClassSchedule(merged); } catch (_) {}
-            // silent update – no toast
-          }
-          onDone && onDone(true);
+        let updated = 0;
+        const merged = saved.map(ev => {
+          const k = keyOf(ev);
+          if (!k) return ev;
+          const f = freshMap.get(k);
+          if (!f) return ev;
+          const attStatus = f.attendanceStatus || f.attendance_status || null;
+          const attColor = f.attendanceColor || f.attendance_color || null;
+          if (attStatus && attStatus !== ev.attendanceStatus) { ev.attendanceStatus = attStatus; updated++; }
+          if (attColor && attColor !== ev.attendanceColor) { ev.attendanceColor = attColor; }
+          return ev;
         });
+
+        if (updated > 0) {
+          persistClassSchedule(JSON.stringify(merged));
+          try { window.renderClassSchedule && window.renderClassSchedule(merged); } catch (_) {}
+        }
+        onDone && onDone(true);
       });
-    };
+    });
+  };
 
-    if (isWeekPage) {
-      // Extract directly from the current tab
-      extractFromTab(activeTab.id);
-      return;
-    }
-
-    // not on week page – skip silently
-    return;
+  findScheduleOfWeekTab((err, tab) => {
+    if (err || !tab || !tab.id) return;
+    extractFromTab(tab.id);
   });
 }
 
