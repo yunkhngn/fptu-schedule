@@ -1,6 +1,16 @@
 (function () {
   const CACHE = { data: null, promise: null };
 
+  function isAllowedStudyUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+      const u = new URL(url.trim());
+      return u.protocol === "https:";
+    } catch (_) {
+      return false;
+    }
+  }
+
   function normalizeCourseCode(title) {
     if (!title || typeof title !== "string") return "";
     const t = title.trim();
@@ -39,7 +49,15 @@
           if (k.startsWith("$")) return;
           const code = String(k).toUpperCase();
           const arr = raw[k];
-          if (Array.isArray(arr)) map[code] = arr;
+          if (!Array.isArray(arr)) return;
+          const safe = arr.filter(
+            (item) =>
+              item &&
+              typeof item === "object" &&
+              typeof item.url === "string" &&
+              isAllowedStudyUrl(item.url)
+          );
+          if (safe.length) map[code] = safe;
         });
         CACHE.data = map;
         return CACHE.data;
@@ -54,11 +72,12 @@
   async function getStudySuggestions(courseTitle) {
     const code = normalizeCourseCode(courseTitle);
     const map = await loadStudySources();
-    const curated = code && map[code] ? map[code].slice() : [];
+    let curated = code && map[code] ? map[code].slice() : [];
+    curated = curated.filter((x) => x && isAllowedStudyUrl(x.url));
     const fallbacks = fallbackSuggestions(code);
     const seen = new Set(curated.map((x) => x.url));
     fallbacks.forEach((f) => {
-      if (!seen.has(f.url)) {
+      if (isAllowedStudyUrl(f.url) && !seen.has(f.url)) {
         curated.push(f);
         seen.add(f.url);
       }
@@ -69,5 +88,6 @@
   window.FPTUStudySuggestions = {
     normalizeCourseCode,
     getStudySuggestions,
+    isAllowedStudyUrl,
   };
 })();

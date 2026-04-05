@@ -92,8 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const examActionsRow = document.getElementById("examActions");
   const scheduleActionsRow = document.getElementById("scheduleActions");
   const examListSection = document.getElementById("examList");
-  if (examActionsRow) examActionsRow.hidden = false;
-  if (scheduleActionsRow) scheduleActionsRow.hidden = true;
+  if (examActionsRow) examActionsRow.hidden = true;
+  if (scheduleActionsRow) scheduleActionsRow.hidden = false;
 
   if (upcomingContent && completedContent) {
     const activateTab = (name) => {
@@ -140,8 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (upcomingTab) upcomingTab.addEventListener("click", () => activateTab("exams"));
     if (scheduleTabBtn) scheduleTabBtn.addEventListener("click", () => activateTab("schedule"));
 
-    // Mặc định: Kỳ thi (khớp tab active trên HTML, không phụ thuộc thứ tự nút trong DOM)
-    activateTab("exams");
+    // Mặc định: Lịch học (khớp tab active trên HTML)
+    activateTab("schedule");
   }
 
   // Load filter preferences
@@ -768,8 +768,8 @@ function fillWeekRangeSelectOptions(weeks) {
   const endSel = document.getElementById("weekRangeEnd");
   const syncBtn = document.getElementById("syncWeekRangeBtn");
   if (!startSel || !endSel) return;
-  startSel.innerHTML = "";
-  endSel.innerHTML = "";
+  startSel.replaceChildren();
+  endSel.replaceChildren();
   weeks.forEach((w) => {
     const o1 = document.createElement("option");
     o1.value = String(w.index);
@@ -1623,9 +1623,14 @@ function createExamItem(e) {
         return;
       }
       items.forEach((it) => {
+        const allow =
+          window.FPTUStudySuggestions &&
+          typeof window.FPTUStudySuggestions.isAllowedStudyUrl === "function" &&
+          window.FPTUStudySuggestions.isAllowedStudyUrl(it.url);
+        if (!allow) return;
         const a = document.createElement("a");
         a.className = "exam-splash__btn";
-        a.href = it.url;
+        a.href = it.url.trim();
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.textContent = it.label || "Mở";

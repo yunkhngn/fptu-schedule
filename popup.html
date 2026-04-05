@@ -61,11 +61,11 @@
 
     <section id="examList" class="popup-list">
       <div class="tab-navigation" role="tablist">
-        <button type="button" id="scheduleTabBtn" class="tab-btn" role="tab" aria-selected="false">
+        <button type="button" id="scheduleTabBtn" class="tab-btn active" role="tab" aria-selected="true">
           <svg class="icon" aria-hidden="true"><use href="#icon-book"/></svg>
           <span class="tab-btn__text">Lịch học</span>
         </button>
-        <button type="button" id="upcomingTab" class="tab-btn active" role="tab" aria-selected="true">
+        <button type="button" id="upcomingTab" class="tab-btn" role="tab" aria-selected="false">
           <svg class="icon" aria-hidden="true"><use href="#icon-clipboard"/></svg>
           <span class="tab-btn__text">Kỳ thi</span>
         </button>
@@ -74,13 +74,13 @@
       <div id="examSyncLoading" class="exam-sync-feedback" hidden>Đang tải lịch thi…</div>
       <div id="examSyncError" class="exam-sync-feedback exam-sync-feedback--error" hidden>Không thể tải lịch thi. Mở trang lịch thi FAP và thử Đồng bộ lại.</div>
 
-      <div id="upcomingExams" class="tab-content active"></div>
+      <div id="upcomingExams" class="tab-content"></div>
       <div id="completedExams" class="tab-content"></div>
-      <div id="scheduleTab" class="tab-content"></div>
+      <div id="scheduleTab" class="tab-content active"></div>
     </section>
 
     <div class="popup-actions">
-      <div id="examActions" class="actions-row">
+      <div id="examActions" class="actions-row" hidden>
         <button type="button" id="syncButton" class="action-btn action-btn--secondary" title="Đồng bộ lịch thi">
           <svg class="icon" aria-hidden="true"><use href="#icon-refresh"/></svg>
           <span class="action-btn__label">Đồng bộ lịch thi</span>
@@ -95,7 +95,7 @@
         </button>
       </div>
 
-      <div id="scheduleActions" class="actions-row" hidden>
+      <div id="scheduleActions" class="actions-row">
         <button type="button" id="syncScheduleBtn" class="action-btn action-btn--secondary" title="Đồng bộ lịch học">
           <svg class="icon" aria-hidden="true"><use href="#icon-refresh"/></svg>
           <span class="action-btn__label">Đồng bộ lịch học</span>
@@ -110,7 +110,7 @@
         </button>
       </div>
 
-      <details id="scheduleWeekRangeBlock" class="week-range-block" hidden>
+      <details id="scheduleWeekRangeBlock" class="week-range-block">
         <summary class="week-range-summary">
           <span class="week-range-summary__title">Đồng bộ nhiều tuần</span>
           <a
