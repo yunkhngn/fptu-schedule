@@ -1,3 +1,6 @@
+/** Hook for clear-and-sync; DOM is re-scraped each time so no page-side state to clear. */
+function clearExistingExamEvents() {}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === "extractSchedule") {
     try {

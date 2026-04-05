@@ -19,7 +19,8 @@
         <button id="upcomingTab" class="tab-btn active">🗓️ Kỳ thi</button>
       </div>
       
-      <div class="loading">Hãy đồng bộ lịch thi...</div>
+      <div id="examSyncLoading" class="exam-sync-feedback" hidden>Đang tải lịch thi…</div>
+      <div id="examSyncError" class="exam-sync-feedback exam-sync-feedback--error" hidden>Không thể tải lịch thi. Mở trang lịch thi FAP và thử Đồng bộ lại.</div>
       
       <div id="upcomingExams" class="tab-content active">
         <!-- Upcoming exams will be populated here -->
@@ -95,7 +96,7 @@
     </div>
 
     <footer class="popup-footer">
-      <p>I 💛 FPTU • Phát triển bởi <a href="https://github.com/yunkhngn" target="_blank">@yunkhngn</a> • <a href="https://github.com/yunkhngn/fptu-examination" target="_blank">GitHub</a> • <a href="https://yunkhngn.github.io/fptu-examination/" target="_blank">Hướng dẫn</a></p>
+      <p>I 💛 FPTU • Phát triển bởi <a href="https://github.com/yunkhngn" target="_blank">@yunkhngn</a> • <a href="https://github.com/yunkhngn/fptu-examination" target="_blank">GitHub</a> • <a id="docsLink" href="https://yunkhngn.github.io/fptu-examination/" target="_blank" rel="noopener">Hướng dẫn</a></p>
     </footer>
 
     <script src="sanitize-utils.js"></script>

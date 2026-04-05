@@ -678,3 +678,29 @@ html, body {
   vertical-align: middle;
   margin-top: -2px;
 }
+
+/* Đồng bộ lịch thi: tách khỏi .error trong danh sách để tránh querySelector nhầm */
+.exam-sync-feedback {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+}
+.exam-sync-feedback[hidden] {
+  display: none !important;
+}
+.exam-sync-feedback--error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.exam-list-hint {
+  font-size: 13px;
+  color: #6b7280;
+  padding: 12px 8px;
+  text-align: center;
+}

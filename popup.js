@@ -39,6 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (scheduleTabBtn) scheduleTabBtn.classList.add("active");
         if (scheduleContent) scheduleContent.classList.add("active");
         if (examListSection) examListSection.classList.remove("exams-two-col");
+        const syncLoad = document.getElementById("examSyncLoading");
+        const syncErr = document.getElementById("examSyncError");
+        if (syncLoad) syncLoad.hidden = true;
+        if (syncErr) syncErr.hidden = true;
       } else {
         // Unified Exams view: show both columns
         if (upcomingTab) upcomingTab.classList.add("active");
@@ -51,10 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (upcomingTab) upcomingTab.addEventListener("click", () => activateTab("exams"));
     if (scheduleTabBtn) scheduleTabBtn.addEventListener("click", () => activateTab("schedule"));
 
-    // Initial tab: first tab in navigation
-    const firstTabId = document.querySelector('.tab-navigation .tab-btn')?.id;
-    if (firstTabId === 'scheduleTabBtn') activateTab('schedule');
-    else activateTab('exams');
+    // Mặc định: Kỳ thi (khớp tab active trên HTML, không phụ thuộc thứ tự nút trong DOM)
+    activateTab("exams");
   }
 
   // Load filter preferences
@@ -126,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (applyFilterBtn) {
     applyFilterBtn.addEventListener("click", () => {
-      console.log("Apply filter clicked"); // Debug log
       saveFilterPrefs();
       applyFilters();
       filterModal.style.display = "none";
@@ -140,16 +141,13 @@ document.addEventListener("DOMContentLoaded", () => {
       "2NDFE": document.getElementById("filter2NDFE")?.checked || false,
       "2NDPE": document.getElementById("filter2NDPE")?.checked || false
     };
-    console.log("Saving filter prefs:", prefs); // Debug log
     localStorage.setItem("examFilter", JSON.stringify(prefs));
   }
 
   function applyFilters() {
-    console.log("Applying filters"); // Debug log
     const upcomingItems = document.querySelectorAll("#upcomingExams .exam-item");
     const completedItems = document.querySelectorAll("#completedExams .exam-item");
     const activeFilters = JSON.parse(localStorage.getItem("examFilter") || '{"FE":true,"PE":true,"2NDFE":true,"2NDPE":true}');
-    console.log("Active filters:", activeFilters); // Debug log
     
     // Apply filters to both upcoming and completed tabs
     [...upcomingItems, ...completedItems].forEach(item => {
@@ -176,8 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
       
-      console.log("Exam type found:", examType, "Should show:", !examType || activeFilters[examType]); // Debug log
-      
       // Show if no exam type found or if exam type is enabled
       if (!examType || activeFilters[examType]) {
         item.style.display = "block";
@@ -187,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Make applyFilters available globally
   window.applyFilters = applyFilters;
 
   if (syncButton) {
@@ -346,6 +341,17 @@ document.addEventListener("DOMContentLoaded", () => {
       renderExamList(JSON.parse(data));
     } catch (e) {
       console.error("Parse failed:", e);
+    }
+  } else {
+    const up = document.getElementById("upcomingExams");
+    const co = document.getElementById("completedExams");
+    if (up && co) {
+      while (up.firstChild) up.removeChild(up.firstChild);
+      while (co.firstChild) co.removeChild(co.firstChild);
+      const hint = document.createElement("div");
+      hint.className = "exam-list-hint";
+      hint.textContent = "Chưa có dữ liệu lịch thi. Nhấn «Đồng bộ lịch thi» để mở FAP và tải lịch.";
+      up.appendChild(hint);
     }
   }
 
@@ -600,47 +606,37 @@ window.renderClassSchedule = renderClassSchedule;
 });
 
 function handleSyncClassSchedule() {
-  console.log("🔄 Starting class schedule sync...");
   showToast("Đang sync lịch học...", 1500);
   
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (!tabs || !tabs[0]) {
-      console.error("❌ No active tab found");
+      console.error("No active tab for class schedule sync");
       alert("Vui lòng mở trang lịch học FAP trước khi sync.");
       return;
     }
     
-    console.log("📍 Current URL:", tabs[0].url);
-    
-    // Simplified URL check - just check for FAP domain
     if (!tabs[0].url.includes("fap.fpt.edu.vn")) {
-      console.error("❌ Not on FAP domain");
+      console.error("Class schedule sync: not on FAP domain");
       alert("Vui lòng truy cập trang FAP để sync lịch học.");
       return;
     }
-    
-    console.log("✅ URL check passed, injecting script...");
     
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
       files: ["content.js"]
     }, (results) => {
       if (chrome.runtime.lastError) {
-        console.error('❌ Script injection failed:', chrome.runtime.lastError);
+        console.error("Script injection failed:", chrome.runtime.lastError);
         alert("Không thể truy cập trang để sync lịch học. Vui lòng refresh trang và thử lại.");
         return;
       }
       
-      console.log("✅ Script injected, sending message...");
-      
       chrome.tabs.sendMessage(tabs[0].id, { action: "extractWeeklySchedule" }, function (response) {
         if (chrome.runtime.lastError) {
-          console.error('❌ Message sending failed:', chrome.runtime.lastError);
+          console.error("extractWeeklySchedule message failed:", chrome.runtime.lastError);
           alert("Có lỗi xảy ra khi sync lịch học. Vui lòng thử lại.");
           return;
         }
-        
-        console.log("📨 Response received:", response);
         
         if (!response || !response.success) {
           if (response && response.loginRequired) {
@@ -649,13 +645,12 @@ function handleSyncClassSchedule() {
             alert('Bạn cần đăng nhập FAP để sync lịch học. Vui lòng đăng nhập rồi quay lại popup.');
             return;
           }
-          console.error("❌ Extraction failed");
+          console.error("Weekly schedule extraction failed");
           alert("Không thể trích xuất lịch học. Vui lòng:\n1. Đảm bảo bạn đang ở trang có bảng lịch học\n2. Trang đã load hoàn toàn\n3. Bạn đã đăng nhập");
           return;
         }
         
         const newEvents = response.schedule || [];
-        console.log(`📊 Found ${newEvents.length} events`);
         
         if (newEvents.length === 0) {
           alert("Không tìm thấy lịch học nào. Vui lòng kiểm tra:\n1. Tuần hiện tại có lịch học không\n2. Trang đã load đầy đủ chưa");
@@ -692,8 +687,6 @@ function handleSyncClassSchedule() {
           }
         });
         
-        console.log("Existing keys:", existingKeys);
-        
         // Lọc ra những event mới
         const uniqueNewEvents = newEvents.filter(event => {
           if (event.rawDate) {
@@ -703,14 +696,11 @@ function handleSyncClassSchedule() {
           return true; // Nếu không có rawDate, coi như là mới
         });
         
-        console.log(`Found ${uniqueNewEvents.length} new events from ${newEvents.length} total extracted events`);
-        
-                // Kết hợp dữ liệu cũ và mới
+        // Kết hợp dữ liệu cũ và mới
         allSchedule = [...allSchedule, ...uniqueNewEvents];
         localStorage.setItem("classSchedule", JSON.stringify(allSchedule));
         // Re-render UI for the schedule tab
         window.renderClassSchedule && window.renderClassSchedule(allSchedule);
-        console.log(`✅ Sync complete: ${uniqueNewEvents.length} new, ${allSchedule.length} total`);
         // Chuyển sang tab Lịch học và hiện toast thay vì alert
         try {
           document.getElementById('scheduleTabBtn')?.click();
@@ -732,7 +722,6 @@ function handleDownloadClassSchedule() {
   let schedule;
   try {
     schedule = JSON.parse(storedData);
-    console.log("Loaded schedule:", schedule.length, "events");
   } catch (e) {
     console.error("Parse stored schedule failed:", e);
     alert("Dữ liệu lịch học bị lỗi. Vui lòng sync lại.");
@@ -774,11 +763,8 @@ function handleDownloadClassSchedule() {
         
         if (event.rawDate) {
           const rd = event.rawDate;
-          // Use rawDate values directly without timezone adjustments
           startDate = formatDate(rd.year, rd.month, rd.day, rd.startHour, rd.startMinute);
           endDate = formatDate(rd.year, rd.month, rd.day, rd.endHour, rd.endMinute);
-          
-          console.log(`Event: ${title} on ${rd.day}/${rd.month}/${rd.year} ${rd.startHour}:${rd.startMinute}-${rd.endHour}:${rd.endMinute}`);
         } else {
           // Fallback (should not happen with new data)
           const start = new Date();
@@ -804,9 +790,7 @@ function handleDownloadClassSchedule() {
           'LOCATION:' + loc
         ];
         
-        // Add 30-minute alarm for first slots of the day
         if (isFirstSlot || event.slot === "Slot 1") {
-          console.log(`Adding 30-minute alarm for: ${title} (${event.slot})`);
           eventArray = eventArray.concat([
             'BEGIN:VALARM',
             'ACTION:DISPLAY',
@@ -986,14 +970,21 @@ function tryAutoRefreshAttendance() {
 }
 
 function autoSyncSchedule() {
-  const loadingEl = document.querySelector(".loading");
-  const errorEl = document.querySelector(".error");
+  const loadingEl = document.getElementById("examSyncLoading");
+  const errorEl = document.getElementById("examSyncError");
+  const up = document.getElementById("upcomingExams");
+  const co = document.getElementById("completedExams");
+  if (up) while (up.firstChild) up.removeChild(up.firstChild);
+  if (co) while (co.firstChild) co.removeChild(co.firstChild);
 
-  if (loadingEl) loadingEl.style.display = "block";
-  if (errorEl) errorEl.style.display = "none";
+  if (loadingEl) loadingEl.hidden = false;
+  if (errorEl) errorEl.hidden = true;
 
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (!tabs || !tabs[0]) return;
+    if (!tabs || !tabs[0]) {
+      if (loadingEl) loadingEl.hidden = true;
+      return;
+    }
     
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
@@ -1001,20 +992,20 @@ function autoSyncSchedule() {
     }, (results) => {
       if (chrome.runtime.lastError) {
         console.error('Script injection failed:', chrome.runtime.lastError);
-        if (loadingEl) loadingEl.style.display = "none";
-        if (errorEl) errorEl.style.display = "block";
+        if (loadingEl) loadingEl.hidden = true;
+        if (errorEl) errorEl.hidden = false;
         return;
       }
       
       chrome.tabs.sendMessage(tabs[0].id, { action: "extractSchedule" }, function (response) {
-        if (loadingEl) loadingEl.style.display = "none";
+        if (loadingEl) loadingEl.hidden = true;
         if (chrome.runtime.lastError) {
           console.error('Message sending failed:', chrome.runtime.lastError);
-          if (errorEl) errorEl.style.display = "block";
+          if (errorEl) errorEl.hidden = false;
           return;
         }
         if (!response || !response.events) {
-          if (errorEl) errorEl.style.display = "block";
+          if (errorEl) errorEl.hidden = false;
           return;
         }
         localStorage.setItem("examSchedule", JSON.stringify(response.events));
@@ -1026,14 +1017,14 @@ function autoSyncSchedule() {
 }
 
 function renderExamList(events) {
+  if (!Array.isArray(events)) events = [];
   const upcomingContainer = document.getElementById("upcomingExams");
   const completedContainer = document.getElementById("completedExams");
-  const loadingEl = document.querySelector(".loading");
-  const errorEl = document.querySelector(".error");
+  const loadingEl = document.getElementById("examSyncLoading");
+  const errorEl = document.getElementById("examSyncError");
   
-  // Hide loading/error elements
-  if (loadingEl) loadingEl.style.display = "none";
-  if (errorEl) errorEl.style.display = "none";
+  if (loadingEl) loadingEl.hidden = true;
+  if (errorEl) errorEl.hidden = true;
   
   if (!upcomingContainer || !completedContainer) return;
 
@@ -1052,10 +1043,10 @@ function renderExamList(events) {
   completedContainer.appendChild(compHead);
   
   if (!events.length) {
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "error";
-    errorDiv.textContent = "Không có lịch thi nào.";
-    upcomingContainer.appendChild(errorDiv);
+    const emptyDiv = document.createElement("div");
+    emptyDiv.className = "exam-list-hint";
+    emptyDiv.textContent = "Không có lịch thi nào.";
+    upcomingContainer.appendChild(emptyDiv);
     return;
   }
 
@@ -1085,10 +1076,10 @@ function renderExamList(events) {
 
   // Render upcoming exams
   if (upcomingExams.length === 0) {
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "error";
-    errorDiv.textContent = "Không có kỳ thi nào sắp tới.";
-    upcomingContainer.appendChild(errorDiv);
+    const emptyDiv = document.createElement("div");
+    emptyDiv.className = "exam-list-hint";
+    emptyDiv.textContent = "Không có kỳ thi nào sắp tới.";
+    upcomingContainer.appendChild(emptyDiv);
   } else {
     upcomingExams.forEach(e => {
       const examItem = createExamItem(e);
@@ -1098,10 +1089,10 @@ function renderExamList(events) {
 
   // Render completed exams
   if (completedExams.length === 0) {
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "error";
-    errorDiv.textContent = "Không có kỳ thi nào đã hoàn thành.";
-    completedContainer.appendChild(errorDiv);
+    const emptyDiv = document.createElement("div");
+    emptyDiv.className = "exam-list-hint";
+    emptyDiv.textContent = "Không có kỳ thi nào đã hoàn thành.";
+    completedContainer.appendChild(emptyDiv);
   } else {
     completedExams.forEach(e => {
       const examItem = createExamItem(e);
