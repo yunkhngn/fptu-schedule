@@ -19,7 +19,7 @@ Added unique UID and DTSTAMP properties to every exported calendar event, fixing
 
 • FAP SURVIVAL KIT (KEEP-ALIVE & 1-CLICK SURVEY)
 - Auto Keep-Alive Heartbeat: Automatically refreshes your FAP session every 7 minutes while at least one FAP tab is open, preventing unexpected logouts and lost forms.
-- 1-Click Lecturer Feedback: Floating Dark Glassmorphism toolbar on FAP survey pages that auto-fills 5★ ratings and inserts polite, authentic student feedback comments in one click (manual submit for student review).
+- 1-Click Lecturer Feedback: Floating Dark Glassmorphism toolbar on FAP survey pages that auto-fills 5-star ratings and inserts polite, authentic student feedback comments in one click (manual submit for student review).
 
 
 ================================================================================
@@ -110,3 +110,28 @@ Tính năng nổi bật:
 - Hỗ trợ giao diện tối (Dark Mode) chuẩn mực.
 - Thông báo nhắc nhở trước giờ học và giờ thi trên máy tính.
 - An toàn và bảo mật tuyệt đối: 100% xử lý tại máy khách, không lưu trữ thông tin cá nhân.
+
+
+================================================================================
+CHROME WEB STORE DEVELOPER CONSOLE SUBMISSION DETAILS
+[Copy and paste into your Chrome Web Store Developer Dashboard]
+================================================================================
+
+• Privacy Policy URL:
+  https://yunkhngn.github.io/fptu-schedule/privacy.html
+
+• Single Purpose Description:
+  FPTU Schedule helps FPT University students view, organize, and synchronize their class and exam timetables locally from the university academic portal (FAP) to their personal calendars.
+
+• Host Permission Justification (*://fap.fpt.edu.vn/*):
+  Required to parse academic schedules, exam dates, and attendance figures from the university portal for the authenticated student, and to provide keep-alive heartbeats during active portal use.
+
+• Storage Permission Justification:
+  Required to cache class timetables and user preferences locally (chrome.storage.local) for offline access and instant extension popup display.
+
+• Alarms Permission Justification:
+  Required to run countdown timers for upcoming class slots and schedule periodic keep-alive pings.
+
+• Notifications Permission Justification:
+  Required to deliver timely desktop alerts to students before classes or exams begin.
+

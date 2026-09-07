@@ -216,6 +216,7 @@ Detailed release notes and full version history are documented in [CHANGELOG.md]
 - Timetable data is processed and cached **locally** in the browser (`chrome.storage.local` / popup flow).  
 - Study links open only **on click**; suggested URLs are restricted to **https**.  
 - No separate analytics server from this repo; FAP remains the source of truth for auth and pages.
+- **Privacy Policy & Terms**: [yunkhngn.github.io/fptu-schedule/privacy.html](https://yunkhngn.github.io/fptu-schedule/privacy.html)
 
 ## Troubleshooting
 
@@ -226,7 +227,7 @@ Detailed release notes and full version history are documented in [CHANGELOG.md]
 | Class schedule | Use a `Schedule` week URL under `fap.fpt.edu.vn/Schedule/` |
 | Multi-week sync stuck | Log in again on FAP; reopen popup |
 
-**Support**: [Issues](https://github.com/yunkhngn/fptu-schedule/issues) · **Docs site**: [yunkhngn.github.io/fptu-schedule](https://yunkhngn.github.io/fptu-schedule/)
+**Support**: [Issues](https://github.com/yunkhngn/fptu-schedule/issues) · **Docs site**: [yunkhngn.github.io/fptu-schedule](https://yunkhngn.github.io/fptu-schedule/) · **Privacy Policy**: [yunkhngn.github.io/fptu-schedule/privacy.html](https://yunkhngn.github.io/fptu-schedule/privacy.html)
 
 ## Author
 
