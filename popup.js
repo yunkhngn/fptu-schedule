@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterModal = document.getElementById("filterModal");
   const closeFilter = document.getElementById("closeFilter");
   const docsLink = document.getElementById("docsLink");
+  const privacyLink = document.getElementById("privacyLink");
   const authorLink = document.getElementById("authorLink");
   
   // Notification settings modal elements
@@ -1882,6 +1883,19 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
     docsLink.addEventListener("click", (e) => {
       e.preventDefault();
       chrome.tabs.create({ url: "https://yunkhngn.github.io/fptu-schedule/" });
+    });
+  }
+
+  // Privacy policy link event
+  if (privacyLink) {
+    privacyLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      const url = "https://yunkhngn.github.io/fptu-schedule/privacy.html";
+      try {
+        chrome.tabs.create({ url });
+      } catch (_) {
+        window.open(url, "_blank");
+      }
     });
   }
 
