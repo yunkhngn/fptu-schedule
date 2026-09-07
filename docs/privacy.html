@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FPTU Schedule — Chính sách quyền riêng tư &amp; Điều khoản sử dụng</title>
+  <meta name="description"
+    content="Chính sách quyền riêng tư và Điều khoản sử dụng của tiện ích mở rộng FPTU Schedule. Cam kết hoạt động ngoại tuyến 100%, lưu trữ nội bộ trên trình duyệt, không thu thập hay chia sẻ dữ liệu sinh viên." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="./icon.png" />
+</head>
+
+<body>
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="site-brand" href="index.html">
+        <img class="site-brand__logo" src="icon-128.png" alt="FPTU Schedule Logo" width="36" height="36" />
+        <span class="site-brand__title">
+          FPTU Schedule
+          <span class="site-brand__badge">Legal &amp; Privacy</span>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Điều hướng trang pháp lý">
+        <a href="index.html">Trang chủ</a>
+        <a href="#summary">Tóm tắt</a>
+        <a href="#privacy">Quyền riêng tư</a>
+        <a href="#permissions">Quyền hạn extension</a>
+        <a href="#terms">Điều khoản sử dụng</a>
+        <a href="#contact">Liên hệ</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Chuyển chế độ sáng tối"
+          title="Chuyển chế độ Sáng / Tối">
+          <svg class="icon icon--sm icon-sun" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41">
+            </path>
+          </svg>
+          <svg class="icon icon--sm icon-moon" viewBox="0 0 24 24" style="display: none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <a class="btn btn--primary"
+          href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm"
+          target="_blank" rel="noopener">
+          <svg class="icon icon--sm" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="4" r="4"></circle>
+            <line x1="21.17" y1="8" x2="12" y2="8"></line>
+            <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+            <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+          </svg>
+          <span>Chrome Web Store</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header / Hero -->
+  <section class="legal-page-header">
+    <div class="container">
+      <div class="hero__kicker">
+        <span class="hero__kicker-dot"></span>
+        <span>Chính sách chính thức &bull; Official Legal Documentation</span>
+      </div>
+      <h1 style="margin: 8px 0 12px; font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; letter-spacing: -0.025em;">
+        Chính sách quyền riêng tư &amp; Điều khoản sử dụng
+      </h1>
+      <p style="margin: 0; color: var(--text-muted); max-width: 760px; font-size: 15.5px;">
+        FPTU Schedule là tiện ích mở rộng mã nguồn mở, phi lợi nhuận phục vụ sinh viên Đại học FPT. Chúng tôi cam kết bảo vệ tuyệt đối quyền riêng tư và quyền kiểm soát dữ liệu của người dùng theo kiến trúc cục bộ (Local-First).
+      </p>
+
+      <div class="legal-meta-row">
+        <span class="badge badge--success">
+          <svg class="icon icon--xs" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
+          100% Ngoại tuyến &amp; Không máy chủ bên thứ ba
+        </span>
+        <span class="badge">Hiệu lực: Tháng 09/2026</span>
+        <span class="badge">Phiên bản áp dụng: v3.6.5 trở lên</span>
+        <span class="badge">Giấy phép: MIT License</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Legal Content Layout -->
+  <main class="container legal-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="legal-sidebar" aria-label="Mục lục văn bản">
+      <div class="legal-sidebar__title">Nội dung văn bản</div>
+      <a class="legal-sidebar__link active" href="#summary">Tóm tắt bảo mật</a>
+      <a class="legal-sidebar__link" href="#privacy">Chính sách quyền riêng tư</a>
+      <a class="legal-sidebar__link" href="#data-storage">Lưu trữ &amp; Xử lý dữ liệu</a>
+      <a class="legal-sidebar__link" href="#permissions">Giải trình quyền hạn</a>
+      <a class="legal-sidebar__link" href="#terms">Điều khoản sử dụng</a>
+      <a class="legal-sidebar__link" href="#deletion">Xóa dữ liệu &amp; Quyền hạn</a>
+      <a class="legal-sidebar__link" href="#contact">Liên hệ &amp; Báo cáo</a>
+    </aside>
+
+    <!-- Main Text Content -->
+    <div class="legal-content">
+      <!-- Section: Summary -->
+      <article id="summary" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">1. Tóm tắt nhanh về quyền riêng tư (Executive Summary)</h2>
+          <p class="legal-card__subtitle">Bản tóm tắt ngắn gọn dành cho sinh viên và kiểm duyệt viên Chrome Web Store.</p>
+        </div>
+
+        <div class="legal-highlight-box">
+          <div style="font-weight: 700; color: var(--accent); margin-bottom: 6px;">Nguyên tắc bất khả xâm phạm:</div>
+          <p style="margin: 0; color: var(--text); font-size: 14.5px;">
+            Tiện ích FPTU Schedule hoạt động hoàn toàn trong môi trường trình duyệt cục bộ của người dùng. Chúng tôi <strong>không vận hành bất kỳ máy chủ thu thập dữ liệu (serverless/backend)</strong> nào, <strong>không gắn mã theo dõi (analytics/telemetry)</strong>, và <strong>không bao giờ chia sẻ, mua bán hoặc truyền tải</strong> dữ liệu lịch học, điểm số hay thông tin cá nhân của sinh viên ra khỏi thiết bị của bạn.
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px;">
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
+            <div style="font-weight: 700; color: var(--text); margin-bottom: 4px;">Xử lý 100% trên máy khách</div>
+            <p style="margin: 0; font-size: 13.5px; color: var(--text-muted);">Mọi thao tác trích xuất lịch học, tính điểm, tạo mã QR lịch iCal đều chạy cục bộ bằng JavaScript trên máy tính của bạn.</p>
+          </div>
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
+            <div style="font-weight: 700; color: var(--text); margin-bottom: 4px;">Zero Network Tracking</div>
+            <p style="margin: 0; font-size: 13.5px; color: var(--text-muted);">Không có Google Analytics, không có Mixpanel, không có Pixel theo dõi. Lưu lượng mạng duy nhất là giữa trình duyệt của bạn và cổng thông tin FAP.</p>
+          </div>
+          <div style="padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
+            <div style="font-weight: 700; color: var(--text); margin-bottom: 4px;">Kiểm soát tuyệt đối</div>
+            <p style="margin: 0; font-size: 13.5px; color: var(--text-muted);">Khi gỡ bỏ extension hoặc xóa dữ liệu duyệt web, mọi dữ liệu lịch học lưu trong bộ nhớ tạm sẽ lập tức biến mất vĩnh viễn.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Section: Privacy Policy in English -->
+      <article id="privacy" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">2. Privacy Policy (Chính sách quyền riêng tư chi tiết)</h2>
+          <p class="legal-card__subtitle">Full English legal text compliant with Chrome Web Store Developer Program Policies.</p>
+        </div>
+
+        <p><strong>Last Revised:</strong> September 7, 2026</p>
+
+        <h3>2.1. Introduction</h3>
+        <p>
+          This Privacy Policy describes how the <strong>FPTU Schedule</strong> browser extension (referred to as "the Extension", "we", "us", or "our") handles user information. The Extension is an open-source, non-commercial software project designed to assist students of FPT University in synchronizing, managing, and viewing their academic class timetables, examination schedules, and attendance records directly from the university's academic portal (FAP - <code>fap.fpt.edu.vn</code>).
+        </p>
+
+        <h3>2.2. Information We Do NOT Collect</h3>
+        <p>We believe in absolute student privacy. Specifically:</p>
+        <ul>
+          <li>We do <strong>NOT</strong> collect, harvest, store, or transmit personally identifiable information (PII) such as your full name, student ID card number, email address, passwords, or contact credentials to any remote server.</li>
+          <li>We do <strong>NOT</strong> operate any remote telemetry, crash monitoring, or behavioral tracking services (such as Google Analytics, Amplitude, or Sentry).</li>
+          <li>We do <strong>NOT</strong> track or log browsing history outside the official academic portal domain (<code>fap.fpt.edu.vn</code>).</li>
+          <li>We do <strong>NOT</strong> sell, rent, monetize, or disclose student information to advertisers, third parties, or data brokers under any circumstances.</li>
+        </ul>
+
+        <h3>2.3. Data Handled Locally on Your Device</h3>
+        <p>
+          When you interact with the official university FAP portal while logged in, the Extension parses and stores the following information strictly on your local browser instance via the Chrome Storage API (<code>chrome.storage.local</code>):
+        </p>
+        <ul>
+          <li><strong>Academic Timetable:</strong> Subject codes, subject names, class rooms, campus locations, slot times, and dates.</li>
+          <li><strong>Exam Schedules:</strong> Exam subjects, scheduled dates, time slots, exam rooms, and examination formats.</li>
+          <li><strong>Attendance Records:</strong> Attendance status per slot (present, absent, not yet started) to calculate absence percentages and alert against the university's 20% attendance ban threshold.</li>
+          <li><strong>Grade Records:</strong> Component score categories and weights parsed from the grade report page to enable local grade tracking and pass prediction calculations.</li>
+          <li><strong>User Interface Preferences:</strong> Visual theme preference (Auto/System, Light, Dark) and notification offset preferences.</li>
+        </ul>
+      </article>
+
+      <!-- Section: Data Storage & Processing -->
+      <article id="data-storage" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">3. Lưu trữ &amp; Xử lý dữ liệu (Data Storage &amp; Processing)</h2>
+          <p class="legal-card__subtitle">Cơ chế kỹ thuật lưu trữ cục bộ và quy trình xử lý dữ liệu.</p>
+        </div>
+
+        <p>
+          Toàn bộ dữ liệu được quản lý tuân theo mô hình <strong>Local-First Architecture</strong>:
+        </p>
+
+        <table class="legal-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Hạng mục dữ liệu</th>
+              <th style="width: 35%;">Mục đích sử dụng</th>
+              <th style="width: 40%;">Vị trí lưu trữ &amp; Thời hạn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lịch học &amp; Lịch thi</strong></td>
+              <td>Hiển thị thời khóa biểu dạng lưới tuần, đếm ngược ca học tiếp theo trên Agenda, tạo file .ics và mã QR đồng bộ sang điện thoại.</td>
+              <td>Lưu trong <code>chrome.storage.local</code> trên máy người dùng. Tự động làm mới khi người dùng đồng bộ lại từ FAP.</td>
+            </tr>
+            <tr>
+              <td><strong>Tỷ lệ vắng mặt (Điểm danh)</strong></td>
+              <td>Tính toán phần trăm buổi vắng theo từng môn học và hiển thị cảnh báo tiệm cận ngưỡng cấm thi 20%.</td>
+              <td>Xử lý hoàn toàn trong bộ nhớ tạm (client-side JS) và lưu trữ cục bộ tại máy cá nhân.</td>
+            </tr>
+            <tr>
+              <td><strong>Bảng điểm thành phần</strong></td>
+              <td>Cung cấp công cụ dự đoán điểm thi cuối kỳ (Pass Predictor) để sinh viên chủ động ôn tập.</td>
+              <td>Lưu cục bộ tại trình duyệt, không bao giờ được gửi đi bất kỳ đâu.</td>
+            </tr>
+            <tr>
+              <td><strong>Tùy chọn giao diện (Theme)</strong></td>
+              <td>Ghi nhớ tùy chọn Sáng (Light), Tối (Dark) hoặc Theo hệ thống (Auto).</td>
+              <td>Lưu trong <code>chrome.storage.local</code> và <code>localStorage</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- Section: Permissions Justification -->
+      <article id="permissions" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">4. Giải trình quyền hạn Extension (Chrome Permissions Justification)</h2>
+          <p class="legal-card__subtitle">Giải trình minh bạch từng quyền được khai báo trong manifest.json theo yêu cầu của Google Web Store.</p>
+        </div>
+
+        <p>
+          Tiện ích FPTU Schedule tuân thủ nghiêm ngặt nguyên tắc cấp quyền tối thiểu (Principle of Least Privilege). Dưới đây là giải trình chi tiết từng quyền:
+        </p>
+
+        <table class="legal-table">
+          <thead>
+            <tr>
+              <th style="width: 22%;">Quyền hạn (Permission)</th>
+              <th style="width: 38%;">Lý do kỹ thuật &amp; Chức năng</th>
+              <th style="width: 40%;">Phạm vi tác động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>storage</code></td>
+              <td>Cho phép extension lưu trữ cục bộ lịch học, điểm số, điểm danh và cài đặt theme offline thông qua <code>chrome.storage.local</code>.</td>
+              <td>Chỉ truy xuất vùng nhớ nội bộ của extension, không thể đọc dữ liệu của các trang web khác.</td>
+            </tr>
+            <tr>
+              <td><code>alarms</code></td>
+              <td>Dùng để kích hoạt bộ đếm thời gian kiểm tra ca học sắp diễn ra và nhịp tim giữ phiên (Keep-Alive) định kỳ 7 phút khi sinh viên đang mở tab FAP.</td>
+              <td>Chỉ chạy tác vụ định kỳ trong tiến trình nền của extension, không gây tiêu tốn tài nguyên hệ thống.</td>
+            </tr>
+            <tr>
+              <td><code>notifications</code></td>
+              <td>Dùng để gửi thông báo màn hình (desktop notification) nhắc sinh viên trước giờ vào lớp hoặc phòng thi từ 15 đến 30 phút.</td>
+              <td>Chỉ hiển thị thông báo nội bộ của hệ điều hành, người dùng có thể bật/tắt quyền này bất kỳ lúc nào trong cài đặt trình duyệt.</td>
+            </tr>
+            <tr>
+              <td><code>*://fap.fpt.edu.vn/*</code><br>(Host Permission)</td>
+              <td>Cho phép content script đọc cấu trúc bảng HTML lịch học, bảng điểm và khảo sát trên cổng thông tin sinh viên FAP khi người dùng truy cập. Đồng thời gửi gói tin giữ phiên định kỳ tránh bị thoát tài khoản khi đang tra cứu.</td>
+              <td>Chỉ có hiệu lực duy nhất trên tên miền chính thức của trường (<code>fap.fpt.edu.vn</code>). Tiện ích hoàn toàn không có quyền trên bất kỳ website hay tên miền nào khác.</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- Section: Terms of Service -->
+      <article id="terms" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">5. Điều khoản sử dụng (Terms of Service)</h2>
+          <p class="legal-card__subtitle">Quy định sử dụng tiện ích, quyền lợi và trách nhiệm của người dùng.</p>
+        </div>
+
+        <h3>5.1. Giấy phép mã nguồn mở (License)</h3>
+        <p>
+          FPTU Schedule được phát hành theo giấy phép <strong>MIT License</strong>. Phần mềm được cung cấp hoàn toàn miễn phí "nguyên trạng" (AS IS), không có bất kỳ sự bảo đảm nào, dù rõ ràng hay ngụ ý.
+        </p>
+
+        <h3>5.2. Tuyên bố miễn trừ liên kết (Disclaimer of Affiliation)</h3>
+        <p>
+          FPTU Schedule là một dự án mã nguồn mở độc lập do cộng đồng sinh viên phát triển nhằm hỗ trợ việc học tập. Tiện ích <strong>không phải là sản phẩm chính thức</strong> của Đại học FPT và không có mối quan hệ ủy quyền trực tiếp từ đơn vị quản trị hệ thống FAP.
+        </p>
+
+        <h3>5.3. Trách nhiệm của sinh viên (Student Responsibility)</h3>
+        <ul>
+          <li><strong>Kiểm tra đối chiếu:</strong> Cổng thông tin FAP luôn là nguồn dữ liệu chính thức và có giá trị cao nhất. Sinh viên có trách nhiệm đối chiếu lại lịch thi và phòng thi trên FAP trước các đợt thi quan trọng phòng trường hợp nhà trường có sự điều chỉnh đột xuất.</li>
+          <li><strong>Tính năng khảo sát giảng viên (Lecturer Feedback):</strong> Tiện ích chỉ hỗ trợ tự động chọn mẫu các câu trả lời và ý kiến đóng góp mang tính gợi ý. Tiện ích <strong>tuyệt đối không bao giờ tự động bấm nút nộp (auto-submit)</strong>. Sinh viên luôn là người kiểm tra lại nội dung và tự tay bấm nộp biểu mẫu theo đúng quy chế đào tạo.</li>
+          <li><strong>Bảo vệ tài khoản:</strong> Tiện ích không can thiệp vào quá trình xác thực đăng nhập Google Workspace của FAP và không bao giờ lưu trữ mật khẩu hay token bảo mật của bạn.</li>
+        </ul>
+      </article>
+
+      <!-- Section: Data Deletion & Rights -->
+      <article id="deletion" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">6. Xóa dữ liệu &amp; Quyền hạn người dùng (Data Deletion &amp; Rights)</h2>
+          <p class="legal-card__subtitle">Hướng dẫn xóa sạch dữ liệu khỏi thiết bị.</p>
+        </div>
+
+        <p>
+          Do toàn bộ dữ liệu của bạn chỉ được lưu trên máy cá nhân của bạn, bạn nắm giữ 100% quyền kiểm soát và có thể xóa sạch dữ liệu bất kỳ lúc nào bằng 1 trong các cách sau:
+        </p>
+
+        <ol>
+          <li><strong>Gỡ cài đặt extension:</strong> Nhấp chuột phải vào biểu tượng FPTU Schedule trên thanh tiện ích của Chrome &rarr; chọn <em>"Xóa khỏi Chrome..."</em> (Remove from Chrome). Trình duyệt sẽ ngay lập tức xóa bỏ toàn bộ dữ liệu trong <code>chrome.storage.local</code> của tiện ích.</li>
+          <li><strong>Xóa bộ nhớ ứng dụng:</strong> Vào <code>chrome://extensions</code> &rarr; tìm FPTU Schedule &rarr; chọn <em>"Chi tiết"</em> &rarr; <em>"Xóa dữ liệu"</em>.</li>
+        </ol>
+      </article>
+
+      <!-- Section: Contact & Bug Reporting -->
+      <article id="contact" class="legal-card">
+        <div class="legal-card__header">
+          <h2 class="legal-card__title">7. Liên hệ &amp; Báo cáo bảo mật (Contact &amp; Inquiries)</h2>
+          <p class="legal-card__subtitle">Kênh tiếp nhận câu hỏi pháp lý, phản hồi và báo lỗi kỹ thuật.</p>
+        </div>
+
+        <p>
+          Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật, muốn đóng góp ý kiến hoặc phát hiện lỗ hổng bảo mật, xin vui lòng liên hệ qua các kênh chính thức sau:
+        </p>
+
+        <ul>
+          <li><strong>GitHub Repository &amp; Issues:</strong> <a href="https://github.com/yunkhngn/fptu-schedule/issues" target="_blank" rel="noopener">github.com/yunkhngn/fptu-schedule/issues</a></li>
+          <li><strong>Kho lưu trữ mã nguồn mở:</strong> <a href="https://github.com/yunkhngn/fptu-schedule" target="_blank" rel="noopener">github.com/yunkhngn/fptu-schedule</a></li>
+          <li><strong>Tác giả dự án:</strong> <a href="https://github.com/yunkhngn" target="_blank" rel="noopener">@yunkhngn</a></li>
+        </ul>
+
+        <div style="margin-top: 24px;">
+          <a class="btn btn--primary" href="index.html">
+            <svg class="icon icon--sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+            <span>Quay lại trang chủ tài liệu</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div>
+        <div style="font-weight: 700; color: var(--text); margin-bottom: 4px;">FPTU Schedule — Open Source Project</div>
+        <p style="margin: 0;">Được phát triển cho cộng đồng sinh viên Đại học FPT. Phát hành theo giấy phép mã nguồn mở MIT License.</p>
+      </div>
+
+      <div class="site-footer__links">
+        <a href="index.html">Trang chủ</a>
+        <a href="privacy.html">Chính sách quyền riêng tư</a>
+        <a href="privacy.html#terms">Điều khoản sử dụng</a>
+        <a href="https://github.com/yunkhngn/fptu-schedule" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/yunkhngn/fptu-schedule/releases" target="_blank" rel="noopener">Bản phát hành</a>
+        <a href="https://github.com/yunkhngn/fptu-schedule/issues" target="_blank" rel="noopener">Báo lỗi / Góp ý</a>
+        <a href="https://chromewebstore.google.com/detail/fptu-exam-to-calendar/obiiippodjlfcmdipfbkneknbakjekfm"
+          target="_blank" rel="noopener">Chrome Store</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script for Theme Toggle & Active Sidebar Link -->
+  <script>
+    (function () {
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const htmlEl = document.documentElement;
+      const sunIcon = themeToggleBtn.querySelector('.icon-sun');
+      const moonIcon = themeToggleBtn.querySelector('.icon-moon');
+
+      function setTheme(theme) {
+        if (theme === 'dark') {
+          htmlEl.setAttribute('data-theme', 'dark');
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+          localStorage.setItem('fptu_docs_theme', 'dark');
+        } else {
+          htmlEl.setAttribute('data-theme', 'light');
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+          localStorage.setItem('fptu_docs_theme', 'light');
+        }
+      }
+
+      const savedTheme = localStorage.getItem('fptu_docs_theme') ||
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      setTheme(savedTheme);
+
+      themeToggleBtn.addEventListener('click', function () {
+        const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
+        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+      });
+
+      // Active state for sidebar navigation
+      const links = document.querySelectorAll('.legal-sidebar__link');
+      const sections = document.querySelectorAll('.legal-card');
+
+      window.addEventListener('scroll', function () {
+        let currentId = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 120;
+          if (window.scrollY >= sectionTop) {
+            currentId = section.getAttribute('id');
+          }
+        });
+
+        if (currentId) {
+          links.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
