@@ -1051,13 +1051,13 @@ function renderStudentGrades(gradesMap) {
         resultBox.className = "grade-predict-result";
         if (res.status === "pass_guaranteed") {
           resultBox.classList.add("grade-predict-result--guaranteed");
-          resultBox.innerHTML = `🎉 <strong>Chắc chắn qua môn!</strong> Chỉ cần thi ≥ <strong>4.0</strong> (tránh điểm liệt) là đạt mục tiêu ${targetVal.toFixed(1)}.`;
+          resultBox.innerHTML = `<strong>Chắc chắn qua môn!</strong> Chỉ cần thi ≥ <strong>4.0</strong> (tránh điểm liệt) là đạt mục tiêu ${targetVal.toFixed(1)}.`;
         } else if (res.status === "achievable") {
           resultBox.classList.add("grade-predict-result--achievable");
-          resultBox.innerHTML = `🎯 Cần thi tối thiểu: <span class="grade-predict-score">${res.minRequired.toFixed(1)}</span> để đạt tổng kết ${targetVal.toFixed(1)}.`;
+          resultBox.innerHTML = `Cần thi tối thiểu: <span class="grade-predict-score">${res.minRequired.toFixed(1)}</span> để đạt tổng kết ${targetVal.toFixed(1)}.`;
         } else if (res.status === "impossible") {
           resultBox.classList.add("grade-predict-result--impossible");
-          resultBox.innerHTML = `⚠️ Không thể đạt ${targetVal.toFixed(1)} (Điểm thi cần > 10.0: ${res.requiredScore.toFixed(1)}).`;
+          resultBox.innerHTML = `Không thể đạt ${targetVal.toFixed(1)} (Điểm thi cần > 10.0: ${res.requiredScore.toFixed(1)}).`;
         }
       };
 
@@ -1841,9 +1841,9 @@ function renderClassSchedule(schedule) {
         if (courseStats.remainingAbsent > 0) {
           attText += ` • Còn được nghỉ ${courseStats.remainingAbsent} buổi`;
         } else if (courseStats.remainingAbsent === 0) {
-          attText += ` • ⚠️ Đã chạm trần 20%, không được nghỉ thêm`;
+          attText += ` • Đã chạm trần 20%, không được nghỉ thêm`;
         } else {
-          attText += ` • ⛔ Nguy cơ cấm thi (quá 20%)`;
+          attText += ` • Nguy cơ cấm thi (quá 20%)`;
         }
       }
 
