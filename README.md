@@ -20,10 +20,6 @@ Chrome extension (Manifest V3) for **FPT University** students: read **exam** an
 - **Filter**: Show only today, this week, two weeks or this month — display only, the export is unaffected
 - **Attendance-risk chip**: per-course absence rate, warns before the 20% exam-ban threshold
 
-### Study suggestions (exam cards)
-- **Ôn tập** strip under each exam card: links by **course code** (from `study-sources.json`)
-- Fallback links: Quizlet search and Google search (HTTPS only; opens when you click)
-
 ### Design
 - Clean popup UI, system light/dark aware
 - Tab navigation: exams + **Lịch học**
@@ -59,9 +55,6 @@ Produces **`fptu-schedule.zip`** (see `manifest.json` for current version).
 1. Open a FAP **Schedule** week page (under `https://fap.fpt.edu.vn/Schedule/`)
 2. In the popup, open the **Lịch học** tab → **Tải lịch** / export as shown
 
-### Custom study links
-Edit **`study-sources.json`** (keys = course codes like `PRJ301`). Only `https:` URLs are accepted for suggestions.
-
 ## Tech stack
 
 - **UI**: HTML, CSS, vanilla JavaScript
@@ -84,8 +77,6 @@ fptu-schedule/
 │   └── schedule.js             # Class-schedule dedupe/merge, shared with the worker
 ├── tests/                      # node --test suites (npm test)
 ├── package.json                # devDependency: jsdom, for the tests only
-├── study-sources.json          # Optional per-course study links
-├── study-suggestions.js          # Resolve suggestions + fallbacks
 ├── icon-16.png / icon-48.png / icon-128.png
 ├── icon.png                    # Source asset (see scripts/build-icons.py)
 ├── zip-extension.sh
