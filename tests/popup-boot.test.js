@@ -928,7 +928,48 @@ test("class card displays attendance summary row when graded sessions exist and 
   assert.strictEqual(exeAttRow, undefined, "no Điểm danh row on course with 0 graded sessions");
 });
 
+test("cards with 100% vắng render 4 header badges without crashing", async () => {
+  const { window } = await boot();
+  const doc = window.document;
 
+  const schedule = [
+    {
+      title: "PRM393",
+      location: "DE-338",
+      slot: "Slot 3",
+      attendanceStatus: "Absent",
+      rawDate: { year: 2026, month: 9, day: 8, startHour: 12, startMinute: 50, endHour: 15, endMinute: 10 }
+    },
+    {
+      title: "MLN111",
+      location: "AL-R402",
+      slot: "Slot 4",
+      attendanceStatus: "Attended",
+      rawDate: { year: 2026, month: 9, day: 8, startHour: 15, startMinute: 20, endHour: 17, endMinute: 40 }
+    }
+  ];
 
+  window.renderClassSchedule(schedule);
 
+  const grid = doc.querySelector("#scheduleTab .schedule-grid");
+  assert.ok(grid, "schedule-grid rendered");
 
+  const cards = doc.querySelectorAll("#scheduleTab .class-card");
+  assert.strictEqual(cards.length, 2, "both cards rendered in grid");
+
+  const prmCard = Array.from(cards).find(c => c.querySelector(".class-code")?.textContent === "PRM393");
+  assert.ok(prmCard, "PRM393 card found");
+
+  const badges = prmCard.querySelector(".class-card__badges");
+  assert.ok(badges, "class-card__badges container exists");
+  assert.strictEqual(badges.children.length, 4, "PRM393 has 4 badges: slot, room, risk, and attendance status");
+
+  const riskChip = prmCard.querySelector(".chip.risk-danger");
+  assert.ok(riskChip, "risk-danger chip exists for 100% absence");
+  assert.strictEqual(riskChip.textContent.trim(), "100% vắng");
+
+  const metaRows = Array.from(prmCard.querySelectorAll(".meta-row"));
+  const attRow = metaRows.find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
+  assert.ok(attRow, "attendance row exists");
+  assert.ok(attRow.querySelector(".meta-value").textContent.includes("100%"), "meta value includes 100%");
+});
