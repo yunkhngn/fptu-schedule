@@ -5,6 +5,12 @@ All notable changes to the **FPTU Schedule** extension are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.6] - 2026-09-09
+
+### Fixed
+- **Chrome Web Store Compliance (Red Potassium)**: Removed obsolete `study-suggestions.js` and `study-sources.json` assets and stripped all dangling references from `popup.html`, `popup.js`, and `popup.css` to eliminate `ERR_FILE_NOT_FOUND` runtime console errors during review.
+- **Schedule Card Layout & Badge Anti-Overflow**: Fixed horizontal layout blowout in the schedule card grid caused by cards with 4 badges (including high attendance risk chips like `100% vắng`). Enforced strict 2-column bounding with `repeat(2, minmax(0, 1fr))`, enabled graceful badge wrapping (`flex-wrap: wrap`), and optimized attendance meta row spacing.
+
 ---
 
 ## [3.6.5] - 2026-09-06
@@ -14,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Slot Status Highlighting**: Nhận diện ca học thời gian thực — viền xanh phát sáng hiệu ứng nhịp thở (`pulse-border`), chấm live nhấp nháy chuyển động và huy hiệu `ĐANG HỌC` cho slot hiện tại; tự động làm mờ và phủ tông xám dịu cho các slot đã qua lịch.
 - **Attendance Tracker & 20% Ban Guard**: Tự động tính toán tổng số buổi có mặt, số buổi vắng, tỷ lệ vắng và số buổi được phép nghỉ còn lại trước khi chạm ngưỡng cấm thi 20% của trường Đại học FPT ngay trên từng thẻ môn học.
 - **FAP Keep-Alive Heartbeat**: Tự động gửi heartbeat chu kỳ mỗi 7 phút khi có tab FAP đang mở để làm mới cookie `ASP.NET_SessionId`, ngăn chặn hoàn toàn việc bị văng đăng nhập và mất form khi đang học tập. Có công tắc Bật/Tắt trong Cài đặt & Tiện ích.
-- **1-Click FAP Lecturer Feedback (Khảo sát giảng viên)**: Thanh công cụ nổi Dark Glassmorphism trên các trang khảo sát FAP (`/Feedback/*`) hỗ trợ đánh giá 5★ toàn bộ câu hỏi và tự động điền nhận xét tích cực, lịch sự trong 1 click.
+- **1-Click FAP Lecturer Feedback (Khảo sát giảng viên)**: Thanh công cụ nổi Dark Glassmorphism trên các trang khảo sát FAP (`/Feedback/*`) hỗ trợ đánh giá 5 sao toàn bộ câu hỏi và tự động điền nhận xét tích cực, lịch sự trong 1 click.
 - **Enhanced QR Calendar Export**: Bổ sung `UID` và `DTSTAMP` chuẩn RFC 5545 giúp điện thoại di động (Apple Calendar, Google Calendar) nhập đầy đủ tất cả các buổi học mà không bị ghi đè, thêm phạm vi xuất 2 tuần và tất cả.
 
 ---

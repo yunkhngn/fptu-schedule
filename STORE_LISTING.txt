@@ -1,4 +1,21 @@
 ================================================================================
+CHROME WEB STORE - WHAT'S NEW IN VERSION 3.6.6 (ENGLISH)
+[Ready to paste into Chrome Web Store Description / Release Notes]
+================================================================================
+
+WHAT'S NEW IN VERSION 3.6.6:
+
+• CHROME WEB STORE COMPLIANCE & CLEANUP
+Completely scrubbed deprecated study suggestion references and resolved ERR_FILE_NOT_FOUND issues during extension startup.
+
+• SCHEDULE CARD LAYOUT & BADGE ANTI-OVERFLOW
+Resolved layout overflow in the schedule grid when courses have high absence rates (such as 100% vắng). Enhanced the 2-column card header with responsive badge wrapping, preventing chips or card borders from overflowing the popup boundary.
+
+• REFINED ATTENDANCE METRICS DISPLAY
+Optimized attendance details formatting in class cards to prevent text clipping and provide seamless reading in both Light and Dark modes.
+
+
+================================================================================
 CHROME WEB STORE - WHAT'S NEW IN VERSION 3.6.5 (ENGLISH)
 [Ready to paste into Chrome Web Store Description / Release Notes]
 ================================================================================

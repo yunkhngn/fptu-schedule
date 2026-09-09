@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FPTU Schedule — Tiện ích Đồng bộ Lịch học & Kỳ thi FPTU</title>
   <meta name="description"
-    content="FPTU Schedule v3.6.5: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
+    content="FPTU Schedule v3.6.6: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/png" href="./icon.png" />
 </head>
@@ -19,7 +19,7 @@
         <img class="site-brand__logo" src="icon-128.png" alt="FPTU Schedule Logo" width="36" height="36" />
         <span class="site-brand__title">
           FPTU Schedule
-          <span class="site-brand__badge">v3.6.5</span>
+          <span class="site-brand__badge">v3.6.6</span>
         </span>
       </a>
 
@@ -71,7 +71,7 @@
         <div class="hero__content">
           <div class="hero__kicker">
             <span class="hero__kicker-dot"></span>
-            <span>Bản phát hành chính thức v3.6.5</span>
+            <span>Bản phát hành chính thức v3.6.6</span>
           </div>
 
           <h1>Lịch học, kỳ thi &amp; điểm số <span class="gradient-text">FPTU trong tầm tay</span></h1>
@@ -458,7 +458,7 @@
     <section class="section section--surface" id="features">
       <div class="container">
         <div class="section-head">
-          <span class="section-head__tag">Đổi mới trong v3.6.5</span>
+          <span class="section-head__tag">Đổi mới trong v3.6.6</span>
           <h2>Những tính năng vượt trội cho sinh viên FPTU</h2>
           <p>Thiết kế tinh gọn, tốc độ tức thì và giải quyết trọn vẹn mọi nhu cầu học tập mỗi học kỳ.</p>
         </div>
@@ -787,7 +787,7 @@
 
           <!-- Card 2: Manual ZIP -->
           <div class="dl-card">
-            <h3>Bản ZIP v3.6.5 (GitHub Release)</h3>
+            <h3>Bản ZIP v3.6.6 (GitHub Release)</h3>
             <p>Dành cho các bạn muốn cài đặt thủ công qua chế độ Developer Mode hoặc trải nghiệm phiên bản đóng gói độc
               lập.</p>
             <ul>
@@ -796,14 +796,14 @@
               <li>Bật <strong>Developer mode</strong> và chọn <strong>Load unpacked</strong></li>
             </ul>
             <a class="btn btn--secondary btn--lg"
-              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v3.6.5/fptu-schedule.zip"
+              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v3.6.6/fptu-schedule.zip"
               target="_blank" rel="noopener">
               <svg class="icon" viewBox="0 0 24 24">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              <span>Tải file ZIP (v3.6.5)</span>
+              <span>Tải file ZIP (v3.6.6)</span>
             </a>
           </div>
         </div>
@@ -875,12 +875,30 @@
         </div>
 
         <div class="changelog-container">
-          <!-- Release v3.6.5 -->
+          <!-- Release v3.6.6 -->
           <article class="changelog-card changelog-card--latest">
             <div class="changelog-card__head">
               <div class="changelog-version-tag">
-                <span class="version-name">v3.6.5</span>
+                <span class="version-name">v3.6.6</span>
                 <span class="version-status">Bản mới nhất</span>
+              </div>
+              <time class="changelog-date">09/09/2026</time>
+            </div>
+            <div class="changelog-body">
+              <h4>Bản vá lỗi &amp; Tối ưu giao diện (Patch Fix)</h4>
+              <ul class="changelog-list">
+                <li><strong>Tuân thủ kiểm duyệt Chrome Web Store:</strong> Loại bỏ triệt để các tệp không còn sử dụng gây lỗi ERR_FILE_NOT_FOUND, đảm bảo extension đạt 100% tiêu chuẩn phát hành Chrome Store.</li>
+                <li><strong>Khắc phục tràn viền thẻ Lịch học (Anti-Overflow):</strong> Giới hạn lưới hiển thị 2 cột chuẩn mực và kích hoạt cơ chế tự động xuống dòng linh hoạt cho nhóm huy hiệu môn học khi xuất hiện cảnh báo vắng (như 100% vắng).</li>
+                <li><strong>Tối ưu định dạng thông số Điểm danh:</strong> Điều chỉnh khoảng cách hiển thị chi tiết số buổi có mặt, vắng và tỷ lệ phần trăm trên thẻ lớp học, tương thích hoàn hảo với cả giao diện Sáng và Tối.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Release v3.6.5 -->
+          <article class="changelog-card">
+            <div class="changelog-card__head">
+              <div class="changelog-version-tag">
+                <span class="version-name">v3.6.5</span>
               </div>
               <time class="changelog-date">06/09/2026</time>
             </div>
