@@ -75,7 +75,13 @@ function executeFapWeekIndexMain(tabId, weekIndex, callback) {
           );
         }
         const sel = weekSelectEl();
-        if (!sel) return { ok: false, error: "week-select-not-found" };
+        if (!sel) {
+          const isNewUi = !!document.getElementById("weekly-timetable-container") || !!document.querySelector(".weekly-timetable-grid");
+          if (isNewUi) {
+            return { ok: true, skippedPostback: true };
+          }
+          return { ok: false, error: "week-select-not-found" };
+        }
         if (idx < 0 || idx >= sel.options.length) return { ok: false, error: "bad-index" };
         if (sel.selectedIndex === idx) {
           return { ok: true, skippedPostback: true };
@@ -108,7 +114,18 @@ function executeFapWeekIndexMain(tabId, weekIndex, callback) {
   );
 }
 
-function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onComplete) {
+function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, isNewUiOrOnComplete, weeksMetaOrUndefined, maybeOnComplete) {
+  let isNewUi = false;
+  let weeksMeta = null;
+  let onComplete = null;
+  if (typeof isNewUiOrOnComplete === "function") {
+    onComplete = isNewUiOrOnComplete;
+  } else {
+    isNewUi = Boolean(isNewUiOrOnComplete);
+    weeksMeta = Array.isArray(weeksMetaOrUndefined) ? weeksMetaOrUndefined : null;
+    onComplete = maybeOnComplete;
+  }
+
   const lo = Math.min(startIdx, endIdx);
   const hi = Math.max(startIdx, endIdx);
   const total = hi - lo + 1;
@@ -118,8 +135,11 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onCompl
   const failedWeeks = [];
   let skippedCells = 0;
 
-  const labelForWeek = (i) =>
-    (weekLabels && weekLabels[i]) || `Tuần #${i}`;
+  const labelForWeek = (i) => {
+    if (weeksMeta && weeksMeta[i] && weeksMeta[i].label) return weeksMeta[i].label;
+    if (weekLabels && weekLabels[i]) return weekLabels[i];
+    return `Tuần #${i + 1}`;
+  };
 
   function finish() {
     let allSchedule = [];
@@ -142,6 +162,7 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onCompl
       {
         classSchedule: mergedJson,
         weekRangeSyncRunning: false,
+        weekRangeProgress: null,
         weekRangeLastSummary: { toastText, statusText }
       },
       () => {
@@ -162,25 +183,97 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onCompl
     );
   }
 
-  function step() {
+  function stepModern() {
     if (current > hi) {
       finish();
       return;
     }
     const idx = current;
+    const weekMeta = (weeksMeta && weeksMeta[idx]) || null;
+    const label = labelForWeek(idx);
+
+    chrome.storage.local.set({
+      weekRangeProgress: { current: stepIndex + 1, total, label }
+    });
+    chrome.runtime
+      .sendMessage({
+        type: "WEEK_RANGE_PROGRESS",
+        current: stepIndex + 1,
+        total,
+        label
+      })
+      .catch(() => {});
+
+    chrome.scripting.executeScript(
+      { target: { tabId }, files: ["content.js"] },
+      () => {
+        chrome.tabs.sendMessage(
+          tabId,
+          {
+            action: "fetchAndExtractWeekSchedule",
+            weekIndex: idx,
+            weekMeta
+          },
+          (response) => {
+            const err = chrome.runtime.lastError;
+            if (err || !response || !response.success) {
+              if (response && response.loginRequired) {
+                failedWeeks.push({ index: idx, label, reason: "login" });
+                chrome.storage.local.set({ weekRangeSyncRunning: false, weekRangeProgress: null }, () => {
+                  chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Default.aspx", active: true });
+                  chrome.runtime
+                    .sendMessage({ type: "WEEK_RANGE_SYNC_ERROR", message: "login" })
+                    .catch(() => {});
+                });
+                onComplete && onComplete(new Error("login"));
+                return;
+              }
+              failedWeeks.push({ index: idx, label, reason: (err && err.message) || (response && response.error) || "fetch-failed" });
+            } else {
+              collected.push.apply(collected, response.schedule || []);
+              skippedCells += response.skipped || 0;
+            }
+            stepIndex += 1;
+            current += 1;
+            setTimeout(stepModern, 120);
+          }
+        );
+      }
+    );
+  }
+
+  function stepLegacy() {
+    if (current > hi) {
+      finish();
+      return;
+    }
+    const idx = current;
+    const label = labelForWeek(idx);
+    chrome.storage.local.set({
+      weekRangeProgress: { current: stepIndex + 1, total, label }
+    });
+    chrome.runtime
+      .sendMessage({
+        type: "WEEK_RANGE_PROGRESS",
+        current: stepIndex + 1,
+        total,
+        label
+      })
+      .catch(() => {});
+
     const cancelWait = armWaitForTabComplete(tabId, 28000, (loadOk) => {
       if (!loadOk) {
-        failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "timeout" });
+        failedWeeks.push({ index: idx, label, reason: "timeout" });
         stepIndex += 1;
         current += 1;
-        step();
+        stepLegacy();
         return;
       }
       extractWeeklyScheduleFromTab(tabId, (err, response) => {
         if (err || !response || !response.success) {
           if (response && response.loginRequired) {
-            failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: "login" });
-            chrome.storage.local.set({ weekRangeSyncRunning: false }, () => {
+            failedWeeks.push({ index: idx, label, reason: "login" });
+            chrome.storage.local.set({ weekRangeSyncRunning: false, weekRangeProgress: null }, () => {
               chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Default.aspx", active: true });
               chrome.runtime
                 .sendMessage({ type: "WEEK_RANGE_SYNC_ERROR", message: "login" })
@@ -189,45 +282,49 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, onCompl
             onComplete && onComplete(new Error("login"));
             return;
           }
-          failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err || "extract" });
+          failedWeeks.push({ index: idx, label, reason: err || "extract" });
         } else {
           collected.push.apply(collected, response.schedule || []);
           skippedCells += response.skipped || 0;
         }
         stepIndex += 1;
         current += 1;
-        step();
+        stepLegacy();
       });
     });
 
     executeFapWeekIndexMain(tabId, idx, (err, result) => {
       if (err) {
         cancelWait();
-        failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: err });
+        failedWeeks.push({ index: idx, label, reason: err });
         stepIndex += 1;
         current += 1;
-        step();
+        stepLegacy();
         return;
       }
       if (result.skippedPostback) {
         cancelWait();
         extractWeeklyScheduleFromTab(tabId, (e2, response) => {
           if (e2 || !response || !response.success) {
-            failedWeeks.push({ index: idx, label: labelForWeek(idx), reason: e2 || "extract" });
+            failedWeeks.push({ index: idx, label, reason: e2 || "extract" });
           } else {
             collected.push.apply(collected, response.schedule || []);
-          skippedCells += response.skipped || 0;
+            skippedCells += response.skipped || 0;
           }
           stepIndex += 1;
           current += 1;
-          step();
+          stepLegacy();
         });
         return;
       }
     });
   }
 
-  step();
+  if (isNewUi) {
+    stepModern();
+  } else {
+    stepLegacy();
+  }
 }
 
 function rescheduleAllAlarms(callback) {
@@ -320,11 +417,15 @@ if (typeof chrome !== "undefined" && chrome.notifications && chrome.notification
     if (!notificationId || !notificationId.startsWith("fptu:")) return;
     const isExam = notificationId.startsWith("fptu:exam:");
     const targetUrl = isExam
-      ? "https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx"
-      : "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx";
+      ? "https://fap.fpt.edu.vn/ExamSchedule"
+      : "https://fap.fpt.edu.vn/WeeklyTimetable";
 
     chrome.tabs.query({ url: "*://fap.fpt.edu.vn/*" }, (tabs) => {
-      const matchingTab = (tabs || []).find((t) => t.url && t.url.includes(isExam ? "ScheduleExams" : "ScheduleOfWeek"));
+      const matchingTab = (tabs || []).find((t) =>
+        t.url && (isExam
+          ? (t.url.includes("ExamSchedule") || t.url.includes("ScheduleExams"))
+          : (t.url.includes("WeeklyTimetable") || t.url.includes("ScheduleOfWeek")))
+      );
       if (matchingTab && matchingTab.id) {
         chrome.tabs.update(matchingTab.id, { active: true });
       } else {
@@ -385,7 +486,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return false;
   }
 
-  const { tabId, startIdx, endIdx, weekLabels, seedJson } = msg;
+  const { tabId, startIdx, endIdx, weekLabels, seedJson, isNewUi, weeksMeta } = msg;
   if (tabId == null || startIdx == null || endIdx == null) {
     sendResponse({ ok: false, error: "bad-payload" });
     return false;
@@ -395,12 +496,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     typeof seedJson === "string" ? seedJson : JSON.stringify([]);
 
   chrome.storage.local.set({ weekRangeSyncRunning: true }, () => {
-    runWeekRangeSync(tabId, startIdx, endIdx, weekLabels || [], seed, (err) => {
-      if (err && err.message === "login") {
-        /* already notified */
-      } else if (err) {
-        chrome.storage.local.set({ weekRangeSyncRunning: false });
-      }
+    chrome.tabs.get(tabId, (tab) => {
+      const effectiveIsNewUi = Boolean(isNewUi) || (tab && tab.url && /WeeklyTimetable/i.test(tab.url));
+      runWeekRangeSync(tabId, startIdx, endIdx, weekLabels || [], seed, effectiveIsNewUi, weeksMeta || null, (err) => {
+        if (err && err.message === "login") {
+          /* already notified */
+        } else if (err) {
+          chrome.storage.local.set({ weekRangeSyncRunning: false });
+        }
+      });
     });
   });
 

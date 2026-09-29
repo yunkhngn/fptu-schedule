@@ -154,6 +154,10 @@
           <svg class="icon" aria-hidden="true"><use href="#icon-sliders"/></svg>
           <span class="action-btn__label">Lọc</span>
         </button>
+        <button type="button" id="clearExamBtn" class="action-btn action-btn--danger action-btn--compact" title="Xoá lịch thi đã lưu">
+          <svg class="icon" aria-hidden="true"><use href="#icon-trash"/></svg>
+          <span class="action-btn__label">Xoá</span>
+        </button>
       </div>
 
       <div id="scheduleActions" class="actions-row">
@@ -226,6 +230,13 @@
               <span>Tháng này (đến hết tháng)</span>
             </label>
           </div>
+          <div class="filter-divider"></div>
+          <div class="filter-group filter-group--options">
+            <label class="filter-item">
+              <input type="checkbox" id="showAttendanceStats" checked>
+              <span>Hiện số buổi nghỉ và còn lại</span>
+            </label>
+          </div>
           <div class="filter-actions">
             <button type="button" id="resetClassFilter" class="filter-btn">Đặt lại</button>
             <button type="button" id="applyClassFilter" class="filter-btn apply-btn">Áp dụng</button>
@@ -263,7 +274,7 @@
         <div class="modal-body">
           <p class="week-range-hint">
             Mở lịch tuần trên FAP (chọn năm nếu cần), rồi «Tải tuần» và chọn khoảng.
-            <a class="week-range-link" href="https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx" target="_blank" rel="noopener">Lịch tuần FAP</a>
+            <a class="week-range-link" href="https://fap.fpt.edu.vn/WeeklyTimetable" target="_blank" rel="noopener">Lịch tuần FAP</a>
           </p>
           <div class="week-range-toolbar" role="group" aria-label="Đồng bộ nhiều tuần">
             <button type="button" id="loadWeekOptionsBtn" class="week-range-btn">Tải tuần</button>

@@ -6,9 +6,15 @@ describe("FAP Keep-Alive Engine", () => {
   test("isFapSessionCandidate ignores login, logout, and non-FAP pages", () => {
     assert.strictEqual(isFapSessionCandidate("/Default.aspx"), false);
     assert.strictEqual(isFapSessionCandidate("/Logout.aspx"), false);
+    assert.strictEqual(isFapSessionCandidate("/Default"), false);
+    assert.strictEqual(isFapSessionCandidate("/Logout"), false);
+    assert.strictEqual(isFapSessionCandidate("/Login"), false);
+    assert.strictEqual(isFapSessionCandidate("/account/login"), false);
     assert.strictEqual(isFapSessionCandidate(""), false);
     assert.strictEqual(isFapSessionCandidate("/HomePage.aspx"), true);
     assert.strictEqual(isFapSessionCandidate("/Report/ScheduleOfWeek.aspx"), true);
+    assert.strictEqual(isFapSessionCandidate("/WeeklyTimetable"), true);
+    assert.strictEqual(isFapSessionCandidate("/ExamSchedule"), true);
     assert.strictEqual(isFapSessionCandidate("/Feedback/StudentFeedback.aspx"), true);
   });
 

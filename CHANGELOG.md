@@ -5,6 +5,31 @@ All notable changes to the **FPTU Schedule** extension are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-09-29
+
+### Added
+- **Modern FAP Interface Support**: Full compatibility with the upgraded FAP academic portal interface, supporting the newly introduced `/WeeklyTimetable`, `/ExamSchedule`, and `/Report/Grade` routes alongside legacy endpoints.
+- **Next-Gen Timetable Matrix Parser**: Re-engineered weekly class schedule scraping engine to process the single-header responsive timetable grid (`#weekly-timetable-container`, `.weekly-timetable-grid`). Seamlessly extracts multi-slot daily courses (slots 1 to 9), subject codes, class group codes, attendance statuses (Attended, Absent, Not yet), time intervals, room codes, instructor codes, and Google Meet video links.
+- **Next-Gen Exam Schedule Parser**: Robust parser for modern FAP exam cards and tables (`.fap-sheet`, `.fap-table--stack`) with automatic column detection using `data-label` attributes (`Ngày`, `Thời gian`, `Phòng`, `Môn thi`, `Loại lịch`, `Kỳ thi`, `Hình thức thi`, `Trạng thái điểm danh`). Accurately splits subject codes and titles, formats exam types (`2NDFE`, `2NDPE`, `FE`, `PE`), and captures official examination notes.
+- **Next-Gen Student Grade Scanner**: Native scraper for modern FAP grade reports (`.fap-result-card`, `table.student-mark-sheet`) and dual-dropdown architecture separating courses (`#grade-report-course`) from terms (`#grade-report-term`). Handles Vietnamese decimal commas (`7,0` to `7.0`), category totals, bonus points, weighted averages, and passing predictors.
+- **Automated Google Meet Class Integration**: Automatically identifies remote online sessions, detects Google Meet URLs, and sets up direct one-click navigation from class schedule cards.
+- **Dynamic Attendance Re-syncing & Auto-Refresh**: Enhanced timetable event merging and auto-refresh key matching so that re-syncing or opening the popup instantly updates existing class cards with freshly marked attendance records (Attended / Absent).
+- **Attendance Statistics Display Toggle**: Added an interactive toggle (`showAttendanceStats`) in the schedule filter modal allowing students to customize whether absent counts and remaining permitted absences are displayed on schedule cards.
+- **Adaptive FAP Keep-Alive Heartbeat**: Upgraded session keep-alive service to ping active portal routes dynamically without hardcoded legacy endpoints, with support for modern login/logout path redirects.
+- **Exam Schedule Deletion & Management**: Added single-click exam deletion directly on individual exam cards, alongside a master clear button in the exam action toolbar with confirmation modals, allowing students to easily purge test entries, duplicates, or outdated exam sessions.
+- **New FAP Test Suite**: Added dedicated automated test suite (`tests/new-fap.test.js` and `tests/grades.test.js`) verifying DOM structure parsing across exports of modern weekly schedules, examination tables, and student grade reports.
+
+### Changed
+- **Navigation & Deep Linking**: Updated primary navigation targets, sync buttons, and background desktop notification click handlers to route to `https://fap.fpt.edu.vn/WeeklyTimetable`, `https://fap.fpt.edu.vn/ExamSchedule`, and `https://fap.fpt.edu.vn/Report/Grade`.
+- **Week Range Synchronization**: Added graceful fallback for modern FAP pages lacking legacy ASP.NET dropdown controls, allowing one-click background timetable synchronization using ISO week pickers.
+- **Dual-Mode FAP Session Detection**: Enhanced tab discovery and keep-alive candidate verification to identify both modern routes and legacy ASP.NET WebForms pages.
+- **Synchronized Versioning**: Updated manifest and documentation across all assets to release version 4.0.0.
+
+### Security & Compliance
+- Strictly compliant with Chrome Extension Manifest V3 zero-remote-code policies. All parsing and formatting occur 100% locally on the student device without third-party network requests.
+
+---
+
 ## [3.6.6] - 2026-09-09
 
 ### Fixed

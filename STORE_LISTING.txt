@@ -1,4 +1,39 @@
 ================================================================================
+CHROME WEB STORE - WHAT'S NEW IN VERSION 4.0.0 (ENGLISH)
+[Ready to paste into Chrome Web Store Description / Release Notes]
+================================================================================
+
+WHAT'S NEW IN VERSION 4.0.0:
+
+• FULL MODERN FAP UI SUPPORT
+Comprehensive architectural upgrade supporting FPT University's modern academic portal interface, including the newly introduced /WeeklyTimetable and /ExamSchedule routes.
+
+• RESPONSIVE TIMETABLE GRID SCRAPING
+Re-engineered class schedule scraper designed specifically for FAP's new single-header timetable layout. Accurately extracts courses across slots 1 to 9, captures class group codes, attendance statuses (Attended, Absent, Not yet), rooms, instructors, and time intervals.
+
+• ADVANCED EXAM SCHEDULE PARSING
+Native parser for modern FAP examination tables with automated column mapping using data-label attributes. Accurately identifies course codes, course names, exam forms, and exam categories (2NDFE, 2NDPE, FE, PE).
+
+• AUTOMATED GOOGLE MEET LINK INTEGRATION
+Directly identifies remote classes from modern timetable markers, extracts Google Meet URLs, and provides instant one-click meeting access directly from class schedule cards.
+
+• DYNAMIC ATTENDANCE RE-SYNC & AUTO-REFRESH
+Re-syncing or viewing schedules instantly merges and refreshes attendance changes on previously saved class cards.
+
+• ADAPTIVE KEEP-ALIVE & NEXT-GEN GRADE SCANNER
+Enhanced session keep-alive pings active portal routes dynamically. Next-gen student grade parser natively handles modern /Report/Grade tables, separates course and term selectors, parses Vietnamese decimal grades, and accurately predicts final exam pass requirements.
+
+• ATTENDANCE METRICS VISIBILITY CONTROLS
+Added a dedicated toggle in schedule filters to easily show or hide absent session counts and remaining permitted absences per course.
+
+• EXAM SCHEDULE DELETION & MANAGEMENT
+Purge outdated exams, testing entries, or duplicates with single-click card deletion and a master clear button in the exam action toolbar.
+
+• DUAL-MODE SESSION & NAVIGATION COMPATIBILITY
+Full backward compatibility ensuring seamless operation across both modern responsive routes and legacy ASP.NET WebForms portals.
+
+
+================================================================================
 CHROME WEB STORE - WHAT'S NEW IN VERSION 3.6.6 (ENGLISH)
 [Ready to paste into Chrome Web Store Description / Release Notes]
 ================================================================================

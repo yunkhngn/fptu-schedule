@@ -486,4 +486,226 @@ test("active course code extraction works on single-row 2-column FAP layout", ()
   assert.strictEqual(grade.courseName, "Experiential Entrepreneurship");
 });
 
+test("parseFapGradeTable and extractStudentGradeFromPage parse modern FAP UI (v4.0.0)", () => {
+  const MODERN_FAP_GRADE_HTML = `
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <select id="grade-report-course" class="form-select academic-report-course-select">
+          <option value="01a07c76-e546-76e2-8e02-b620de7d1b65" data-report-term-id="01a07c76-b178-78de-b4c0-96dcec4717e4" data-fallback-href="/Report/Grade?termId=01a07c76-b178-78de-b4c0-96dcec4717e4&amp;courseId=01a07c76-e546-76e2-8e02-b620de7d1b65" selected="selected">
+              On-The-Job Training (OJT202) (OJT202_SP26)
+          </option>
+          <option value="01a07c76-e3b9-7c87-a7ce-75ee94bede0f" data-report-term-id="01a07c76-b178-78de-b4c0-96dcec4717e4" data-fallback-href="/Report/Grade?termId=01a07c76-b178-78de-b4c0-96dcec4717e4&amp;courseId=01a07c76-e3b9-7c87-a7ce-75ee94bede0f">
+              Research Methods &amp; Academic Writing Skills (ENW493c) (ENW493C.9)
+          </option>
+        </select>
+
+        <div class="card fap-result-card">
+            <div class="card-header">
+                <h5 class="fap-result-card__title">
+                    On-The-Job Training
+                        <span class="fap-result-card__code">OJT202</span>
+                </h5>
+                <p class="fap-result-card__meta">
+                    <span><i class="ri-book-open-line" aria-hidden="true"></i> OJT202_SP26</span>
+                    <span><i class="ri-calendar-line" aria-hidden="true"></i> Spring2026</span>
+                </p>
+            </div>
+            <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-vcenter mb-0 student-mark-sheet">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nhóm điểm</th>
+                                    <th scope="col">Tên cột điểm</th>
+                                    <th scope="col" class="student-mark-col-score">Trọng số (%)</th>
+                                    <th scope="col" class="student-mark-col-score">Điểm cuối cùng</th>
+                                    <th scope="col">Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        <tr>
+                                                <td rowspan="2" class="sheet-group-cell">Kiến thức và kỹ năng chuyên môn</td>
+                                            <td>Kiến thức và kỹ năng chuyên môn</td>
+                                            <td class="text-center mark-score">40</td>
+                                            <td class="text-center mark-score">7,0</td>
+                                            <td>-</td>
+                                        </tr>
+                                    <tr class="sheet-row-total">
+                                        <td class="text-center">Tổng</td>
+                                        <td class="text-center mark-score">40%</td>
+                                        <td class="text-center mark-score">7,0</td>
+                                        <td></td>
+                                    </tr>
+                                        <tr>
+                                                <td rowspan="2" class="sheet-group-cell">Kỹ năng mềm</td>
+                                            <td>Kỹ năng mềm</td>
+                                            <td class="text-center mark-score">30</td>
+                                            <td class="text-center mark-score">6,0</td>
+                                            <td>-</td>
+                                        </tr>
+                                    <tr class="sheet-row-total">
+                                        <td class="text-center">Tổng</td>
+                                        <td class="text-center mark-score">30%</td>
+                                        <td class="text-center mark-score">6,0</td>
+                                        <td></td>
+                                    </tr>
+                                        <tr>
+                                                <td rowspan="2" class="sheet-group-cell">Thái độ</td>
+                                            <td>Thái độ</td>
+                                            <td class="text-center mark-score">30</td>
+                                            <td class="text-center mark-score">8,0</td>
+                                            <td>-</td>
+                                        </tr>
+                                    <tr class="sheet-row-total">
+                                        <td class="text-center">Tổng</td>
+                                        <td class="text-center mark-score">30%</td>
+                                        <td class="text-center mark-score">8,0</td>
+                                        <td></td>
+                                    </tr>
+                                <tr class="sheet-grand-total">
+                                    <td></td>
+                                    <td class="text-end">Nộp muộn (%)</td>
+                                    <td class="text-center" colspan="2">0%</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="sheet-grand-total">
+                                    <td></td>
+                                    <td class="text-end">Tổng môn</td>
+                                    <td class="text-center">Điểm trung bình</td>
+                                    <td class="text-center">
+                                        <span class="grade-average grade-status--passed">7,0</span>
+                                    </td>
+                                    <td>
+                                            <span class="grade-status grade-status--passed">
+                                                <i class="ri-checkbox-circle-fill" aria-hidden="true"></i>
+                                                Trạng thái: Passed
+                                            </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  const dom = new JSDOM(MODERN_FAP_GRADE_HTML, {
+    url: "https://fap.fpt.edu.vn/Report/Grade?termId=01a07c76-b178-78de-b4c0-96dcec4717e4&courseId=01a07c76-e546-76e2-8e02-b620de7d1b65"
+  });
+  const doc = dom.window.document;
+
+  const table = findFapGradeTable(doc);
+  assert.ok(table, "Modern grade table is found by findFapGradeTable");
+
+  const parsed = parseFapGradeTable(table);
+  assert.strictEqual(parsed.average, 7.0);
+  assert.strictEqual(parsed.status, "Passed");
+  assert.strictEqual(parsed.bonus, 0);
+  assert.strictEqual(parsed.categories.length, 3);
+  assert.strictEqual(parsed.categories[0].category, "Kiến thức và kỹ năng chuyên môn");
+  assert.strictEqual(parsed.categories[0].weight, 40);
+  assert.strictEqual(parsed.categories[0].value, 7.0);
+  assert.strictEqual(parsed.categories[1].category, "Kỹ năng mềm");
+  assert.strictEqual(parsed.categories[1].weight, 30);
+  assert.strictEqual(parsed.categories[1].value, 6.0);
+  assert.strictEqual(parsed.categories[2].category, "Thái độ");
+  assert.strictEqual(parsed.categories[2].weight, 30);
+  assert.strictEqual(parsed.categories[2].value, 8.0);
+
+  const controls = getGradePageControls(doc);
+  assert.strictEqual(controls.ok, true);
+  assert.strictEqual(controls.courses.length, 2);
+  assert.strictEqual(controls.courses[0].courseCode, "OJT202");
+  assert.strictEqual(controls.courses[0].courseName, "On-The-Job Training");
+  assert.strictEqual(controls.courses[0].isActive, true);
+  assert.strictEqual(controls.courses[1].courseCode, "ENW493C");
+  assert.strictEqual(controls.courses[1].courseName, "Research Methods & Academic Writing Skills");
+  assert.strictEqual(controls.courses[1].isActive, false);
+
+  const grade = extractStudentGradeFromPage(doc);
+  assert.ok(grade, "Full grade object extracted");
+  assert.strictEqual(grade.courseCode, "OJT202");
+  assert.strictEqual(grade.courseName, "On-The-Job Training");
+  assert.strictEqual(grade.term, "Spring2026");
+  assert.strictEqual(grade.average, 7.0);
+  assert.strictEqual(grade.status, "Passed");
+
+  const scoreInfo = calculateCurrentScore(grade.categories, grade.bonus);
+  assert.strictEqual(scoreInfo.completedWeight, 100);
+  assert.strictEqual(scoreInfo.remainingWeight, 0);
+  assert.strictEqual(scoreInfo.currentWeightedScore, 7.0);
+});
+
+test("findGradeCourseSelect correctly targets course select and ignores term select in modern FAP", () => {
+  const TWO_SELECT_HTML = `
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="grade-report-term" class="form-label">Học kỳ</label>
+            <select id="grade-report-term" class="form-select academic-report-term-select">
+                    <option value="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12" selected="selected">
+                        Fall2026
+                    </option>
+                    <option value="01a07c76-b178-7e35-8083-ab4b837719c3" data-fallback-href="/Report/Grade?termId=01a07c76-b178-7e35-8083-ab4b837719c3">
+                        Summer2026
+                    </option>
+                    <option value="01a07c76-b178-78de-b4c0-96dcec4717e4" data-fallback-href="/Report/Grade?termId=01a07c76-b178-78de-b4c0-96dcec4717e4">
+                        Spring2026
+                    </option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="grade-report-course" class="form-label">Lớp học</label>
+            <select id="grade-report-course" class="form-select academic-report-course-select">
+                    <option value="01a07c76-e867-76a6-ba26-8fc81e7fb5ee" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e867-76a6-ba26-8fc81e7fb5ee" selected="selected">
+                        Ethics in IT (ITE302c) (SE1938-NJ)
+                    </option>
+                    <option value="01a07c76-e8ef-7d5d-953c-d9e11eb7e3bd" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e8ef-7d5d-953c-d9e11eb7e3bd">
+                        Experiential Entrepreneurship 2 (EXE201) (GD1911-AD)
+                    </option>
+                    <option value="01a0dc8e-8bc9-720a-a9c2-4c35b941665e" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a0dc8e-8bc9-720a-a9c2-4c35b941665e">
+                        Group Experiential Entrepreneurship 2 (EXE201g) (GD1911-AD_03)
+                    </option>
+                    <option value="01a07c76-e8ec-7a90-809a-eada3b34672b" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e8ec-7a90-809a-eada3b34672b">
+                        Mobile Programming (PRM393) (SE1938-NJ)
+                    </option>
+                    <option value="01a07c76-e869-7e69-a93e-ebf19eef4c53" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e869-7e69-a93e-ebf19eef4c53">
+                        Philosophy of Marxism – Leninism (MLN111) (SE1938-NJ)
+                    </option>
+                    <option value="01a07c76-e86a-7e41-a942-4a67cea3a18b" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e86a-7e41-a942-4a67cea3a18b">
+                        Political economics of Marxism – Leninism (MLN122) (SE1938-NJ)
+                    </option>
+                    <option value="01a07c76-e8a5-7353-ae1a-f70cd8fe9ebb" data-report-term-id="01a07c76-b178-728a-a70c-bfdc515d2b12" data-fallback-href="/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12&amp;courseId=01a07c76-e8a5-7353-ae1a-f70cd8fe9ebb">
+                        Web Development Project (WDP301) (SE1938-NJ)
+                    </option>
+            </select>
+        </div>
+    </div>
+  `;
+
+  const dom = new JSDOM(TWO_SELECT_HTML, {
+    url: "https://fap.fpt.edu.vn/Report/Grade?termId=01a07c76-b178-728a-a70c-bfdc515d2b12"
+  });
+  const doc = dom.window.document;
+
+  const courses = getGradePageCourses(doc);
+  assert.strictEqual(courses.length, 7, "Must extract 7 courses from course select, NOT semesters");
+  assert.strictEqual(courses[0].courseCode, "ITE302C");
+  assert.strictEqual(courses[0].courseName, "Ethics in IT");
+  assert.strictEqual(courses[0].isActive, true);
+  assert.strictEqual(courses[1].courseCode, "EXE201");
+  assert.strictEqual(courses[2].courseCode, "EXE201G");
+  assert.strictEqual(courses[3].courseCode, "PRM393");
+  assert.strictEqual(courses[4].courseCode, "MLN111");
+  assert.strictEqual(courses[5].courseCode, "MLN122");
+  assert.strictEqual(courses[6].courseCode, "WDP301");
+
+  const controls = getGradePageControls(doc);
+  assert.strictEqual(controls.term, "Fall2026");
+  assert.strictEqual(controls.courses.length, 7);
+});
+
+
 

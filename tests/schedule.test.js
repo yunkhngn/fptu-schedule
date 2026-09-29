@@ -42,6 +42,17 @@ test("re-syncing the same week adds nothing", () => {
   assert.strictEqual(merged.length, 3);
 });
 
+test("re-syncing updates attendance status for existing matching events", () => {
+  const existing = [{ ...ev("PRJ301", 21), attendanceStatus: "not yet" }];
+  const incoming = [{ ...ev("PRJ301", 21), attendanceStatus: "attended", attendanceColor: "green" }];
+  const { uniqueNewEvents, merged } = mergeNewClassEventsInto(existing, incoming);
+  assert.strictEqual(uniqueNewEvents.length, 0);
+  assert.strictEqual(merged.length, 1);
+  assert.strictEqual(merged[0].attendanceStatus, "attended");
+  assert.strictEqual(merged[0].attendanceColor, "green");
+  assert.strictEqual(existing[0].attendanceStatus, "not yet", "existing array not mutated");
+});
+
 test("un-keyable events are kept rather than silently dropped", () => {
   const odd = { title: "???" };
   const { uniqueNewEvents, merged } = mergeNewClassEventsInto([], [odd, odd]);

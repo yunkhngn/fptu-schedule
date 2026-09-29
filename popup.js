@@ -59,6 +59,9 @@ let lastRenderedClassSchedule = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.type === "WEEK_RANGE_PROGRESS") {
+      setWeekRangeStatus(`Đang đồng bộ ${msg.current}/${msg.total}: ${msg.label}…`, true);
+    }
     if (msg.type === "WEEK_RANGE_SYNC_DONE") {
       applyWeekRangeSyncDoneFromBackground(msg);
     }
@@ -590,6 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.closeQrSyncModal = closeQrSyncModalFunc;
   window.handleDownloadClassSchedule = handleDownloadClassSchedule;
   window.handleDownloadExamSchedule = handleDownloadExamSchedule;
+  window.handleClearExamSchedule = handleClearExamSchedule;
+  window.deleteSingleExam = deleteSingleExam;
 
   
   // Tab switching functionality - add this right after the other element declarations
@@ -815,7 +820,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (syncButton) {
     syncButton.addEventListener("click", () => {
-      chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx" });
+      chrome.tabs.query({ url: "*://fap.fpt.edu.vn/*" }, (tabs) => {
+        const examTab = (tabs || []).find((t) => t.url && (/ExamSchedule/i.test(t.url) || /ScheduleExams/i.test(t.url)));
+        if (examTab && examTab.id) {
+          chrome.tabs.update(examTab.id, { active: true });
+        } else {
+          chrome.tabs.create({ url: "https://fap.fpt.edu.vn/ExamSchedule", active: true });
+        }
+      });
     });
   }
 
@@ -825,10 +837,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const clearExamBtn = document.getElementById("clearExamBtn");
+  if (clearExamBtn) {
+    clearExamBtn.addEventListener("click", handleClearExamSchedule);
+  }
+
 
   setTimeout(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs && tabs[0] && tabs[0].url && tabs[0].url.includes("https://fap.fpt.edu.vn/Exam/ScheduleExams.aspx")) {
+      if (tabs && tabs[0] && tabs[0].url && (/ExamSchedule/i.test(tabs[0].url) || /ScheduleExams/i.test(tabs[0].url))) {
         autoSyncSchedule();
       }
     });
@@ -897,7 +914,7 @@ function renderStudentGrades(gradesMap) {
     empty.innerHTML = `
       <p style="font-weight:650; font-size:14px; margin:0 0 6px;">Chưa có dữ liệu bảng điểm</p>
       <p style="font-size:12px; color:var(--text-muted); margin:0 0 14px; line-height:1.4;">
-        Mở trang Điểm số FAP (StudentGrade.aspx) rồi nhấn <strong>«Đồng bộ»</strong> hoặc <strong>«Quét tất cả môn»</strong>.
+        Mở trang Điểm số FAP (StudentGrade) rồi nhấn <strong>«Đồng bộ»</strong> hoặc <strong>«Quét tất cả môn»</strong>.
       </p>
       <a href="https://fap.fpt.edu.vn/Grade/StudentGrade.aspx" target="_blank" class="action-btn action-btn--secondary" style="display:inline-flex; align-items:center; gap:6px; margin:0 auto; text-decoration:none; width:fit-content;">
         <svg class="icon" aria-hidden="true" style="width:14px; height:14px;"><use href="#icon-award"/></svg>
@@ -1557,6 +1574,7 @@ function renderClassSchedule(schedule) {
   syncScheduleViewToggleButtons();
 
   // Absence rate and detailed attendance stats per course
+  const showAttendanceStats = getShowAttendanceStats();
   const attendanceStatsByCourse = typeof computeCourseAttendanceStats === "function" ? computeCourseAttendanceStats(stored) : {};
   const attendanceByCourse = computeAttendanceByCourse(stored);
 
@@ -1691,16 +1709,18 @@ function renderClassSchedule(schedule) {
     // 3. Attendance-risk chip — shown on every card of a course whose graded sessions so far
     // put it at or past the early-warning line, using the same rate for all of that course's
     // cards regardless of which specific session this one is.
-    const courseAttendance = attendanceByCourse[ev.title];
-    const riskLevel = courseAttendance ? attendanceRiskLevel(courseAttendance.rate) : null;
-    if (riskLevel) {
-      const chipRisk = document.createElement("span");
-      chipRisk.className = `chip risk-${riskLevel}`;
-      const dotRisk = document.createElement("span"); dotRisk.className = "dot";
-      chipRisk.appendChild(dotRisk);
-      const pct = Math.round(courseAttendance.rate * 100);
-      chipRisk.appendChild(document.createTextNode(`${pct}% vắng`));
-      headBadges.appendChild(chipRisk);
+    if (showAttendanceStats) {
+      const courseAttendance = attendanceByCourse[ev.title];
+      const riskLevel = courseAttendance ? attendanceRiskLevel(courseAttendance.rate) : null;
+      if (riskLevel) {
+        const chipRisk = document.createElement("span");
+        chipRisk.className = `chip risk-${riskLevel}`;
+        const dotRisk = document.createElement("span"); dotRisk.className = "dot";
+        chipRisk.appendChild(dotRisk);
+        const pct = Math.round(courseAttendance.rate * 100);
+        chipRisk.appendChild(document.createTextNode(`${pct}% vắng`));
+        headBadges.appendChild(chipRisk);
+      }
     }
 
     // 4. Attendance status chip
@@ -1826,28 +1846,30 @@ function renderClassSchedule(schedule) {
       addMeta("Giờ", `${fmtTime(ev.rawDate.startHour, ev.rawDate.startMinute)} – ${fmtTime(ev.rawDate.endHour, ev.rawDate.endMinute)}`);
     }
 
-    const courseStats = attendanceStatsByCourse[ev.title];
-    if (courseStats && courseStats.totalGraded > 0) {
-      const pct = Math.round(courseStats.rate * 1000) / 10;
-      let attText = `${courseStats.attended} có mặt • ${courseStats.absent} vắng (${pct}%)`;
-      let statusClass = "attendance-safe";
-      if (courseStats.rate >= 0.2 || (courseStats.hasFullSchedule && courseStats.remainingAbsent <= 0)) {
-        statusClass = "attendance-danger";
-      } else if (courseStats.rate >= 0.15) {
-        statusClass = "attendance-warning";
-      }
-
-      if (courseStats.hasFullSchedule) {
-        if (courseStats.remainingAbsent > 0) {
-          attText += ` • Còn được nghỉ ${courseStats.remainingAbsent} buổi`;
-        } else if (courseStats.remainingAbsent === 0) {
-          attText += ` • Đã chạm trần 20%, không được nghỉ thêm`;
-        } else {
-          attText += ` • Nguy cơ cấm thi (quá 20%)`;
+    if (showAttendanceStats) {
+      const courseStats = attendanceStatsByCourse[ev.title];
+      if (courseStats && courseStats.totalGraded > 0) {
+        const pct = Math.round(courseStats.rate * 1000) / 10;
+        let attText = `${courseStats.attended} có mặt • ${courseStats.absent} vắng (${pct}%)`;
+        let statusClass = "attendance-safe";
+        if (courseStats.rate >= 0.2 || (courseStats.hasFullSchedule && courseStats.remainingAbsent <= 0)) {
+          statusClass = "attendance-danger";
+        } else if (courseStats.rate >= 0.15) {
+          statusClass = "attendance-warning";
         }
-      }
 
-      addMeta("Điểm danh", attText, statusClass);
+        if (courseStats.hasFullSchedule) {
+          if (courseStats.remainingAbsent > 0) {
+            attText += ` • Còn được nghỉ ${courseStats.remainingAbsent} buổi`;
+          } else if (courseStats.remainingAbsent === 0) {
+            attText += ` • Đã chạm trần 20%, không được nghỉ thêm`;
+          } else {
+            attText += ` • Nguy cơ cấm thi (quá 20%)`;
+          }
+        }
+
+        addMeta("Điểm danh", attText, statusClass);
+      }
     }
 
     card.appendChild(meta);
@@ -2100,10 +2122,15 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
   if (syncGradeBtn) {
     syncGradeBtn.addEventListener("click", () => {
       if (typeof chrome === "undefined" || !chrome.tabs) return;
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs && tabs[0];
-        if (!activeTab || !activeTab.url || !/fap\.fpt\.edu\.vn/i.test(activeTab.url)) {
-          showError("Hãy mở tab FAP (StudentGrade.aspx) để đồng bộ điểm.");
+      findStudentGradeTab(async (err, activeTab) => {
+        if (err || !activeTab || !activeTab.id) {
+          const open = await showConfirm(
+            "Cần tab Bảng điểm FAP để đồng bộ điểm môn hiện tại. Mở Bảng điểm?",
+            { title: "Mở FAP", okLabel: "Mở Bảng điểm" }
+          );
+          if (open) {
+            chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/Grade", active: true });
+          }
           return;
         }
 
@@ -2152,10 +2179,15 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
   if (syncAllGradesBtn) {
     syncAllGradesBtn.addEventListener("click", () => {
       if (typeof chrome === "undefined" || !chrome.tabs) return;
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs && tabs[0];
-        if (!activeTab || !activeTab.url || !/StudentGrade\.aspx/i.test(activeTab.url)) {
-          showError("Mở trang FAP 'Grade report' (StudentGrade.aspx) để quét tất cả môn.");
+      findStudentGradeTab(async (err, activeTab) => {
+        if (err || !activeTab || !activeTab.id) {
+          const open = await showConfirm(
+            "Cần tab Bảng điểm FAP để quét điểm. Mở Bảng điểm?",
+            { title: "Mở FAP", okLabel: "Mở Bảng điểm" }
+          );
+          if (open) {
+            chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/Grade", active: true });
+          }
           return;
         }
 
@@ -2252,11 +2284,15 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
                 let fetchUrl = c.href;
                 if (!fetchUrl || !/^https?:\/\//i.test(fetchUrl)) {
                   try {
-                    const base = new URL(activeTab.url || "https://fap.fpt.edu.vn/Grade/StudentGrade.aspx");
-                    base.searchParams.set("course", c.id);
+                    const base = new URL(activeTab.url || "https://fap.fpt.edu.vn/Report/Grade");
+                    if (base.pathname.includes("/Report/Grade")) {
+                      base.searchParams.set("courseId", c.id);
+                    } else {
+                      base.searchParams.set("course", c.id);
+                    }
                     fetchUrl = base.href;
                   } catch (_) {
-                    fetchUrl = `https://fap.fpt.edu.vn/Grade/StudentGrade.aspx?course=${c.id}`;
+                    fetchUrl = `https://fap.fpt.edu.vn/Report/Grade?courseId=${c.id}`;
                   }
                 }
                 const parsed = await fetchGradeInTab(activeTab.id, fetchUrl);
@@ -2327,6 +2363,10 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
       rangeInputs().forEach((input) => {
         input.checked = input.value === current;
       });
+      const showStatsCheckbox = document.getElementById("showAttendanceStats");
+      if (showStatsCheckbox) {
+        showStatsCheckbox.checked = getShowAttendanceStats();
+      }
       scheduleFilterModal.style.display = "block";
     });
 
@@ -2342,6 +2382,10 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
       rangeInputs().forEach((input) => {
         input.checked = input.value === "all";
       });
+      const showStatsCheckbox = document.getElementById("showAttendanceStats");
+      if (showStatsCheckbox) {
+        showStatsCheckbox.checked = true;
+      }
     });
   }
 
@@ -2350,6 +2394,10 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
     applyClassFilter.addEventListener("click", () => {
       const picked = [...rangeInputs()].find((input) => input.checked);
       setClassRangeFilter(picked ? picked.value : "all");
+      const showStatsCheckbox = document.getElementById("showAttendanceStats");
+      if (showStatsCheckbox) {
+        setShowAttendanceStats(showStatsCheckbox.checked);
+      }
       closeScheduleFilterModal();
       let saved = [];
       try {
@@ -2396,6 +2444,24 @@ window.renderClassScheduleWeek = renderClassScheduleWeek;
 });
 
 const CLASS_RANGE_STORAGE_KEY = "classRangeFilter";
+const SHOW_ATTENDANCE_STATS_KEY = "showAttendanceStats";
+
+function getShowAttendanceStats() {
+  try {
+    const val = localStorage.getItem(SHOW_ATTENDANCE_STATS_KEY);
+    return val === null ? true : val === "true";
+  } catch (_) {
+    return true;
+  }
+}
+
+function setShowAttendanceStats(enabled) {
+  try {
+    localStorage.setItem(SHOW_ATTENDANCE_STATS_KEY, enabled ? "true" : "false");
+  } catch (_) {}
+}
+window.getShowAttendanceStats = getShowAttendanceStats;
+window.setShowAttendanceStats = setShowAttendanceStats;
 
 function getClassRangeFilter() {
   try {
@@ -2425,13 +2491,49 @@ function persistClassSchedule(jsonString) {
   mirrorClassScheduleToStorage(jsonString);
 }
 
-function isScheduleOfWeekUrl(url) {
-  return typeof url === "string" && /fap\.fpt\.edu\.vn\/Report\/ScheduleOfWeek\.aspx/i.test(url);
+function isStudentGradeUrl(url) {
+  return typeof url === "string" && (
+    /StudentGrade/i.test(url) ||
+    /GradeReport/i.test(url) ||
+    /\/Grade(\/|\.|$)/i.test(url) ||
+    /\/Report\/Grade/i.test(url) ||
+    /academic-report/i.test(url) ||
+    /courseId=/i.test(url) ||
+    /Diem/i.test(url)
+  );
 }
 
-/** Tab ScheduleOfWeek (có thể không phải tab đang focus). */
+/** Tab StudentGrade / GradeReport (có thể không phải tab đang focus). */
+function findStudentGradeTab(done) {
+  if (typeof chrome === "undefined" || !chrome.tabs) {
+    done(new Error("no-chrome-tabs"), null);
+    return;
+  }
+  chrome.tabs.query({ url: "*://fap.fpt.edu.vn/*" }, (candidates) => {
+    const list = (candidates || []).filter((t) => t.id && isStudentGradeUrl(t.url || ""));
+    if (list.length) {
+      const preferred = list.find((t) => t.active) || list[0];
+      done(null, preferred);
+      return;
+    }
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const t = tabs && tabs[0];
+      if (t && t.id && isStudentGradeUrl(t.url || "")) {
+        done(null, t);
+        return;
+      }
+      done(new Error("no-grade-tab"), null);
+    });
+  });
+}
+
+function isScheduleOfWeekUrl(url) {
+  return typeof url === "string" && (/WeeklyTimetable/i.test(url) || /ScheduleOfWeek\.aspx/i.test(url));
+}
+
+/** Tab ScheduleOfWeek / WeeklyTimetable (có thể không phải tab đang focus). */
 function findScheduleOfWeekTab(done) {
-  chrome.tabs.query({ url: "https://fap.fpt.edu.vn/*" }, (candidates) => {
+  chrome.tabs.query({ url: "*://fap.fpt.edu.vn/*" }, (candidates) => {
     const list = (candidates || []).filter((t) => t.id && isScheduleOfWeekUrl(t.url || ""));
     if (list.length) {
       const preferred = list.find((t) => t.active) || list[0];
@@ -2451,7 +2553,7 @@ function findScheduleOfWeekTab(done) {
 
 let weekRangeSyncInProgress = false;
 
-function fillWeekRangeSelectOptions(weeks) {
+function fillWeekRangeSelectOptions(weeks, defaultSelectedIdx) {
   const startSel = document.getElementById("weekRangeStart");
   const endSel = document.getElementById("weekRangeEnd");
   const syncBtn = document.getElementById("syncWeekRangeBtn");
@@ -2461,17 +2563,31 @@ function fillWeekRangeSelectOptions(weeks) {
   weeks.forEach((w) => {
     const o1 = document.createElement("option");
     o1.value = String(w.index);
-    o1.textContent = w.label || `Tuần ${w.index}`;
+    o1.textContent = w.label || `Tuần ${w.index + 1}`;
+    o1.dataset.weekVal = w.value || "";
+    o1.dataset.refDate = w.refDate || w.startDate || "";
+    o1.dataset.startDate = w.startDate || w.refDate || "";
+    o1.dataset.endDate = w.endDate || "";
     startSel.appendChild(o1);
+
     const o2 = document.createElement("option");
     o2.value = String(w.index);
-    o2.textContent = w.label || `Tuần ${w.index}`;
+    o2.textContent = w.label || `Tuần ${w.index + 1}`;
+    o2.dataset.weekVal = w.value || "";
+    o2.dataset.refDate = w.refDate || w.startDate || "";
+    o2.dataset.startDate = w.startDate || w.refDate || "";
+    o2.dataset.endDate = w.endDate || "";
     endSel.appendChild(o2);
   });
   if (weeks.length) {
-    const last = weeks.length - 1;
-    startSel.selectedIndex = 0;
-    endSel.selectedIndex = last;
+    let sIdx = 0;
+    let eIdx = weeks.length - 1;
+    if (typeof defaultSelectedIdx === "number" && defaultSelectedIdx >= 0 && defaultSelectedIdx < weeks.length) {
+      sIdx = Math.max(0, defaultSelectedIdx - 2);
+      eIdx = Math.min(weeks.length - 1, defaultSelectedIdx + 8);
+    }
+    startSel.selectedIndex = sIdx;
+    endSel.selectedIndex = eIdx;
     startSel.disabled = false;
     endSel.disabled = false;
     if (syncBtn) syncBtn.disabled = false;
@@ -2496,11 +2612,11 @@ function handleLoadWeekScheduleOptions() {
   findScheduleOfWeekTab(async (err, tab) => {
     if (err || !tab || !tab.id) {
       const open = await showConfirm(
-        "Chưa có tab Lịch tuần FAP. Mở https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx ?",
+        "Chưa có tab Lịch tuần FAP. Mở https://fap.fpt.edu.vn/WeeklyTimetable ?",
         { okLabel: "Mở FAP" }
       );
       if (open) {
-        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/WeeklyTimetable", active: true });
       }
       return;
     }
@@ -2532,8 +2648,15 @@ function handleLoadWeekScheduleOptions() {
           showError("Danh sách tuần trống.");
           return;
         }
-        fillWeekRangeSelectOptions(res.weeks);
-        setWeekRangeStatus(`Đã tải ${res.weeks.length} tuần. Chọn khoảng rồi nhấn Đồng bộ.`, true);
+        fillWeekRangeSelectOptions(res.weeks, res.weekIndex);
+        window._fapWeeksMeta = res.weeks;
+        window._fapIsNewUi = Boolean(res.isNewUi);
+        if (res.isNewUi) {
+          const curLabel = (res.weeks[res.weekIndex] && res.weeks[res.weekIndex].label) || "tuần hiện tại";
+          setWeekRangeStatus(`FAP mới: Đã tải ${res.weeks.length} tuần (${curLabel}). Chọn khoảng rồi nhấn Đồng bộ.`, true);
+        } else {
+          setWeekRangeStatus(`Đã tải ${res.weeks.length} tuần. Chọn khoảng rồi nhấn Đồng bộ.`, true);
+        }
       });
     });
   });
@@ -2567,11 +2690,11 @@ function handleSyncClassScheduleWeekRange() {
   findScheduleOfWeekTab(async (err, tab) => {
     if (err || !tab || !tab.id) {
       const open = await showConfirm(
-        "Cần tab Lịch tuần FAP để đồng bộ. Mở ScheduleOfWeek.aspx?",
+        "Cần tab Lịch tuần FAP để đồng bộ. Mở WeeklyTimetable?",
         { okLabel: "Mở FAP" }
       );
       if (open) {
-        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/WeeklyTimetable", active: true });
       }
       return;
     }
@@ -2586,13 +2709,33 @@ function handleSyncClassScheduleWeekRange() {
     );
 
     const seedJson = localStorage.getItem("classSchedule") || "[]";
+    let weeksMeta = window._fapWeeksMeta;
+    if ((!weeksMeta || !weeksMeta.length) && startSel.options.length > 0) {
+      weeksMeta = [];
+      for (let i = 0; i < startSel.options.length; i++) {
+        const opt = startSel.options[i];
+        weeksMeta.push({
+          index: i,
+          value: opt.dataset.weekVal || opt.dataset.refDate || opt.value,
+          weekVal: opt.dataset.weekVal || "",
+          refDate: opt.dataset.refDate || "",
+          startDate: opt.dataset.startDate || "",
+          endDate: opt.dataset.endDate || "",
+          label: (opt.textContent || "").trim()
+        });
+      }
+    }
+    const isNewUi = Boolean(window._fapIsNewUi) || (tab && tab.url && /WeeklyTimetable/i.test(tab.url));
+
     const payload = {
       type: "START_WEEK_RANGE_SYNC",
       tabId,
       startIdx,
       endIdx,
       weekLabels,
-      seedJson
+      seedJson,
+      isNewUi,
+      weeksMeta: weeksMeta || null
     };
     function sendStartWeekRangeSync(attempt) {
       chrome.runtime.sendMessage(payload, (resp) => {
@@ -2652,9 +2795,14 @@ function pollWeekRangeSyncUntilIdle() {
       return;
     }
     try {
-      loc.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary"], (r) => {
+      loc.get(["weekRangeSyncRunning", "classSchedule", "weekRangeLastSummary", "weekRangeProgress"], (r) => {
         if (chrome.runtime.lastError) return;
-        if (r.weekRangeSyncRunning) return;
+        if (r.weekRangeSyncRunning) {
+          if (r.weekRangeProgress) {
+            setWeekRangeStatus(`Đang đồng bộ tuần ${r.weekRangeProgress.current}/${r.weekRangeProgress.total}: ${r.weekRangeProgress.label}…`, true);
+          }
+          return;
+        }
         clearInterval(iv);
         if (r.classSchedule) {
           const cur = localStorage.getItem("classSchedule");
@@ -2692,9 +2840,9 @@ function handleSyncClassSchedule() {
 
   findScheduleOfWeekTab(async (err, tab) => {
     if (err || !tab || !tab.id) {
-      const open = await showConfirm("Cần trang Lịch tuần (ScheduleOfWeek). Mở FAP?", { okLabel: "Mở FAP" });
+      const open = await showConfirm("Cần trang Lịch tuần (WeeklyTimetable). Mở FAP?", { okLabel: "Mở FAP" });
       if (open) {
-        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/Report/ScheduleOfWeek.aspx", active: true });
+        chrome.tabs.create({ url: "https://fap.fpt.edu.vn/WeeklyTimetable", active: true });
       }
       return;
     }
@@ -2874,6 +3022,76 @@ async function handleClearClassSchedule() {
   }
 }
 
+async function handleClearExamSchedule() {
+  const proceed = await showConfirm(
+    "Bạn có chắc chắn muốn xoá toàn bộ lịch thi đã lưu?",
+    { title: "Xoá lịch thi", okLabel: "Xoá", danger: true }
+  );
+  if (!proceed) return;
+  try {
+    localStorage.removeItem("examSchedule");
+    try {
+      const loc = getChromeStorageLocal();
+      if (loc) {
+        loc.remove(["examSchedule"], () => {
+          if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({ type: "RESCHEDULE_ALARMS" }).catch(() => {});
+          }
+        });
+      }
+    } catch (_) {}
+    renderExamList([]);
+    showToast("Đã xoá toàn bộ lịch thi");
+  } catch (e) {
+    console.error("Error clearing exam schedule:", e);
+    showError("Có lỗi khi xoá lịch thi.");
+  }
+}
+
+async function deleteSingleExam(examToDelete) {
+  try {
+    const raw = localStorage.getItem("examSchedule");
+    if (!raw) return;
+    let list = JSON.parse(raw);
+    if (!Array.isArray(list)) return;
+
+    const targetStart = new Date(examToDelete.start).getTime();
+    const targetTitle = (examToDelete.title || "").trim();
+    const targetTag = (examToDelete.tag || "").trim();
+    const targetLoc = (examToDelete.location || "").trim();
+    const targetDesc = (examToDelete.description || "").trim();
+
+    const idx = list.findIndex((item) => {
+      const itemStart = new Date(item.start).getTime();
+      return (
+        (item.title || "").trim() === targetTitle &&
+        itemStart === targetStart &&
+        (item.tag || "").trim() === targetTag &&
+        (item.location || "").trim() === targetLoc &&
+        (item.description || "").trim() === targetDesc
+      );
+    });
+
+    if (idx !== -1) {
+      list.splice(idx, 1);
+    } else {
+      const fallbackIdx = list.findIndex((item) => {
+        const itemStart = new Date(item.start).getTime();
+        return (item.title || "").trim() === targetTitle && itemStart === targetStart;
+      });
+      if (fallbackIdx !== -1) list.splice(fallbackIdx, 1);
+    }
+
+    localStorage.setItem("examSchedule", JSON.stringify(list));
+    mirrorExamScheduleToStorage(list);
+    renderExamList(list);
+    showToast(`Đã xoá lịch thi môn ${examToDelete.title}`);
+  } catch (err) {
+    console.error("Error deleting single exam:", err);
+    showError("Có lỗi khi xoá lịch thi.");
+  }
+}
+
 function tryAutoRefreshAttendance() {
   // Only run if we already have some schedule stored (to match against)
   const stored = localStorage.getItem("classSchedule");
@@ -2885,7 +3103,13 @@ function tryAutoRefreshAttendance() {
   const keyOf = (ev) => {
     if (ev && ev.rawDate) {
       const rd = ev.rawDate;
-      return `${(ev.title||'').trim()}__${rd.year}-${rd.month}-${rd.day}__${rd.startHour}:${rd.startMinute}`;
+      const code = (ev.code || (ev.title || "").split(/\s*-\s*/)[0] || ev.title || "").trim().toUpperCase();
+      const y = Number(rd.year);
+      const m = Number(rd.month);
+      const d = Number(rd.day);
+      const sh = Number(rd.startHour);
+      const sm = Number(rd.startMinute);
+      return `${code}__${y}-${m}-${d}__${sh}:${sm}`;
     }
     return null;
   };
@@ -3173,6 +3397,25 @@ function createExamItem(e) {
     countdownSpan.textContent = "Còn " + diffDays + " ngày";
   }
   tagGroup.appendChild(countdownSpan);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "exam-delete-btn";
+  deleteBtn.title = `Xoá lịch thi môn ${e.title}`;
+  deleteBtn.setAttribute("aria-label", `Xoá lịch thi môn ${e.title}`);
+  deleteBtn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#icon-trash"/></svg>';
+  deleteBtn.addEventListener("click", async (ev) => {
+    ev.stopPropagation();
+    const dateStr = formatDate(start);
+    const ok = await showConfirm(`Bạn có chắc chắn muốn xoá lịch thi môn ${e.title} (${dateStr})?`, {
+      title: "Xoá lịch thi",
+      okLabel: "Xoá",
+      danger: true
+    });
+    if (!ok) return;
+    deleteSingleExam(e);
+  });
+  tagGroup.appendChild(deleteBtn);
 
   examTitle.appendChild(tagGroup);
 

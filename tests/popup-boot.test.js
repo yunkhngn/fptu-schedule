@@ -243,6 +243,7 @@ test("secondary action buttons show a short label, not just an icon", async () =
   const expected = {
     syncButton: "Đồng bộ",
     settingsButton: "Lọc",
+    clearExamBtn: "Xoá",
     syncScheduleBtn: "Đồng bộ",
     weekRangeBtn: "Nhiều tuần",
     scheduleFilterBtn: "Lọc",
@@ -972,4 +973,109 @@ test("cards with 100% vắng render 4 header badges without crashing", async () 
   const attRow = metaRows.find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
   assert.ok(attRow, "attendance row exists");
   assert.ok(attRow.querySelector(".meta-value").textContent.includes("100%"), "meta value includes 100%");
+});
+
+test("clearExamBtn clears all saved exam schedules and updates UI", async () => {
+  const { window } = await boot();
+  const doc = window.document;
+
+  const exams = [
+    { title: "WDP301", start: new Date(2026, 10, 15, 12, 50).toISOString(), end: new Date(2026, 10, 15, 17, 40).toISOString(), tag: "2NDFE", location: "BE-101" },
+    { title: "PRM393", start: new Date(2026, 10, 20, 7, 30).toISOString(), end: new Date(2026, 10, 20, 9, 50).toISOString(), tag: "FE", location: "AL-202" }
+  ];
+  window.localStorage.setItem("examSchedule", JSON.stringify(exams));
+  window.renderExamList(exams);
+
+  assert.strictEqual(doc.querySelectorAll("#upcomingExams .exam-card").length, 2);
+
+  // Trigger clearExamBtn with confirmed modal
+  doc.getElementById("clearExamBtn").dispatchEvent(new window.Event("click"));
+  const okBtn = doc.getElementById("confirmModalOk");
+  assert.ok(okBtn);
+  okBtn.dispatchEvent(new window.Event("click"));
+
+  await new Promise((r) => setTimeout(r, 50));
+  assert.strictEqual(window.localStorage.getItem("examSchedule"), null);
+  assert.strictEqual(doc.querySelectorAll("#upcomingExams .exam-card").length, 0);
+  assert.ok(doc.querySelector("#upcomingExams .exam-list-hint"));
+});
+
+test("individual exam delete button deletes only that exam entry", async () => {
+  const { window } = await boot();
+  const doc = window.document;
+
+  const exams = [
+    { title: "WDP301", start: new Date(2026, 10, 15, 12, 50).toISOString(), end: new Date(2026, 10, 15, 17, 40).toISOString(), tag: "2NDFE", location: "-" },
+    { title: "PRM393", start: new Date(2026, 10, 20, 7, 30).toISOString(), end: new Date(2026, 10, 20, 9, 50).toISOString(), tag: "FE", location: "AL-202" }
+  ];
+  window.localStorage.setItem("examSchedule", JSON.stringify(exams));
+  window.renderExamList(exams);
+
+  const cards = doc.querySelectorAll("#upcomingExams .exam-card");
+  assert.strictEqual(cards.length, 2);
+
+  const firstCard = cards[0];
+  const deleteBtn = firstCard.querySelector(".exam-delete-btn");
+  assert.ok(deleteBtn, "exam card must have a delete button");
+
+  deleteBtn.dispatchEvent(new window.Event("click"));
+  const okBtn = doc.getElementById("confirmModalOk");
+  okBtn.dispatchEvent(new window.Event("click"));
+
+  await new Promise((r) => setTimeout(r, 50));
+  const remaining = JSON.parse(window.localStorage.getItem("examSchedule"));
+  assert.strictEqual(remaining.length, 1);
+  assert.strictEqual(remaining[0].title, "PRM393");
+  assert.strictEqual(doc.querySelectorAll("#upcomingExams .exam-card").length, 1);
+});
+
+test("toggling showAttendanceStats in scheduleFilterModal toggles display of absent and remaining sessions", async () => {
+  const { window } = await boot();
+  const doc = window.document;
+
+  const schedule = [
+    {
+      title: "PRM393",
+      location: "AL-R402",
+      slot: "Slot 3",
+      attendanceStatus: "Absent",
+      rawDate: { year: 2026, month: 9, day: 8, startHour: 12, startMinute: 50, endHour: 15, endMinute: 10 }
+    }
+  ];
+  window.localStorage.setItem("classSchedule", JSON.stringify(schedule));
+  window.renderClassSchedule(schedule);
+
+  let prmCard = doc.querySelector("#scheduleTab .class-card");
+  assert.ok(prmCard);
+  let attRow = Array.from(prmCard.querySelectorAll(".meta-row")).find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
+  assert.ok(attRow, "attendance row exists by default");
+  assert.ok(prmCard.querySelector(".chip.risk-danger"), "risk chip exists by default");
+
+  // Open schedule filter modal
+  doc.getElementById("scheduleFilterBtn").dispatchEvent(new window.Event("click"));
+  const toggle = doc.getElementById("showAttendanceStats");
+  assert.ok(toggle, "showAttendanceStats checkbox exists in schedule filter modal");
+  assert.strictEqual(toggle.checked, true, "checked by default");
+
+  // Uncheck and apply
+  toggle.checked = false;
+  doc.getElementById("applyClassFilter").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(window.localStorage.getItem("showAttendanceStats"), "false");
+
+  prmCard = doc.querySelector("#scheduleTab .class-card");
+  attRow = Array.from(prmCard.querySelectorAll(".meta-row")).find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
+  assert.strictEqual(attRow, undefined, "attendance row must be hidden when showAttendanceStats is false");
+  assert.strictEqual(prmCard.querySelector(".chip.risk-danger"), null, "risk chip must be hidden when showAttendanceStats is false");
+
+  // Re-open and reset filter
+  doc.getElementById("scheduleFilterBtn").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(doc.getElementById("showAttendanceStats").checked, false, "modal preserves unchecked state when opened");
+  doc.getElementById("resetClassFilter").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(doc.getElementById("showAttendanceStats").checked, true, "reset re-enables attendance stats");
+  doc.getElementById("applyClassFilter").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(window.localStorage.getItem("showAttendanceStats"), "true");
+
+  prmCard = doc.querySelector("#scheduleTab .class-card");
+  attRow = Array.from(prmCard.querySelectorAll(".meta-row")).find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
+  assert.ok(attRow, "attendance row is restored when showAttendanceStats is true");
 });

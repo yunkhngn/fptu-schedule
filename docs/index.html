@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FPTU Schedule — Tiện ích Đồng bộ Lịch học & Kỳ thi FPTU</title>
   <meta name="description"
-    content="FPTU Schedule v3.6.6: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
+    content="FPTU Schedule v4.0.0: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, hỗ trợ giao diện FAP mới (WeeklyTimetable & ExamSchedule), thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/png" href="./icon.png" />
 </head>
@@ -19,7 +19,7 @@
         <img class="site-brand__logo" src="icon-128.png" alt="FPTU Schedule Logo" width="36" height="36" />
         <span class="site-brand__title">
           FPTU Schedule
-          <span class="site-brand__badge">v3.6.6</span>
+          <span class="site-brand__badge">v4.0.0</span>
         </span>
       </a>
 
@@ -71,7 +71,7 @@
         <div class="hero__content">
           <div class="hero__kicker">
             <span class="hero__kicker-dot"></span>
-            <span>Bản phát hành chính thức v3.6.6</span>
+            <span>Bản phát hành chính thức v4.0.0</span>
           </div>
 
           <h1>Lịch học, kỳ thi &amp; điểm số <span class="gradient-text">FPTU trong tầm tay</span></h1>
@@ -458,7 +458,7 @@
     <section class="section section--surface" id="features">
       <div class="container">
         <div class="section-head">
-          <span class="section-head__tag">Đổi mới trong v3.6.6</span>
+          <span class="section-head__tag">Đổi mới trong v4.0.0</span>
           <h2>Những tính năng vượt trội cho sinh viên FPTU</h2>
           <p>Thiết kế tinh gọn, tốc độ tức thì và giải quyết trọn vẹn mọi nhu cầu học tập mỗi học kỳ.</p>
         </div>
@@ -787,7 +787,7 @@
 
           <!-- Card 2: Manual ZIP -->
           <div class="dl-card">
-            <h3>Bản ZIP v3.6.6 (GitHub Release)</h3>
+            <h3>Bản ZIP v4.0.0 (GitHub Release)</h3>
             <p>Dành cho các bạn muốn cài đặt thủ công qua chế độ Developer Mode hoặc trải nghiệm phiên bản đóng gói độc
               lập.</p>
             <ul>
@@ -796,14 +796,14 @@
               <li>Bật <strong>Developer mode</strong> và chọn <strong>Load unpacked</strong></li>
             </ul>
             <a class="btn btn--secondary btn--lg"
-              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v3.6.6/fptu-schedule.zip"
+              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v4.0.0/fptu-schedule.zip"
               target="_blank" rel="noopener">
               <svg class="icon" viewBox="0 0 24 24">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              <span>Tải file ZIP (v3.6.6)</span>
+              <span>Tải file ZIP (v4.0.0)</span>
             </a>
           </div>
         </div>
@@ -875,12 +875,31 @@
         </div>
 
         <div class="changelog-container">
-          <!-- Release v3.6.6 -->
+          <!-- Release v4.0.0 -->
           <article class="changelog-card changelog-card--latest">
             <div class="changelog-card__head">
               <div class="changelog-version-tag">
-                <span class="version-name">v3.6.6</span>
+                <span class="version-name">v4.0.0</span>
                 <span class="version-status">Bản mới nhất</span>
+              </div>
+              <time class="changelog-date">28/09/2026</time>
+            </div>
+            <div class="changelog-body">
+              <h4>Tương thích Giao diện FAP Mới (Major Update)</h4>
+              <ul class="changelog-list">
+                <li><strong>Hỗ trợ toàn diện Giao diện FAP mới:</strong> Nâng cấp kiến trúc tương thích với hệ thống FAP thế hệ mới, hỗ trợ các đường dẫn mới <code>/WeeklyTimetable</code> (Lịch học tuần) và <code>/ExamSchedule</code> (Lịch thi) song song với các trang cũ.</li>
+                <li><strong>Bộ phân tích Thời khóa biểu tuần mới:</strong> Thiết kế lại engine bóc tách dữ liệu theo cấu trúc bảng responsive mới (<code>#weekly-timetable-container</code>, <code>.weekly-timetable-grid</code>), tự động nhận diện Slot 1 đến 9, phân tách mã môn và mã lớp, phát hiện trạng thái điểm danh (Có mặt, Vắng, Chưa điểm danh), thời gian, phòng học và giảng viên.</li>
+                <li><strong>Bóc tách Lịch thi thế hệ mới:</strong> Engine phân tích bảng thi hiện đại (<code>.fap-sheet</code>, <code>.fap-table--stack</code>) sử dụng thuộc tính <code>data-label</code>, tự động phân loại hình thức thi và kỳ thi (2NDFE, 2NDPE, FE, PE).</li>
+                <li><strong>Tích hợp Link Google Meet:</strong> Tự động phát hiện các buổi học online và link phòng Google Meet trên thời khóa biểu để mở nhanh 1-click từ thẻ môn học.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Release v3.6.6 -->
+          <article class="changelog-card">
+            <div class="changelog-card__head">
+              <div class="changelog-version-tag">
+                <span class="version-name">v3.6.6</span>
               </div>
               <time class="changelog-date">09/09/2026</time>
             </div>
