@@ -3323,6 +3323,375 @@ html:not([data-fptu-skin="off"]) .student-thesis-condition-sheet .graduate-condi
 }
 
 /* --------------------------------------------------------------------------
+   Forms, Dialogs, and Payment Pattern
+   - Form controls, labels, selects, checkboxes, textareas
+   - Focus, disabled, and readonly states
+   - Validation states (.is-invalid, .is-valid, .invalid-feedback, field-validation)
+   - Action bar (.fap-form-footer)
+   - Wishlist registration preview grid and stats
+   - Shopping cart and payment cards
+   - Scannable QR payment code (solid #ffffff background, white padding, no filters)
+   - High-contrast amounts (.shopping-cart-amount)
+   - Modal dialogs (.modal, .modal-backdrop, .modal-dialog, .modal-title, .modal-body, .note-modal-body)
+   - Flatpickr datepicker styling
+   -------------------------------------------------------------------------- */
+
+/* Form Labels, Plaintext, and Textarea */
+html:not([data-fptu-skin="off"]) .form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.4rem;
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .form-control-plaintext {
+  color: inherit;
+  font-weight: 500;
+  padding: 0.45rem 0;
+}
+
+html:not([data-fptu-skin="off"]) textarea.form-control,
+html:not([data-fptu-skin="off"]) textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+/* Form Select Sizing */
+html:not([data-fptu-skin="off"]) .form-select-sm {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  padding-left: 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: 10px;
+}
+
+/* Disabled & Readonly Form Controls */
+html:not([data-fptu-skin="off"]) .form-control:disabled,
+html:not([data-fptu-skin="off"]) .form-control[readonly],
+html:not([data-fptu-skin="off"]) .form-select:disabled {
+  background-color: rgba(148, 163, 184, 0.16) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+  opacity: 0.85;
+  box-shadow: none !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .form-control:disabled,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .form-control[readonly],
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .form-select:disabled {
+  background-color: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+}
+
+/* Form Checks & Labels */
+html:not([data-fptu-skin="off"]) .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+html:not([data-fptu-skin="off"]) .form-check-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Form Validation States */
+html:not([data-fptu-skin="off"]) .form-control.is-invalid,
+html:not([data-fptu-skin="off"]) .form-select.is-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+html:not([data-fptu-skin="off"]) .form-control.is-valid,
+html:not([data-fptu-skin="off"]) .form-select.is-valid {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+html:not([data-fptu-skin="off"]) .invalid-feedback,
+html:not([data-fptu-skin="off"]) .field-validation-error {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #dc2626 !important;
+  margin-top: 0.35rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .invalid-feedback,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .field-validation-error {
+  color: #f87171 !important;
+}
+
+html:not([data-fptu-skin="off"]) .field-validation-valid {
+  font-size: 0.8125rem;
+}
+
+/* Info Alert Variant */
+html:not([data-fptu-skin="off"]) .alert-info {
+  border-color: rgba(6, 182, 212, 0.3);
+  background-color: rgba(6, 182, 212, 0.12);
+  color: #0e7490;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .alert-info {
+  color: #22d3ee;
+  background-color: rgba(6, 182, 212, 0.18);
+  border-color: rgba(34, 211, 238, 0.28);
+}
+
+/* Form Footer Actions */
+html:not([data-fptu-skin="off"]) .fap-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--fptu-glass-border);
+}
+
+/* Wishlist Register Pattern */
+html:not([data-fptu-skin="off"]) .fap-wishlist-register {
+  position: relative;
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat {
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--fptu-glass-border);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .wishlist-register-preview-stat {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat--emphasis {
+  background: color-mix(in srgb, var(--fptu-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--fptu-accent) 24%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .wishlist-register-preview-stat--emphasis {
+  background: color-mix(in srgb, var(--fptu-accent) 15%, transparent);
+  border-color: color-mix(in srgb, var(--fptu-accent) 30%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .wishlist-register-preview-stat__label {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat__value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat__value--accent {
+  color: var(--fptu-accent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .wishlist-register-preview-stat__value--danger {
+  color: #dc2626 !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .wishlist-register-preview-stat__value--danger {
+  color: #f87171 !important;
+}
+
+/* Shopping Cart & Payment Cards */
+html:not([data-fptu-skin="off"]) .shopping-cart-summary-card {
+  position: sticky;
+  top: 5.5rem;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-summary__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-summary__row:last-child {
+  border-bottom: none;
+  padding-top: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-summary__value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-summary__value--accent {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--fptu-accent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-amount {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--ct-body-color, #0f172a);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .shopping-cart-amount {
+  color: #f8fafc;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-payment-card {
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"]) .shopping-cart-payment-label {
+  font-weight: 600;
+  color: #64748b;
+  width: 35%;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .shopping-cart-payment-label {
+  color: #94a3b8;
+}
+
+/* Payment QR Code: Solid opaque white container for bank app scannability */
+html:not([data-fptu-skin="off"]) .shopping-cart-qr {
+  display: inline-block;
+  background: #ffffff;
+  background-color: #ffffff;
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Dialogs & Modal Stacking */
+html:not([data-fptu-skin="off"]) .modal-backdrop {
+  z-index: 1040;
+  background-color: rgba(15, 23, 42, 0.6);
+}
+
+html:not([data-fptu-skin="off"]) .modal {
+  z-index: 1050;
+}
+
+html:not([data-fptu-skin="off"]) .modal-dialog {
+  margin: 1.75rem auto;
+}
+
+html:not([data-fptu-skin="off"]) .modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 3.5rem);
+}
+
+html:not([data-fptu-skin="off"]) .modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: inherit;
+  margin: 0;
+}
+
+html:not([data-fptu-skin="off"]) .modal-body {
+  padding: 1.5rem;
+  color: inherit;
+  line-height: 1.55;
+}
+
+html:not([data-fptu-skin="off"]) .note-modal-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.9rem;
+}
+
+/* Modal and Utility Buttons */
+html:not([data-fptu-skin="off"]) .btn-light {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--fptu-glass-border);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .btn-light {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+}
+
+html:not([data-fptu-skin="off"]) .btn-secondary {
+  background: rgba(100, 116, 139, 0.15);
+  border: 1px solid rgba(100, 116, 139, 0.25);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .btn-secondary {
+  background: rgba(100, 116, 139, 0.25);
+  border-color: rgba(100, 116, 139, 0.35);
+  color: #f1f5f9;
+}
+
+html:not([data-fptu-skin="off"]) .btn-close {
+  opacity: 0.65;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .btn-close:hover {
+  opacity: 1;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Flatpickr Datepicker */
+html:not([data-fptu-skin="off"]) .flatpickr-calendar {
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.15);
+  font-family: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .flatpickr-calendar {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
+}
+
+html:not([data-fptu-skin="off"]) .flatpickr-day.selected,
+html:not([data-fptu-skin="off"]) .flatpickr-day.startRange,
+html:not([data-fptu-skin="off"]) .flatpickr-day.endRange {
+  background: var(--fptu-accent) !important;
+  border-color: var(--fptu-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.

@@ -73,7 +73,9 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-create-btn",
     "fap-back-btn",
     "fap-list-page",
-    "fap-status"
+    "fap-status",
+    "fap-form-footer",
+    "fap-wishlist-register"
   ]; // in home.css or other page components (style.css)
   const used = [...new Set(css.match(/\.fap-[\w-]+/g) || [])].map((c) => c.slice(1));
   used.filter((c) => !KNOWN_ABSENT.some((k) => c.startsWith(k)))
@@ -258,6 +260,25 @@ test("academic report status variants have dedicated rules and do not use accent
       );
     });
   }
+});
+
+test("the payment QR keeps an opaque white background so banks can scan it", () => {
+  const qr = rules.filter((r) => /shopping-cart-qr/.test(r.selector));
+  assert.ok(qr.length > 0);
+  qr.forEach((r) => {
+    assert.match(r.body, /background(-color)?:\s*(#fff(fff)?|white)\b/i);
+    assert.doesNotMatch(r.body, /opacity:\s*0?\.|filter:|mix-blend-mode|backdrop-filter/);
+  });
+});
+
+test("dialogs stack above the topbar and the skin notice", () => {
+  const z = (sel) => Number((rules.find((r) => sel.test(r.selector) && /z-index/.test(r.body)) || { body: "" }).body.match(/z-index:\s*(\d+)/)?.[1] || 0);
+  assert.ok(z(/modal-backdrop/) >= 1040 && z(/\.modal(?![-\w])/) >= 1050);
+});
+
+test("form validation and disabled states are visibly styled", () => {
+  ["\\.is-invalid", "field-validation-error|invalid-feedback", "\\.form-control:disabled|\\.form-control\\[readonly\\]", "\\.form-control:focus"]
+    .forEach((p) => assert.match(css, new RegExp(p)));
 });
 
 module.exports = { parseRules, stripComments, css, rules };
