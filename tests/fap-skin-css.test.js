@@ -111,11 +111,18 @@ test("core components are covered by the skin", () => {
     .forEach((sel) => assert.match(css, new RegExp(sel)));
 });
 
+test("the dashboard blocks are styled", () => {
+  ["fap-home-student-card", "fap-home-news-card", "fap-home-news-item", "fap-home-quick-menu__link", "fap-home-fee"]
+    .forEach((c) => assert.ok(css.includes("." + c), c));
+});
+
 test("the fap-* classes the skin targets exist in the home fixture", () => {
   const KNOWN_ABSENT = [
     "fap-home-fee",
     "fap-home-fee-card",
     "fap-home-fee-warning",
+    "fap-home-news-item__icon--pinned",
+    "fap-home-news-item__meta--pinned",
     "fap-filter-card",
     "fap-chip",
     "fap-empty-state",

@@ -933,6 +933,761 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-state {
 }
 
 /* --------------------------------------------------------------------------
+   Trang chu (Dashboard Blocks: Student Card, News, Quick Menu, Fee)
+   -------------------------------------------------------------------------- */
+
+/* Student Card */
+html:not([data-fptu-skin="off"]) .fap-home-student-card {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, var(--fptu-accent), var(--fptu-accent-hover));
+  color: #ffffff;
+  box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--fptu-accent) 45%, transparent), var(--fptu-glass-highlight);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-student-card {
+  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.55), var(--fptu-glass-highlight);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__left {
+  background: transparent;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__left::after {
+  background: none;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__name {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__roll {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__metric {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.85rem;
+  height: 100%;
+  color: #ffffff;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__metric:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.15);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-student-card__metric {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-student-card__metric:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 0.8rem;
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label--primary i,
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label--info i,
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label--warning i,
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label--secondary i,
+html:not([data-fptu-skin="off"]) .fap-home-student-card__label--success i {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__value {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__metric--wallet {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-student-card__metric--wallet {
+  background: rgba(0, 0, 0, 0.28);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-student-card__wallet-amount {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+/* News Card & Items */
+html:not([data-fptu-skin="off"]) .fap-home-news-card {
+  border-radius: 24px;
+  background: var(--fptu-glass-bg);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  padding: 1.1rem 1.25rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__header-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__header-title i {
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter {
+  background: color-mix(in srgb, var(--fptu-accent) 4%, transparent);
+  border-top: none;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  padding: 0.65rem 1.25rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-label {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--fptu-glass-border);
+  color: #4b5563;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter-btn:not(.bg-primary):hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--fptu-accent);
+  border-color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter-btn.bg-primary,
+html:not([data-fptu-skin="off"]) .fap-home-news-card__filter-btn.active {
+  background: var(--fptu-accent) !important;
+  border-color: var(--fptu-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--fptu-glass-border);
+  color: #cbd5e1;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn:not(.bg-primary):hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn.bg-primary,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn.active {
+  background: var(--fptu-accent) !important;
+  border-color: var(--fptu-accent) !important;
+  color: #ffffff !important;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.95rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  transition: background-color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:last-child {
+  border-bottom: none;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 6%, transparent);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-item:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  color: var(--fptu-accent);
+  font-size: 1.15rem;
+  flex: 0 0 auto;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:hover .fap-home-news-item__icon {
+  background: var(--fptu-accent);
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__icon--pinned {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:hover .fap-home-news-item__icon--pinned {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__title {
+  font-size: 0.93rem;
+  font-weight: 650;
+  line-height: 1.4;
+  margin-bottom: 0.3rem;
+  color: inherit;
+  transition: color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:hover .fap-home-news-item__title {
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-item__meta {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__meta i {
+  font-size: 0.85rem;
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__meta--pinned i {
+  color: #ef4444;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item__arrow {
+  font-size: 1.3rem;
+  color: #9ca3af;
+  flex: 0 0 auto;
+  opacity: 0.4;
+  transform: translateX(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-news-item:hover .fap-home-news-item__arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--fptu-accent);
+}
+
+/* Quick Menu */
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu {
+  position: relative;
+  border-radius: 24px;
+  background: var(--fptu-glass-bg);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__accent {
+  height: 3px;
+  background: linear-gradient(90deg, var(--fptu-accent) 0%, var(--fptu-accent-hover) 60%, color-mix(in srgb, var(--fptu-accent) 25%, transparent) 100%);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.1rem 1.25rem 0.95rem;
+  background: transparent;
+  border-bottom: 1px solid var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--fptu-accent) 0%, var(--fptu-accent-hover) 100%);
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__heading {
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu__subtitle {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.65rem 0.75rem;
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__group {
+  padding: 0.75rem 0.55rem 0.3rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__group-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu__group-label {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__group-label::before {
+  background: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  margin: 0.1rem 0;
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu__link:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 18%, transparent);
+  color: var(--fptu-accent-hover);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--fptu-accent);
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  flex: 0 0 auto;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link:hover .fap-home-quick-menu__link-icon {
+  background: var(--fptu-accent);
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__chevron {
+  font-size: 1.1rem;
+  color: #9ca3af;
+  opacity: 0.4;
+  transform: translateX(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease;
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-quick-menu__link:hover .fap-home-quick-menu__chevron {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--fptu-accent);
+}
+
+/* Fee Block */
+html:not([data-fptu-skin="off"]) .fap-home-fee-card {
+  border-radius: 20px !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  background: color-mix(in srgb, #fffbeb 85%, transparent) !important;
+  box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.2), var(--fptu-glass-highlight) !important;
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee-card {
+  background: color-mix(in srgb, #451a03 35%, var(--fptu-glass-bg)) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee-card::before {
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #92400e;
+  background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+  box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.3);
+  font-size: 1.35rem;
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__icon {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.2);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b45309;
+  margin: 0 0 0.5rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__eyebrow {
+  color: #fbbf24;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.45;
+  margin: 0;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__title {
+  color: #fef3c7;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stat {
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__stat {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stat-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.25rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__stat-label {
+  color: #fbbf24;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stat-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #451a03;
+  line-height: 1.25;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__stat-value {
+  color: #fef3c7;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stat-value--date {
+  font-size: 1.05rem;
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__stat-value--date i {
+  color: #d97706;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__currency {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__currency {
+  color: #fbbf24;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__disclaimer {
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #78350f;
+  background: rgba(254, 243, 199, 0.6);
+  border-left: 3px solid #f59e0b;
+  margin: 0;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__disclaimer {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee__hint {
+  color: #fca5a5;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__actions {
+  margin-top: 0.9rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__pay-btn {
+  min-height: 2.4rem;
+  padding-inline: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  border: none;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.4);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee__pay-btn:hover,
+html:not([data-fptu-skin="off"]) .fap-home-fee__pay-btn:focus {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee--credit .fap-home-fee__icon {
+  color: #065f46;
+  background: linear-gradient(145deg, #d1fae5 0%, #a7f3d0 100%);
+  box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.3);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee--credit .fap-home-fee__icon {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.2);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee--credit .fap-home-fee__eyebrow {
+  color: #059669;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee--credit .fap-home-fee__eyebrow {
+  color: #34d399;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee-card:has(.fap-home-fee--credit) {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  background: color-mix(in srgb, #ecfdf5 85%, transparent) !important;
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2), var(--fptu-glass-highlight) !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-fee-card:has(.fap-home-fee--credit) {
+  background: color-mix(in srgb, #064e3b 35%, var(--fptu-glass-bg)) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee-card:has(.fap-home-fee--credit)::before {
+  background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #059669 100%);
+}
+
+html:not([data-fptu-skin="off"]) .fap-home-fee-warning {
+  border: none !important;
+  border-radius: 20px !important;
+}
+
+/* Responsive adjustments for mobile (390px) */
+@media (max-width: 575.98px) {
+  html:not([data-fptu-skin="off"]) .fap-home-student-card__left,
+  html:not([data-fptu-skin="off"]) .fap-home-student-card .col-lg-9 {
+    padding: 1.25rem !important;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-home-student-card__name {
+    font-size: 1.1rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-home-news-item {
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-home-news-item__icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-home-fee {
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-home-fee__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -958,6 +1713,7 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-state {
   html:not([data-fptu-skin="off"]) .fap-sidebar,
   html:not([data-fptu-skin="off"]) .card,
   html:not([data-fptu-skin="off"]) .fap-filter-card,
+  html:not([data-fptu-skin="off"]) .fap-home-quick-menu,
   html:not([data-fptu-skin="off"]) .modal-content,
   html:not([data-fptu-skin="off"]) .dropdown-menu {
     background: #ffffff;
@@ -969,6 +1725,7 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-state {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .modal-content,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu {
     background: #1e293b;
