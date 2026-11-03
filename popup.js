@@ -35,6 +35,14 @@ function mirrorExamScheduleToStorage(events) {
   } catch (_) {}
 }
 
+function mirrorAccentToStorage(id) {
+  const loc = getChromeStorageLocal();
+  if (!loc) return;
+  try {
+    loc.set({ accentColor: id });
+  } catch (_) {}
+}
+
 // Immediate theme detection to prevent flash of light theme
 (function () {
   try {
@@ -197,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("accentColor", preset.id);
         } catch (_) {}
         applyAccent(document, preset.id);
+        mirrorAccentToStorage(preset.id);
         accentPicker.querySelectorAll(".accent-swatch").forEach((el) => {
           el.setAttribute("aria-checked", el === btn ? "true" : "false");
         });
@@ -205,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   renderAccentPicker();
+  mirrorAccentToStorage(currentAccentId());
 
   // Theme management
   const themeToggleBtn = document.getElementById("themeToggleBtn");

@@ -42,12 +42,17 @@ function chromeStub(calls) {
 }
 
 /** jsdom fires DOMContentLoaded asynchronously, so wait for popup.js to wire itself up. */
-async function boot() {
+async function boot(options = {}) {
   const calls = { storageSet: [], tabsCreated: [], errors: [] };
   const dom = new JSDOM(popupDocument(), {
     runScripts: "dangerously",
     url: "https://localhost/popup.html",
     beforeParse(window) {
+      if (options && options.localStorage) {
+        for (const [key, val] of Object.entries(options.localStorage)) {
+          window.localStorage.setItem(key, String(val));
+        }
+      }
       window.chrome = chromeStub(calls);
       window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       window.addEventListener("error", (e) => calls.errors.push(e.error || e.message));
@@ -1098,3 +1103,15 @@ test("accent picker lists the presets, applies a choice and remembers it", async
   assert.strictEqual(doc.getElementById("accent-style"), null, "going back to blue removes the override");
   assert.deepStrictEqual(calls.errors, []);
 });
+
+test("the accent choice is mirrored to chrome.storage so FAP pages can read it", async () => {
+  const { window, calls } = await boot();
+  window.document.querySelector('.accent-swatch[data-accent="orange"]').dispatchEvent(new window.Event("click"));
+  assert.ok(calls.storageSet.some((o) => o.accentColor === "orange"));
+});
+
+test("an accent chosen before the mirror existed is copied over on boot", async () => {
+  const { calls } = await boot({ localStorage: { accentColor: "violet" } });
+  assert.ok(calls.storageSet.some((o) => o.accentColor === "violet"));
+});
+
