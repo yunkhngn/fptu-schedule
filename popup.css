@@ -1,14 +1,17 @@
 /* ---- Design tokens ---- */
 :root {
   --bg-app: #eef1f6;
-  --bg-elevated: #ffffff;
-  --bg-subtle: #f4f6f9;
-  --bg-card-subtle: #f8fafc;
-  --border: #e5e7eb;
-  --border-strong: #d1d5db;
-  --border-card-subtle: #e2e8f0;
+  /* Surfaces are translucent "glass": they sit on the ambient gradient behind .popup-wrapper.
+     prefers-reduced-transparency and browsers without backdrop-filter get the solid set back
+     (see the end of this file). */
+  --bg-elevated: rgba(255, 255, 255, 0.66);
+  --bg-subtle: rgba(241, 245, 249, 0.6);
+  --bg-card-subtle: rgba(248, 250, 252, 0.55);
+  --border: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --border-card-subtle: rgba(15, 23, 42, 0.08);
   --text: #111827;
-  --text-muted: #6b7280;
+  --text-muted: #5b6472;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
   --accent-soft: #eff6ff;
@@ -32,14 +35,14 @@
 
 [data-theme="dark"] {
   --bg-app: #0f172a;
-  --bg-elevated: #1e293b;
-  --bg-subtle: #273549;
-  --bg-card-subtle: #162032;
-  --border: #334155;
-  --border-strong: #475569;
-  --border-card-subtle: #293548;
+  --bg-elevated: rgba(30, 41, 59, 0.6);
+  --bg-subtle: rgba(51, 65, 85, 0.45);
+  --bg-card-subtle: rgba(22, 32, 50, 0.5);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-card-subtle: rgba(255, 255, 255, 0.08);
   --text: #f8fafc;
-  --text-muted: #94a3b8;
+  --text-muted: #a3b1c6;
   --accent: #3b82f6;
   --accent-hover: #60a5fa;
   --accent-soft: rgba(59, 130, 246, 0.2);
@@ -1983,7 +1986,7 @@ input[type="checkbox"] {
   border: 2px solid transparent;
   border-radius: 50%;
   background: var(--swatch-light);
-  box-shadow: inset 0 0 0 2px var(--bg-elevated);
+  box-shadow: inset 0 0 0 2px var(--bg-app);
   cursor: pointer;
   transition: transform 0.12s ease, border-color 0.12s ease;
 }
@@ -2750,4 +2753,279 @@ input[type="checkbox"] {
   /* Luôn giữ nền trắng tinh để camera bắt nét tốt */
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Glass layer
+   Frosted, translucent surfaces over an ambient gradient that follows the accent color.
+   Only the bars that content scrolls under (header, tabs, action bar, footer, banner, modal)
+   use backdrop-filter; cards stay plain translucent so long lists scroll smoothly.
+   ========================================================================== */
+:root {
+  --glass-blur: blur(18px) saturate(165%);
+  --glass-bar: rgba(244, 247, 252, 0.62);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --glass-card-shadow: 0 1px 2px rgba(31, 41, 90, 0.05), 0 10px 28px -10px rgba(31, 41, 90, 0.2);
+  --ambient-a: color-mix(in srgb, var(--accent) 34%, transparent);
+  --ambient-b: color-mix(in srgb, color-mix(in oklab, var(--accent) 40%, #f0abfc) 30%, transparent);
+  --ambient-c: color-mix(in srgb, color-mix(in oklab, var(--accent) 45%, #67e8f9) 26%, transparent);
+}
+
+[data-theme="dark"] {
+  --glass-bar: rgba(15, 23, 42, 0.62);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --glass-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 32px -12px rgba(0, 0, 0, 0.6);
+  --ambient-a: color-mix(in srgb, var(--accent) 38%, transparent);
+  --ambient-b: color-mix(in srgb, color-mix(in oklab, var(--accent) 40%, #c084fc) 30%, transparent);
+  --ambient-c: color-mix(in srgb, color-mix(in oklab, var(--accent) 45%, #22d3ee) 24%, transparent);
+}
+
+.popup-wrapper {
+  background:
+    radial-gradient(380px 300px at 6% -6%, var(--ambient-a), transparent 72%),
+    radial-gradient(340px 280px at 104% 14%, var(--ambient-b), transparent 72%),
+    radial-gradient(420px 320px at -4% 104%, var(--ambient-c), transparent 72%),
+    var(--bg-app);
+}
+
+.popup-list {
+  background: transparent;
+}
+
+.popup-header,
+.popup-actions,
+.popup-footer {
+  background: var(--glass-bar);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-color: var(--glass-edge);
+}
+
+.popup-header {
+  box-shadow: var(--glass-highlight);
+}
+
+.tab-bar {
+  background: var(--glass-bar);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.tab-bar.is-stuck {
+  box-shadow: 0 1px 0 var(--glass-edge), 0 10px 14px -12px rgba(15, 23, 42, 0.35);
+}
+
+.tab-navigation {
+  background: var(--bg-subtle);
+  border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--glass-highlight), 0 2px 8px -2px rgba(31, 41, 90, 0.25);
+}
+
+[data-theme="dark"] .tab-btn.active {
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: var(--glass-highlight), 0 2px 10px -2px rgba(0, 0, 0, 0.5);
+
+  color: var(--accent-300);
+}
+
+[data-theme="dark"] .tab-btn.active .icon {
+  color: var(--accent-300);
+}
+
+/* Cards (same selectors as the base and dark rules above so these win by order). */
+.exam-card,
+#scheduleTab .class-card,
+.grade-card,
+.agenda-card {
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight), var(--glass-card-shadow);
+}
+
+[data-theme="dark"] .exam-card,
+[data-theme="dark"] #scheduleTab .class-card,
+[data-theme="dark"] .grade-card,
+[data-theme="dark"] .agenda-card {
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight), var(--glass-card-shadow);
+}
+
+.exam-card:hover,
+#scheduleTab .class-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--glass-edge));
+  box-shadow: var(--glass-highlight), 0 14px 32px -12px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+[data-theme="dark"] .exam-card:hover,
+[data-theme="dark"] .grade-card:hover,
+[data-theme="dark"] #scheduleTab .class-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--glass-edge));
+  box-shadow: var(--glass-highlight), 0 14px 32px -12px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+[data-theme="dark"] #scheduleTab .class-card--clickable:hover {
+  background: var(--bg-elevated);
+}
+
+/* The banner is sticky, so content scrolls under it: blur it, and make its state tints glassy. */
+.agenda-card {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.agenda-card--in_progress {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), var(--bg-elevated));
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.agenda-card--upcoming {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 20%, transparent), var(--bg-elevated));
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.agenda-card--completed_today {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), var(--bg-elevated));
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.agenda-card--free_today {
+  background: linear-gradient(135deg, var(--bg-subtle), var(--bg-elevated));
+  border-color: var(--glass-edge);
+}
+
+[data-theme="dark"] .agenda-card--in_progress {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), var(--bg-elevated));
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+[data-theme="dark"] .agenda-card--upcoming {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, transparent), var(--bg-elevated));
+  border-color: color-mix(in srgb, var(--accent-400) 40%, transparent);
+}
+
+[data-theme="dark"] .agenda-card--completed_today {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), var(--bg-elevated));
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+[data-theme="dark"] .agenda-card--free_today {
+  background: linear-gradient(135deg, var(--bg-subtle), var(--bg-elevated));
+  border-color: var(--glass-edge);
+}
+
+/* Week matrix: faint tiles instead of solid blocks. */
+.week-matrix__cell {
+  background: rgba(255, 255, 255, 0.34);
+  border-color: var(--border-card-subtle);
+}
+
+[data-theme="dark"] .week-matrix__cell {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.week-matrix__card {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight), 0 2px 6px -2px rgba(31, 41, 90, 0.2);
+}
+
+[data-theme="dark"] .week-matrix__card {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Buttons */
+.header-icon-btn {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight);
+}
+
+[data-theme="dark"] .header-icon-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.header-icon-btn.is-active {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.action-btn--primary {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent));
+  border-color: color-mix(in srgb, var(--accent) 80%, #000);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 8px 18px -6px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.action-btn--primary:hover {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-hover) 86%, #fff), var(--accent-hover));
+}
+
+.action-btn--secondary {
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight);
+}
+
+/* Dialogs */
+.modal {
+  background: rgba(15, 23, 42, 0.32);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+}
+
+[data-theme="dark"] .modal {
+  background: rgba(2, 6, 23, 0.5);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-highlight), 0 28px 60px -16px rgba(15, 23, 42, 0.45);
+}
+
+[data-theme="dark"] .modal-content {
+  background: rgba(30, 41, 59, 0.78);
+  box-shadow: var(--glass-highlight), 0 28px 60px -16px rgba(0, 0, 0, 0.75);
+}
+
+/* Fallbacks: bring the solid surfaces back without transparency support or when asked. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --bg-elevated: #ffffff;
+    --bg-subtle: #f4f6f9;
+    --bg-card-subtle: #f8fafc;
+    --glass-bar: #f4f7fc;
+    --glass-edge: #e5e7eb;
+  }
+  [data-theme="dark"] {
+    --bg-elevated: #1e293b;
+    --bg-subtle: #273549;
+    --bg-card-subtle: #162032;
+    --glass-bar: #0f172a;
+    --glass-edge: #334155;
+  }
+  .popup-wrapper {
+    background: var(--bg-app);
+  }
+  .popup-header,
+  .popup-actions,
+  .popup-footer,
+  .tab-bar,
+  .agenda-card,
+  .modal,
+  .modal-content {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .modal-content {
+    background: var(--bg-elevated);
+  }
 }
