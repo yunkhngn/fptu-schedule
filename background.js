@@ -148,7 +148,19 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, isNewUi
     } catch (_) {
       allSchedule = [];
     }
-    const { uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected);
+    // A sync that skipped unreadable cells is incomplete, so it must not erase stored classes
+    // (they would look cancelled). Fall back to the additive merge in that case.
+    let uniqueNewEvents;
+    let merged;
+    let scheduleChanges = [];
+    if (skippedCells === 0 && typeof replaceCoveredWeeks === "function") {
+      const replaced = replaceCoveredWeeks(allSchedule, collected);
+      uniqueNewEvents = replaced.uniqueNewEvents;
+      merged = replaced.merged;
+      scheduleChanges = detectScheduleChanges(replaced.replacedOld, collected, new Date());
+    } else {
+      ({ uniqueNewEvents, merged } = mergeNewClassEventsInto(allSchedule, collected));
+    }
     const mergedJson = JSON.stringify(merged);
     const failMsg =
       failedWeeks.length > 0
@@ -167,6 +179,7 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, isNewUi
       },
       () => {
         rescheduleAllAlarms();
+        notifyScheduleChanges(scheduleChanges);
         chrome.runtime
           .sendMessage({
             type: "WEEK_RANGE_SYNC_DONE",
@@ -327,6 +340,54 @@ function runWeekRangeSync(tabId, startIdx, endIdx, weekLabels, seedJson, isNewUi
   }
 }
 
+function readNotificationSettings(callback) {
+  chrome.storage.local.get(["notificationSettings"], (res) => {
+    const base = typeof DEFAULT_NOTIFICATION_SETTINGS !== "undefined" ? DEFAULT_NOTIFICATION_SETTINGS : { enabled: true };
+    callback((res && res.notificationSettings) || base);
+  });
+}
+
+/** Tell the student about room/time changes, cancellations and new classes found by a sync. */
+function notifyScheduleChanges(changes) {
+  if (!Array.isArray(changes) || changes.length === 0) return;
+  if (typeof formatScheduleChangeNotifications !== "function" || !chrome.notifications) return;
+  readNotificationSettings((settings) => {
+    if (!settings || settings.enabled === false) return;
+    if (settings.changes && settings.changes.enabled === false) return;
+    formatScheduleChangeNotifications(changes).forEach((n) => {
+      chrome.notifications.create(n.id, {
+        type: "basic",
+        iconUrl: n.iconUrl || "icon-128.png",
+        title: n.title,
+        message: n.message,
+        priority: 2
+      }, () => {
+        if (chrome.runtime.lastError) console.warn("background: change notification failed", chrome.runtime.lastError.message);
+      });
+    });
+  });
+}
+
+// Chrome does not guarantee alarms survive a browser restart or an extension update, and the
+// popup is the only other thing that re-arms them. Re-arm on every startup/install, and keep a
+// daily alarm (named without the "fptu:" prefix so rescheduleAllAlarms never clears it).
+const MAINTENANCE_ALARM = "fptu-refresh";
+
+function ensureMaintenanceAlarm() {
+  if (!chrome.alarms) return;
+  chrome.alarms.get(MAINTENANCE_ALARM, (existing) => {
+    if (!existing) chrome.alarms.create(MAINTENANCE_ALARM, { delayInMinutes: 5, periodInMinutes: 24 * 60 });
+  });
+}
+
+function bootstrapAlarms() {
+  rescheduleAllAlarms();
+  ensureMaintenanceAlarm();
+}
+
+if (chrome.runtime && chrome.runtime.onInstalled) chrome.runtime.onInstalled.addListener(bootstrapAlarms);
+if (chrome.runtime && chrome.runtime.onStartup) chrome.runtime.onStartup.addListener(bootstrapAlarms);
+
 function rescheduleAllAlarms(callback) {
   if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.local || !chrome.alarms) {
     callback && callback();
@@ -390,6 +451,10 @@ function rescheduleAllAlarms(callback) {
 
 if (typeof chrome !== "undefined" && chrome.alarms && chrome.alarms.onAlarm) {
   chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm && alarm.name === MAINTENANCE_ALARM) {
+      rescheduleAllAlarms();
+      return;
+    }
     if (!alarm || !alarm.name || !alarm.name.startsWith("fptu:")) return;
 
     chrome.storage.local.get(["activeAlarmsMetadata"], (res) => {
@@ -445,17 +510,47 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === "TEST_NOTIFICATION") {
-    if (typeof chrome.notifications !== "undefined" && chrome.notifications.create) {
+    if (!chrome.notifications || !chrome.notifications.create) {
+      sendResponse && sendResponse({ ok: false, reason: "unavailable" });
+      return false;
+    }
+    const send = (level) => {
+      if (level === "denied") {
+        sendResponse && sendResponse({ ok: false, reason: "denied" });
+        return;
+      }
       chrome.notifications.create("fptu:test:" + Date.now(), {
         type: "basic",
         iconUrl: "icon-128.png",
         title: "[FPTU Schedule] Thông báo thử nghiệm",
         message: "Hệ thống thông báo hoạt động tốt! Bạn sẽ nhận được nhắc nhở trước giờ học và giờ thi.",
         priority: 2
+      }, () => {
+        const err = chrome.runtime.lastError;
+        sendResponse && sendResponse(err ? { ok: false, reason: "error", message: err.message } : { ok: true });
       });
+    };
+    if (typeof chrome.notifications.getPermissionLevel === "function") {
+      chrome.notifications.getPermissionLevel((level) => send(level));
+    } else {
+      send("granted");
     }
+    return true;
+  }
+
+  if (msg.type === "SCHEDULE_CHANGES") {
+    notifyScheduleChanges(msg.changes);
     sendResponse && sendResponse({ ok: true });
     return false;
+  }
+
+  if (msg.type === "GET_ALARM_SUMMARY") {
+    chrome.alarms.getAll((all) => {
+      const mine = (all || []).filter((a) => a && a.name && a.name.startsWith("fptu:"));
+      const next = mine.reduce((min, a) => (min === null || a.scheduledTime < min ? a.scheduledTime : min), null);
+      sendResponse && sendResponse({ count: mine.length, nextTime: next });
+    });
+    return true;
   }
 
   if (msg.type === "SAVE_STUDENT_GRADE" && msg.grade && msg.grade.courseCode) {

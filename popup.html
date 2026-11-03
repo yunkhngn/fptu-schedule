@@ -368,9 +368,19 @@
             </div>
           </fieldset>
 
+          <fieldset class="notif-fieldset" id="notifChangesGroup">
+            <legend class="notif-legend">
+              <label><input type="checkbox" id="notifChangesEnabled" checked> Báo khi lịch học thay đổi</label>
+            </legend>
+            <div class="notif-sub-options">
+              <span class="notif-hint">Báo khi đổi phòng, đổi giờ, bị hủy hoặc có buổi mới sau mỗi lần đồng bộ.</span>
+            </div>
+          </fieldset>
+
           <div class="notif-test-row">
             <button type="button" id="testNotificationBtn" class="filter-btn">Thử thông báo</button>
           </div>
+          <div id="notifStatus" class="notif-hint" role="status" aria-live="polite"></div>
 
           <div class="notif-section" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));">
             <label class="notif-switch-label">

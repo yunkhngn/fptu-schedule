@@ -1954,6 +1954,18 @@ body {
   padding-left: 8px;
 }
 
+.notif-hint {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted, #94a3b8);
+}
+
+#notifStatus {
+  min-height: 16px;
+  margin-top: 6px;
+}
+
 .notif-test-row {
   display: flex;
   justify-content: flex-end;

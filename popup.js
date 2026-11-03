@@ -115,6 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const notifExam1Day = document.getElementById("notifExam1Day");
   const notifExam1Hour = document.getElementById("notifExam1Hour");
   const testNotificationBtn = document.getElementById("testNotificationBtn");
+  const notifChangesEnabled = document.getElementById("notifChangesEnabled");
+  const notifStatus = document.getElementById("notifStatus");
   const saveNotificationBtn = document.getElementById("saveNotificationBtn");
   const fapKeepSessionToggle = document.getElementById("fapKeepSessionToggle");
 
@@ -123,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
     : {
         enabled: true,
         class: { enabled: true, offset15: true, offset30: false },
-        exam: { enabled: true, offset1Day: true, offset1Hour: true }
+        exam: { enabled: true, offset1Day: true, offset1Hour: true },
+        changes: { enabled: true }
       };
 
   function updateNotificationButtonState(enabled) {
@@ -141,6 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (notifExamEnabled) notifExamEnabled.checked = !!(s.exam && s.exam.enabled);
     if (notifExam1Day) notifExam1Day.checked = !!(s.exam && s.exam.offset1Day);
     if (notifExam1Hour) notifExam1Hour.checked = !!(s.exam && s.exam.offset1Hour);
+    // Settings saved before this option existed have no "changes" key: treat that as on.
+    if (notifChangesEnabled) notifChangesEnabled.checked = !(s.changes && s.changes.enabled === false);
     updateNotificationButtonState(s.enabled);
   }
 
@@ -226,6 +231,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function refreshNotificationStatus() {
+    if (!notifStatus) return;
+    notifStatus.textContent = "";
+    if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.sendMessage) return;
+    try {
+      chrome.runtime.sendMessage({ type: "GET_ALARM_SUMMARY" }, (res) => {
+        if (chrome.runtime.lastError || !res) return;
+        if (!res.count) {
+          notifStatus.textContent = "Chưa có nhắc nhở nào được đặt. Hãy đồng bộ lịch học hoặc lịch thi.";
+          return;
+        }
+        const when = res.nextTime
+          ? new Date(res.nextTime).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })
+          : "";
+        notifStatus.textContent = `Đã đặt ${res.count} nhắc nhở${when ? `, gần nhất lúc ${when}` : ""}.`;
+      });
+    } catch (_) {}
+  }
+
   if (notificationBtn && notificationModal) {
     notificationBtn.addEventListener("click", () => {
       if (locStorage) {
@@ -235,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fapKeepSessionToggle.checked = res && res.fapKeepSessionEnabled !== false;
           }
           notificationModal.style.display = "block";
+          refreshNotificationStatus();
         });
       } else {
         notificationModal.style.display = "block";
@@ -259,8 +284,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (testNotificationBtn) {
     testNotificationBtn.addEventListener("click", () => {
       if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
-        chrome.runtime.sendMessage({ type: "TEST_NOTIFICATION" }, () => {
-          showToast("Đã gửi thông báo thử nghiệm!");
+        chrome.runtime.sendMessage({ type: "TEST_NOTIFICATION" }, (res) => {
+          if (chrome.runtime.lastError || !res) {
+            showError("Không gửi được thông báo thử. Hãy tải lại extension rồi thử lại.");
+          } else if (res.ok) {
+            showToast("Đã gửi thông báo thử nghiệm! Nếu không thấy gì, hãy kiểm tra cài đặt thông báo của hệ điều hành.");
+          } else if (res.reason === "denied") {
+            showError("Thông báo của Chrome đang bị tắt. Bật lại trong cài đặt thông báo của hệ điều hành hoặc Chrome.");
+          } else {
+            showError(`Không gửi được thông báo thử${res.message ? `: ${res.message}` : "."}`);
+          }
         });
       } else {
         showToast("Đã gửi thông báo thử nghiệm!");
@@ -281,6 +314,9 @@ document.addEventListener("DOMContentLoaded", () => {
           enabled: notifExamEnabled ? notifExamEnabled.checked : true,
           offset1Day: notifExam1Day ? notifExam1Day.checked : true,
           offset1Hour: notifExam1Hour ? notifExam1Hour.checked : true
+        },
+        changes: {
+          enabled: notifChangesEnabled ? notifChangesEnabled.checked : true
         }
       };
 
@@ -2895,7 +2931,21 @@ function handleSyncClassSchedule() {
           }
         }
         
-        const { uniqueNewEvents, merged: mergedSchedule } = mergeNewClassEventsInto(allSchedule, newEvents);
+        // Replace the weeks this sync covers so cancelled or moved classes disappear, unless
+        // some cells were unreadable (an incomplete sync must not look like a cancellation).
+        let uniqueNewEvents;
+        let mergedSchedule;
+        if (!(response.skipped > 0) && typeof replaceCoveredWeeks === "function") {
+          const replaced = replaceCoveredWeeks(allSchedule, newEvents);
+          uniqueNewEvents = replaced.uniqueNewEvents;
+          mergedSchedule = replaced.merged;
+          const scheduleChanges = detectScheduleChanges(replaced.replacedOld, newEvents, new Date());
+          if (scheduleChanges.length > 0) {
+            try { chrome.runtime.sendMessage({ type: "SCHEDULE_CHANGES", changes: scheduleChanges }).catch(() => {}); } catch (_) {}
+          }
+        } else {
+          ({ uniqueNewEvents, merged: mergedSchedule } = mergeNewClassEventsInto(allSchedule, newEvents));
+        }
         allSchedule = mergedSchedule;
         persistClassSchedule(JSON.stringify(allSchedule));
         // Re-render UI for the schedule tab
