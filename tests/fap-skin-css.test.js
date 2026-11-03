@@ -106,8 +106,21 @@ test("transparency can be turned off", () => {
   assert.match(css, /@media \(prefers-reduced-transparency: reduce\)/);
 });
 
+test("core components are covered by the skin", () => {
+  ["\\.card", "\\.btn-primary", "\\.form-control", "\\.table", "\\.badge", "\\.dropdown-menu", "\\.modal-content", "\\.pagination"]
+    .forEach((sel) => assert.match(css, new RegExp(sel)));
+});
+
 test("the fap-* classes the skin targets exist in the home fixture", () => {
-  const KNOWN_ABSENT = ["fap-home-fee", "fap-home-fee-card", "fap-home-fee-warning"]; // in home.css, but the fixture student has no fee notice
+  const KNOWN_ABSENT = [
+    "fap-home-fee",
+    "fap-home-fee-card",
+    "fap-home-fee-warning",
+    "fap-filter-card",
+    "fap-chip",
+    "fap-empty-state",
+    "fap-page-title__crumb-link"
+  ]; // in home.css or other page components (style.css)
   const used = [...new Set(css.match(/\.fap-[\w-]+/g) || [])].map((c) => c.slice(1));
   used.filter((c) => !KNOWN_ABSENT.some((k) => c.startsWith(k)))
       .forEach((c) => assert.ok(doc.querySelector("." + c) || html.includes(c), c));
