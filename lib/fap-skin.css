@@ -1997,6 +1997,130 @@ html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor > .bg-success-s
 }
 
 /* --------------------------------------------------------------------------
+   Exam Schedule (/ExamSchedule) & Stacked Sheet Tables
+   - Glassmorphic result card sheet table
+   - Table headers with small secondary uppercase typography
+   - Alternating translucent striped rows and accent hover state
+   - Mobile stacked card mode (border-radius: 18px per card row)
+   - Preserves FAP's native content: attr(data-label) without overrides
+   -------------------------------------------------------------------------- */
+
+html:not([data-fptu-skin="off"]) table.fap-sheet {
+  --ct-table-color: inherit;
+  --ct-table-striped-color: inherit;
+  --ct-table-active-color: inherit;
+  --ct-table-hover-color: inherit;
+  color: inherit;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th {
+  background: color-mix(in srgb, var(--fptu-accent) 6%, transparent) !important;
+  color: #6b7280 !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  border-bottom: 1.5px solid var(--fptu-glass-border) !important;
+  padding: 0.8rem 1rem !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet thead th {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #94a3b8 !important;
+}
+
+html:not([data-fptu-skin="off"]) table.fap-sheet tbody td {
+  padding: 0.8rem 1rem !important;
+  border-bottom: 1px solid var(--fptu-glass-border) !important;
+  color: inherit !important;
+  vertical-align: middle;
+  background-color: transparent;
+}
+
+html:not([data-fptu-skin="off"]) table.fap-sheet tbody tr:nth-child(2n) > * {
+  background-color: color-mix(in srgb, #ffffff 40%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr:nth-child(2n) > * {
+  background-color: color-mix(in srgb, #1e293b 35%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html:not([data-fptu-skin="off"]) table.fap-sheet tbody tr:hover > * {
+  background-color: color-mix(in srgb, var(--fptu-accent) 8%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr:hover > * {
+  background-color: color-mix(in srgb, var(--fptu-accent) 12%, transparent) !important;
+  box-shadow: none !important;
+}
+
+/* Stacked card mode on mobile screens (border-radius: 18px) */
+@media (max-width: 767.98px) {
+  html:not([data-fptu-skin="off"]) table.fap-table--stack {
+    border-spacing: 0;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody {
+    gap: 0.85rem;
+    padding: 0.5rem 0;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr {
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    background: color-mix(in srgb, #ffffff 72%, transparent) !important;
+    border: 1px solid var(--fptu-glass-border) !important;
+    box-shadow: var(--fptu-glass-shadow) !important;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody tr {
+    background: rgba(30, 41, 59, 0.65) !important;
+    background: color-mix(in srgb, #1e293b 65%, transparent) !important;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--fptu-accent) 25%, transparent) !important;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr > * {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody td {
+    border-bottom: 1px solid var(--fptu-glass-border) !important;
+    padding: 0.65rem 0.85rem !important;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody td::before {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody td::before {
+    color: #94a3b8;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -2025,6 +2149,7 @@ html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor > .bg-success-s
   html:not([data-fptu-skin="off"]) .fap-result-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-grid table,
+  html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr,
   html:not([data-fptu-skin="off"]) .fap-home-quick-menu,
   html:not([data-fptu-skin="off"]) .modal-content,
   html:not([data-fptu-skin="off"]) .dropdown-menu {
@@ -2040,6 +2165,7 @@ html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor > .bg-success-s
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid table,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody tr,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .modal-content,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu {

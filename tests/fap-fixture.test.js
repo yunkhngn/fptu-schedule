@@ -69,3 +69,39 @@ test("fap-timetable fixture is sanitized", () => {
   // No residual third-party extension elements
   assert.strictEqual(timetableDoc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length, 0, "no third-party extension elements");
 });
+
+const examFixturePath = path.join(__dirname, "fixtures", "fap-exam.html");
+
+test("fap-exam fixture has the exam schedule table blocks the skin targets", () => {
+  const examHtml = fs.readFileSync(examFixturePath, "utf8");
+  const examDoc = new JSDOM(examHtml).window.document;
+  const table = examDoc.querySelector("table.fap-sheet.fap-table--stack");
+  assert.ok(table, "table.fap-sheet.fap-table--stack must exist");
+  const cellsWithDataLabel = table.querySelectorAll("tbody td[data-label]");
+  assert.ok(cellsWithDataLabel.length > 0, "must have cells with data-label attributes");
+  assert.ok(examDoc.querySelector(".fap-result-card"), ".fap-result-card must exist");
+});
+
+test("fap-exam fixture is sanitized", () => {
+  const examHtml = fs.readFileSync(examFixturePath, "utf8");
+  const examDoc = new JSDOM(examHtml).window.document;
+  assert.doesNotMatch(examHtml, /[\w.+-]+@(?!example\.com)[\w-]+(\.[\w-]+)+/, "only example.com emails");
+  assert.doesNotMatch(examHtml, /\b(?!SE000000\b)[A-Z]{2}\d{5,}\b/, "no student ids");
+  assert.strictEqual(examDoc.querySelectorAll("script").length, 0, "no scripts");
+  assert.strictEqual(examDoc.querySelectorAll('input[type="hidden"]').length, 0, "no hidden tokens");
+
+  // No real student name or real ID
+  assert.doesNotMatch(examHtml, /Nguyễn Đăng Khoa/, "no real student name");
+  assert.doesNotMatch(examHtml, /HE190183/, "no real student id");
+
+  // Web notification tokens and sensitive identifiers sanitized
+  const notifConfig = examDoc.querySelector("#web-notification-config");
+  if (notifConfig) {
+    assert.strictEqual(notifConfig.getAttribute("data-user-id"), "dummy-user-id");
+    assert.strictEqual(notifConfig.getAttribute("data-login-registration-id"), "dummy-login-registration-id");
+    assert.strictEqual(notifConfig.getAttribute("data-request-verification-token"), "dummy-request-verification-token");
+  }
+
+  // No residual third-party extension elements
+  assert.strictEqual(examDoc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length, 0, "no third-party extension elements");
+});

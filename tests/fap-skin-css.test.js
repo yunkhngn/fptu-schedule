@@ -128,7 +128,9 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-result-card",
     "fap-chip",
     "fap-empty-state",
-    "fap-page-title__crumb-link"
+    "fap-page-title__crumb-link",
+    "fap-sheet",
+    "fap-table--stack"
   ]; // in home.css or other page components (style.css)
   const used = [...new Set(css.match(/\.fap-[\w-]+/g) || [])].map((c) => c.slice(1));
   used.filter((c) => !KNOWN_ABSENT.some((k) => c.startsWith(k)))
@@ -154,6 +156,27 @@ test("weekly timetable components are styled and selectors avoid column index or
       r.selector,
       /:nth-(?:child|of-type)/,
       `timetable selectors must not use :nth-child or :nth-of-type: ${r.selector}`
+    );
+  });
+});
+
+test("exam schedule table and card mode are styled without overriding content property", () => {
+  ["fap-sheet", "fap-table--stack"].forEach((cls) =>
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`)
+  );
+
+  const sheetRules = rules.filter(
+    (r) => r.selector.includes("fap-sheet") || r.selector.includes("fap-table--stack")
+  );
+  assert.ok(sheetRules.length > 0, "must have fap-sheet or fap-table--stack rules");
+
+  // Contract test: the skin must NOT override content property on fap-sheet or fap-table--stack
+  // so FAP's native content: attr(data-label) functions properly on mobile stacked cards
+  sheetRules.forEach((r) => {
+    assert.doesNotMatch(
+      r.body,
+      /(?:^|;)\s*content\s*:/i,
+      `skin must not override content property on ${r.selector}`
     );
   });
 });
