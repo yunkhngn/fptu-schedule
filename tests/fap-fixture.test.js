@@ -36,3 +36,36 @@ test("fap-home fixture is sanitized", () => {
   // No residual third-party extension elements
   assert.strictEqual(doc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length, 0, "no third-party extension elements");
 });
+
+const timetableFixturePath = path.join(__dirname, "fixtures", "fap-timetable.html");
+
+test("fap-timetable fixture has the weekly timetable blocks the skin targets", () => {
+  const timetableHtml = fs.readFileSync(timetableFixturePath, "utf8");
+  const timetableDoc = new JSDOM(timetableHtml).window.document;
+  [".weekly-timetable-grid", "#weekly-timetable-prev", ".weekly-timetable-mobile-card"]
+    .forEach((sel) => assert.ok(timetableDoc.querySelector(sel), sel));
+});
+
+test("fap-timetable fixture is sanitized", () => {
+  const timetableHtml = fs.readFileSync(timetableFixturePath, "utf8");
+  const timetableDoc = new JSDOM(timetableHtml).window.document;
+  assert.doesNotMatch(timetableHtml, /[\w.+-]+@(?!example\.com)[\w-]+(\.[\w-]+)+/, "only example.com emails");
+  assert.doesNotMatch(timetableHtml, /\b(?!SE000000\b)[A-Z]{2}\d{5,}\b/, "no student ids");
+  assert.strictEqual(timetableDoc.querySelectorAll("script").length, 0, "no scripts");
+  assert.strictEqual(timetableDoc.querySelectorAll('input[type="hidden"]').length, 0, "no hidden tokens");
+
+  // No real student name or real ID
+  assert.doesNotMatch(timetableHtml, /Nguyễn Đăng Khoa/, "no real student name");
+  assert.doesNotMatch(timetableHtml, /HE190183/, "no real student id");
+
+  // Web notification tokens and sensitive identifiers sanitized
+  const notifConfig = timetableDoc.querySelector("#web-notification-config");
+  if (notifConfig) {
+    assert.strictEqual(notifConfig.getAttribute("data-user-id"), "dummy-user-id");
+    assert.strictEqual(notifConfig.getAttribute("data-login-registration-id"), "dummy-login-registration-id");
+    assert.strictEqual(notifConfig.getAttribute("data-request-verification-token"), "dummy-request-verification-token");
+  }
+
+  // No residual third-party extension elements
+  assert.strictEqual(timetableDoc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length, 0, "no third-party extension elements");
+});

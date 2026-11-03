@@ -124,6 +124,8 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-home-news-item__icon--pinned",
     "fap-home-news-item__meta--pinned",
     "fap-filter-card",
+    "fap-filter-actions",
+    "fap-result-card",
     "fap-chip",
     "fap-empty-state",
     "fap-page-title__crumb-link"
@@ -139,6 +141,21 @@ test("manifest loads the skin early, on FAP only", () => {
   assert.deepStrictEqual(block.matches, ["*://fap.fpt.edu.vn/*"]);
   assert.strictEqual(block.run_at, "document_start");
   assert.deepStrictEqual(block.js, ["lib/accent.js", "lib/fap-skin.js"]);
+});
+
+test("weekly timetable components are styled and selectors avoid column index or nth-child", () => {
+  ["weekly-timetable-grid", "weekly-timetable-week-actions__button", "weekly-timetable-mobile-card", "fap-filter-card"]
+    .forEach((cls) => assert.ok(css.includes(cls), `missing CSS target: ${cls}`));
+
+  const timetableRules = rules.filter((r) => r.selector.includes("weekly-timetable"));
+  assert.ok(timetableRules.length > 0, "must have weekly timetable rules");
+  timetableRules.forEach((r) => {
+    assert.doesNotMatch(
+      r.selector,
+      /:nth-(?:child|of-type)/,
+      `timetable selectors must not use :nth-child or :nth-of-type: ${r.selector}`
+    );
+  });
 });
 
 module.exports = { parseRules };

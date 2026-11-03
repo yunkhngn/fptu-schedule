@@ -1688,6 +1688,315 @@ html:not([data-fptu-skin="off"]) .fap-home-fee-warning {
 }
 
 /* --------------------------------------------------------------------------
+   Weekly Timetable (/WeeklyTimetable)
+   - Filter card, week actions & picker
+   - Result card container
+   - Desktop timetable grid (headers, cells, scheduled events)
+   - Attendance status indicators & badges
+   - Mobile card layouts (border-radius: 18px)
+   -------------------------------------------------------------------------- */
+
+/* Week Actions & Filter Card */
+html:not([data-fptu-skin="off"]) #weekly-timetable-week-actions {
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"]) #weekly-timetable-week {
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+html:not([data-fptu-skin="off"]) .fap-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-week-actions__button {
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.45rem 1rem;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-week-actions__button--current,
+html:not([data-fptu-skin="off"]) #weekly-timetable-current {
+  background: linear-gradient(135deg, var(--fptu-accent) 0%, var(--fptu-accent-hover) 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--fptu-accent) 45%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-week-actions__button--current:hover,
+html:not([data-fptu-skin="off"]) .weekly-timetable-week-actions__button--current:focus-visible,
+html:not([data-fptu-skin="off"]) #weekly-timetable-current:hover,
+html:not([data-fptu-skin="off"]) #weekly-timetable-current:focus-visible {
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px -2px color-mix(in srgb, var(--fptu-accent) 55%, transparent);
+  transform: translateY(-1px);
+}
+
+html:not([data-fptu-skin="off"]) #weekly-timetable-prev,
+html:not([data-fptu-skin="off"]) #weekly-timetable-next {
+  border: 1px solid var(--fptu-glass-border);
+  color: inherit;
+  background: color-mix(in srgb, #ffffff 40%, transparent);
+  box-shadow: var(--fptu-glass-shadow);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] #weekly-timetable-prev,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] #weekly-timetable-next {
+  background: color-mix(in srgb, #1e293b 40%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) #weekly-timetable-prev:hover,
+html:not([data-fptu-skin="off"]) #weekly-timetable-prev:focus-visible,
+html:not([data-fptu-skin="off"]) #weekly-timetable-next:hover,
+html:not([data-fptu-skin="off"]) #weekly-timetable-next:focus-visible {
+  border-color: var(--fptu-accent);
+  color: var(--fptu-accent);
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+}
+
+/* Result Card */
+html:not([data-fptu-skin="off"]) .fap-result-card {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.62);
+  background: color-mix(in srgb, #ffffff 62%, transparent);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-result-card > .card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  padding: 1rem 1.25rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-result-card__title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* Timetable Grid (Desktop) */
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid {
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--fptu-glass-border) !important;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid thead th {
+  background: color-mix(in srgb, #ffffff 50%, transparent);
+  border-color: var(--fptu-glass-border) !important;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid thead th {
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid thead th.weekly-timetable-today-header,
+html:not([data-fptu-skin="off"]) .weekly-timetable-today-header {
+  background: color-mix(in srgb, var(--fptu-accent) 14%, transparent) !important;
+  color: var(--fptu-accent) !important;
+  border-bottom: 2px solid var(--fptu-accent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid tbody th {
+  background: color-mix(in srgb, #ffffff 30%, transparent);
+  border-color: var(--fptu-glass-border) !important;
+  font-weight: 700;
+  font-size: 0.85rem;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.6rem 0.5rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid tbody th {
+  background: color-mix(in srgb, #1e293b 40%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid tbody td {
+  border-color: var(--fptu-glass-border) !important;
+  vertical-align: top;
+  padding: 0.45rem;
+  min-width: 130px;
+}
+
+/* Scheduled Class Cell Glass Tile */
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid td > .position-relative {
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
+  background: color-mix(in srgb, var(--fptu-accent) 6%, rgba(255, 255, 255, 0.7));
+  border: 1px solid color-mix(in srgb, var(--fptu-accent) 18%, var(--fptu-glass-border));
+  box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid td > .position-relative {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, rgba(30, 41, 59, 0.7));
+  border-color: color-mix(in srgb, var(--fptu-accent) 22%, var(--fptu-glass-border));
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid td > .position-relative:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px -2px color-mix(in srgb, var(--fptu-accent) 22%, transparent);
+  border-color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-cell-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--fptu-accent) !important;
+  line-height: 1.35;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-cell-title i {
+  color: var(--fptu-accent);
+  margin-right: 0.25rem;
+}
+
+/* Secondary Subtle Badges */
+html:not([data-fptu-skin="off"]) .weekly-timetable-grid .bg-secondary-subtle,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card .bg-secondary-subtle,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor .bg-secondary-subtle {
+  border-radius: 9999px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent) !important;
+  color: var(--fptu-accent) !important;
+  border: 1px solid color-mix(in srgb, var(--fptu-accent) 20%, transparent);
+}
+
+/* Attendance Status with Semantic Contrast */
+html:not([data-fptu-skin="off"]) .weekly-timetable-attendance-status,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card [title="Điểm danh"] {
+  font-weight: 600;
+  font-size: 0.775rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-attendance-status.text-success,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card [title="Điểm danh"].text-success {
+  color: #059669 !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-attendance-status.text-success,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card [title="Điểm danh"].text-success {
+  color: #34d399 !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-attendance-status.text-danger,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card [title="Điểm danh"].text-danger {
+  color: #dc2626 !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-attendance-status.text-danger,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card [title="Điểm danh"].text-danger {
+  color: #f87171 !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-attendance-status.text-secondary,
+html:not([data-fptu-skin="off"]) .weekly-timetable-attendance-status.text-muted,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card [title="Điểm danh"].text-secondary,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card [title="Điểm danh"].text-muted {
+  color: #6b7280 !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-attendance-status.text-secondary,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-attendance-status.text-muted,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card [title="Điểm danh"].text-secondary,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card [title="Điểm danh"].text-muted {
+  color: #94a3b8 !important;
+}
+
+/* Mobile Card Layout (390px, border-radius: 18px) */
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card {
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  background: color-mix(in srgb, #ffffff 72%, transparent) !important;
+  border: 1px solid var(--fptu-glass-border) !important;
+  box-shadow: var(--fptu-glass-shadow) !important;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card {
+  background: rgba(30, 41, 59, 0.65) !important;
+  background: color-mix(in srgb, #1e293b 65%, transparent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -2px color-mix(in srgb, var(--fptu-accent) 25%, transparent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card__slot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.15rem;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card__content .text-primary {
+  color: var(--fptu-accent) !important;
+}
+
+/* Mobile Anchor Sections */
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor {
+  border-radius: 16px;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor > .d-flex {
+  border-radius: 14px !important;
+  padding: 0.65rem 0.85rem !important;
+  background: color-mix(in srgb, #ffffff 50%, transparent) !important;
+  border: 1px solid var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-anchor > .d-flex {
+  background: color-mix(in srgb, #1e293b 50%, transparent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor[data-today-section="true"] > .d-flex,
+html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-anchor > .bg-success-subtle {
+  background: color-mix(in srgb, var(--fptu-accent) 15%, transparent) !important;
+  color: var(--fptu-accent) !important;
+  border-color: color-mix(in srgb, var(--fptu-accent) 30%, transparent) !important;
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -1713,6 +2022,9 @@ html:not([data-fptu-skin="off"]) .fap-home-fee-warning {
   html:not([data-fptu-skin="off"]) .fap-sidebar,
   html:not([data-fptu-skin="off"]) .card,
   html:not([data-fptu-skin="off"]) .fap-filter-card,
+  html:not([data-fptu-skin="off"]) .fap-result-card,
+  html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card,
+  html:not([data-fptu-skin="off"]) .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"]) .fap-home-quick-menu,
   html:not([data-fptu-skin="off"]) .modal-content,
   html:not([data-fptu-skin="off"]) .dropdown-menu {
@@ -1725,6 +2037,9 @@ html:not([data-fptu-skin="off"]) .fap-home-fee-warning {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .modal-content,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu {
