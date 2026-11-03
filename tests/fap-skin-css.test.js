@@ -34,7 +34,7 @@ test("accent defaults match the blue preset and nothing else hard-codes a color 
 });
 
 test("backdrop-filter is limited to bars, dialogs and menus", () => {
-  const allowed = /(navbar-custom|fap-topbar|leftside-menu|fap-sidebar|modal-content|dropdown-menu|fap-sticky)/;
+  const allowed = /(navbar-custom|fap-topbar|leftside-menu|fap-sidebar|modal-content|dropdown-menu|fap-sticky|select2-dropdown)/;
   rules.filter((r) => /backdrop-filter/.test(r.body)).forEach((r) => assert.match(r.selector, allowed));
 });
 
@@ -66,7 +66,14 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-empty-state",
     "fap-page-title__crumb-link",
     "fap-sheet",
-    "fap-table--stack"
+    "fap-table--stack",
+    "fap-page-size-select",
+    "fap-table-card",
+    "fap-empty-card",
+    "fap-create-btn",
+    "fap-back-btn",
+    "fap-list-page",
+    "fap-status"
   ]; // in home.css or other page components (style.css)
   const used = [...new Set(css.match(/\.fap-[\w-]+/g) || [])].map((c) => c.slice(1));
   used.filter((c) => !KNOWN_ABSENT.some((k) => c.startsWith(k)))
@@ -126,6 +133,45 @@ test("login styles are gated and use the accent variables", () => {
   assert.ok(login.length > 0);
   login.forEach((r) => assert.match(r.selector, /^html:not\(\[data-fptu-skin="off"\]\)/));
   assert.ok(login.some((r) => /var\(--fptu-accent/.test(r.body)));
+});
+
+test("list and table pattern styles (DataTables, Select2, Sheet, Filter) are styled and avoid :nth-child", () => {
+  const targetClasses = [
+    "select2-dropdown",
+    "select2-container",
+    "dataTables_paginate",
+    "paginate_button",
+    "fap-sheet-scroll",
+    "fap-filter-card",
+    "fap-result-card"
+  ];
+  targetClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
+
+  const listAndTableRules = rules.filter((r) =>
+    /(fap-sheet|fap-filter|fap-result|dataTables|paginate_button|select2|sheet-row-total|sheet-grand-total|sheet-group-cell|fap-table)/.test(
+      r.selector
+    )
+  );
+  assert.ok(listAndTableRules.length > 0, "must have list and table rules");
+  listAndTableRules.forEach((r) => {
+    assert.match(
+      r.selector,
+      /^html:not\(\[data-fptu-skin="off"\]\)/,
+      `selector must be gated: ${r.selector}`
+    );
+    assert.doesNotMatch(
+      r.selector,
+      /:nth-(?:child|of-type)/,
+      `list and table selectors must not use :nth-child or :nth-of-type: ${r.selector}`
+    );
+    assert.doesNotMatch(
+      r.body,
+      /(?:^|;)\s*content\s*:/i,
+      `skin must not override content property on ${r.selector}`
+    );
+  });
 });
 
 module.exports = { parseRules, stripComments, css, rules };

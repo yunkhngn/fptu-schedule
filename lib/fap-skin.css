@@ -2042,12 +2042,12 @@ html:not([data-fptu-skin="off"]) table.fap-sheet tbody td {
   background-color: transparent;
 }
 
-html:not([data-fptu-skin="off"]) table.fap-sheet tbody tr:nth-child(2n) > * {
+html:not([data-fptu-skin="off"]) table.fap-sheet tbody tr.odd > * {
   background-color: color-mix(in srgb, #ffffff 40%, transparent) !important;
   box-shadow: none !important;
 }
 
-html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr:nth-child(2n) > * {
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr.odd > * {
   background-color: color-mix(in srgb, #1e293b 35%, transparent) !important;
   box-shadow: none !important;
 }
@@ -2118,6 +2118,618 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr:
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody td::before {
     color: #94a3b8;
   }
+}
+
+/* --------------------------------------------------------------------------
+   List, Sheet & Table Results Pattern (DataTables & Select2)
+   - Glass filter card (.fap-filter-card) with action alignment
+   - Horizontal scrolling container (.fap-sheet-scroll, .table-responsive)
+   - Result card typography & metadata (.fap-result-card__code, __meta)
+   - Sheet table styling (.fap-sheet, .fap-sheet-col-index, .fap-sheet-sort)
+   - Grouping & Total rows (.sheet-group-cell, .sheet-row-total, .sheet-grand-total)
+   - Empty states (.fap-empty-card, .fap-empty-state, .fap-table-card--empty)
+   - Standard action buttons (.fap-create-btn, .fap-back-btn, .fap-page-size-select)
+   - Status indicators (.fap-status, .fap-status--ok)
+   - DataTables integration (filter, length, info, paging pills, sorting arrows)
+   - Select2 dropdowns (glass backdrop-filter blur, accent selected item)
+   -------------------------------------------------------------------------- */
+
+/* List Page Layout & Filter Card */
+html:not([data-fptu-skin="off"]) .fap-list-page {
+  position: relative;
+  width: 100%;
+}
+
+html:not([data-fptu-skin="off"]) .fap-filter-card {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.62);
+  background: color-mix(in srgb, #ffffff 62%, transparent);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  margin-bottom: 1.25rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+html:not([data-fptu-skin="off"]) .fap-filter-actions.fap-filter-actions--end,
+html:not([data-fptu-skin="off"]) .fap-filter-actions--end {
+  justify-content: flex-end;
+}
+
+/* Action Buttons & Page Size Select */
+html:not([data-fptu-skin="off"]) .fap-create-btn {
+  border-radius: 9999px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.25rem;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--fptu-accent) 30%, transparent);
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-create-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-back-btn {
+  border-radius: 9999px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.1rem;
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-size-select {
+  width: auto;
+  min-width: 4.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  padding: 0.3rem 1.8rem 0.3rem 0.85rem;
+  border: 1px solid var(--fptu-glass-border);
+  background-color: rgba(255, 255, 255, 0.65);
+  background-color: color-mix(in srgb, #ffffff 65%, transparent);
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-page-size-select {
+  background-color: rgba(30, 41, 59, 0.65);
+  background-color: color-mix(in srgb, #1e293b 65%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-size-select:focus {
+  border-color: var(--fptu-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fptu-accent) 20%, transparent);
+  outline: none;
+}
+
+/* Result Card Typography & Metadata */
+html:not([data-fptu-skin="off"]) .fap-result-card__code {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.18rem 0.6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  color: var(--fptu-accent);
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-result-card__meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0.35rem 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card__meta {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-result-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Bounded Horizontal Scroll inside Cards */
+html:not([data-fptu-skin="off"]) .fap-sheet-scroll,
+html:not([data-fptu-skin="off"]) .card .table-responsive,
+html:not([data-fptu-skin="off"]) .fap-result-card .table-responsive {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+html:not([data-fptu-skin="off"]) .fap-sheet-scroll::-webkit-scrollbar,
+html:not([data-fptu-skin="off"]) .card .table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-sheet-scroll::-webkit-scrollbar-thumb,
+html:not([data-fptu-skin="off"]) .card .table-responsive::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--fptu-accent) 25%, transparent);
+  border-radius: 9999px;
+}
+
+/* Sheet Column Index, Sort & Actions */
+html:not([data-fptu-skin="off"]) .fap-sheet-col-index {
+  width: 3.5rem;
+  text-align: center;
+  font-weight: 500;
+  color: #64748b;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sheet-col-index {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-sheet-sort {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .fap-sheet-sort:hover {
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-table-card__actions {
+  white-space: nowrap;
+}
+
+html:not([data-fptu-skin="off"]) .sheet-group-cell {
+  font-weight: 700;
+  background-color: color-mix(in srgb, var(--fptu-accent) 4%, transparent) !important;
+  vertical-align: middle;
+  border-right: 1.5px solid var(--fptu-glass-border) !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .sheet-group-cell {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Totals rows highlighted with subtle accent */
+html:not([data-fptu-skin="off"]) tr.sheet-row-total > *,
+html:not([data-fptu-skin="off"]) tr.sheet-grand-total > * {
+  font-weight: 700 !important;
+  background-color: color-mix(in srgb, var(--fptu-accent) 10%, transparent) !important;
+  color: var(--fptu-accent) !important;
+  border-top: 1.5px solid color-mix(in srgb, var(--fptu-accent) 25%, transparent) !important;
+  border-bottom: 1.5px solid color-mix(in srgb, var(--fptu-accent) 25%, transparent) !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] tr.sheet-row-total > *,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] tr.sheet-grand-total > * {
+  background-color: color-mix(in srgb, var(--fptu-accent) 16%, transparent) !important;
+  color: var(--fptu-accent) !important;
+  border-top: 1.5px solid color-mix(in srgb, var(--fptu-accent) 35%, transparent) !important;
+  border-bottom: 1.5px solid color-mix(in srgb, var(--fptu-accent) 35%, transparent) !important;
+}
+
+/* Empty States */
+html:not([data-fptu-skin="off"]) .fap-empty-card {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.62);
+  background: color-mix(in srgb, #ffffff 62%, transparent);
+  border: 1px dashed var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-shadow);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-card {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  color: #64748b;
+  text-align: center;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-state {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) tr.fap-table-card--empty > td {
+  padding: 2.5rem 1rem !important;
+  text-align: center;
+  background: transparent !important;
+  border-bottom: 0 !important;
+}
+
+/* Status Badges */
+html:not([data-fptu-skin="off"]) .fap-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.28rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, #ffffff 60%, transparent);
+  border: 1px solid var(--fptu-glass-border);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-status {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-status.fap-status--ok,
+html:not([data-fptu-skin="off"]) .fap-status--ok {
+  background: color-mix(in srgb, #10b981 14%, transparent) !important;
+  border-color: color-mix(in srgb, #10b981 30%, transparent) !important;
+  color: #059669 !important;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-status.fap-status--ok,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-status--ok {
+  background: color-mix(in srgb, #10b981 22%, transparent) !important;
+  border-color: color-mix(in srgb, #10b981 40%, transparent) !important;
+  color: #34d399 !important;
+}
+
+/* DataTables Integration */
+html:not([data-fptu-skin="off"]) .dataTables_wrapper.dt-bootstrap5,
+html:not([data-fptu-skin="off"]) .dataTables_wrapper {
+  position: relative;
+  clear: both;
+  width: 100%;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_wrapper .dataTables_length,
+html:not([data-fptu-skin="off"]) .dataTables_wrapper .dataTables_filter {
+  margin-bottom: 0.75rem;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_wrapper .dataTables_length select {
+  border-radius: 9999px;
+  padding: 0.25rem 1.75rem 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--fptu-glass-border);
+  background-color: rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, #ffffff 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dataTables_wrapper .dataTables_length select {
+  background-color: rgba(30, 41, 59, 0.6);
+  background-color: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_wrapper .dataTables_filter input {
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--fptu-glass-border);
+  background-color: rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, #ffffff 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter input {
+  background-color: rgba(30, 41, 59, 0.6);
+  background-color: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_wrapper .dataTables_info {
+  font-size: 0.85rem;
+  color: #64748b;
+  padding-top: 0.5rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dataTables_wrapper .dataTables_info {
+  color: #94a3b8;
+}
+
+/* DataTables Sorting Arrows (color & opacity only, never override content) */
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_asc,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_desc,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_asc,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_desc {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.75rem !important;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting:hover,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting:hover {
+  color: var(--fptu-accent) !important;
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting:before,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting:after,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_asc:before,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_asc:after,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_desc:before,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_desc:after,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting:before,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting:after,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_asc:before,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_asc:after,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_desc:before,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_desc:after {
+  color: inherit;
+  opacity: 0.35;
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_asc:before,
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_desc:after,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_asc:before,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_desc:after {
+  opacity: 0.95;
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable thead th.sorting_disabled,
+html:not([data-fptu-skin="off"]) table.fap-sheet thead th.sorting_disabled {
+  cursor: default;
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable tbody td.sorting_1 {
+  background-color: color-mix(in srgb, var(--fptu-accent) 3%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.dataTable tbody td.sorting_1 {
+  background-color: color-mix(in srgb, var(--fptu-accent) 6%, transparent);
+}
+
+/* Responsive DataTables dtr-control */
+html:not([data-fptu-skin="off"]) table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+html:not([data-fptu-skin="off"]) table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
+  position: relative;
+  cursor: pointer;
+}
+
+html:not([data-fptu-skin="off"]) table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+html:not([data-fptu-skin="off"]) table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+  background-color: var(--fptu-accent);
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+  border-color: #1e293b;
+}
+
+/* DataTables Pagination (Pill Shaped, Active Accent) */
+html:not([data-fptu-skin="off"]) .dataTables_paginate.paging_simple_numbers,
+html:not([data-fptu-skin="off"]) .dataTables_paginate {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 0 0.25rem 0;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate ul.pagination {
+  margin: 0;
+  padding: 0 !important;
+  gap: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button {
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.page-item .page-link,
+html:not([data-fptu-skin="off"]) .dataTables_paginate a.paginate_button {
+  border-radius: 9999px !important;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--fptu-glass-border);
+  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, #ffffff 60%, transparent);
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  text-decoration: none;
+  box-shadow: none;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dataTables_paginate .paginate_button.page-item .page-link,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dataTables_paginate a.paginate_button {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.page-item .page-link:hover,
+html:not([data-fptu-skin="off"]) .dataTables_paginate a.paginate_button:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.active .page-link,
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.current,
+html:not([data-fptu-skin="off"]) .dataTables_paginate a.paginate_button.current {
+  background: var(--fptu-accent) !important;
+  border-color: var(--fptu-accent) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.disabled .page-link,
+html:not([data-fptu-skin="off"]) .dataTables_paginate .paginate_button.disabled,
+html:not([data-fptu-skin="off"]) .dataTables_paginate a.paginate_button.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none !important;
+}
+
+/* Select2 Integration */
+html:not([data-fptu-skin="off"]) .select2,
+html:not([data-fptu-skin="off"]) .select2-container,
+html:not([data-fptu-skin="off"]) .select2-container--default {
+  max-width: 100%;
+}
+
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection,
+html:not([data-fptu-skin="off"]) .select2-container--default .select2-selection--single {
+  border-radius: 12px;
+  border: 1px solid var(--fptu-glass-border);
+  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, #ffffff 60%, transparent);
+  height: auto;
+  min-height: 2.45rem;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-container .select2-selection,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-container--default .select2-selection--single {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .select2-container--open .select2-selection,
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection:focus {
+  border-color: var(--fptu-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fptu-accent) 22%, transparent);
+  outline: none;
+}
+
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection__rendered {
+  color: inherit;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  padding-left: 0.25rem;
+  padding-right: 1.5rem;
+}
+
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection__placeholder {
+  color: #64748b;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-container .select2-selection__placeholder {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection__arrow {
+  height: 100%;
+  top: 0;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html:not([data-fptu-skin="off"]) .select2-container .select2-selection__arrow b {
+  border-color: #64748b transparent transparent transparent;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-container .select2-selection__arrow b {
+  border-color: #94a3b8 transparent transparent transparent;
+}
+
+/* Glass Select2 Dropdown */
+html:not([data-fptu-skin="off"]) .select2-dropdown {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  background: color-mix(in srgb, #ffffff 78%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-shadow), 0 10px 28px -6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 1055;
+  margin-top: 4px;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-dropdown {
+  background: rgba(15, 23, 42, 0.82);
+  background: color-mix(in srgb, #0f172a 82%, transparent);
+  box-shadow: var(--fptu-glass-shadow), 0 10px 28px -6px rgba(0, 0, 0, 0.45);
+}
+
+html:not([data-fptu-skin="off"]) .select2-dropdown .select2-search__field {
+  border-radius: 8px;
+  border: 1px solid var(--fptu-glass-border);
+  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, #ffffff 60%, transparent);
+  color: inherit;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  margin: 0.4rem;
+  width: calc(100% - 0.8rem);
+  outline: none;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-dropdown .select2-search__field {
+  background: rgba(30, 41, 59, 0.6);
+  background: color-mix(in srgb, #1e293b 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .select2-dropdown .select2-search__field:focus {
+  border-color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .select2-results__option {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.88rem;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+html:not([data-fptu-skin="off"]) .select2-results__option.select2-results__option--highlighted,
+html:not([data-fptu-skin="off"]) .select2-results__option--highlighted {
+  background-color: color-mix(in srgb, var(--fptu-accent) 14%, transparent) !important;
+  color: var(--fptu-accent) !important;
+}
+
+html:not([data-fptu-skin="off"]) .select2-results__option[aria-selected="true"],
+html:not([data-fptu-skin="off"]) .select2-results__option--selected {
+  background-color: var(--fptu-accent) !important;
+  color: #ffffff !important;
+  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
@@ -2343,7 +2955,8 @@ html:not([data-fptu-skin="off"]) .account-pages .text-danger {
   html:not([data-fptu-skin="off"]) .leftside-menu,
   html:not([data-fptu-skin="off"]) .fap-sidebar,
   html:not([data-fptu-skin="off"]) .modal-content,
-  html:not([data-fptu-skin="off"]) .dropdown-menu {
+  html:not([data-fptu-skin="off"]) .dropdown-menu,
+  html:not([data-fptu-skin="off"]) .select2-dropdown {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -2354,13 +2967,15 @@ html:not([data-fptu-skin="off"]) .account-pages .text-danger {
   html:not([data-fptu-skin="off"]) .fap-sidebar,
   html:not([data-fptu-skin="off"]) .card,
   html:not([data-fptu-skin="off"]) .fap-filter-card,
+  html:not([data-fptu-skin="off"]) .fap-empty-card,
   html:not([data-fptu-skin="off"]) .fap-result-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr,
   html:not([data-fptu-skin="off"]) .fap-home-quick-menu,
   html:not([data-fptu-skin="off"]) .modal-content,
-  html:not([data-fptu-skin="off"]) .dropdown-menu {
+  html:not([data-fptu-skin="off"]) .dropdown-menu,
+  html:not([data-fptu-skin="off"]) .select2-dropdown {
     background: #ffffff;
   }
 
@@ -2370,13 +2985,15 @@ html:not([data-fptu-skin="off"]) .account-pages .text-danger {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody tr,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-quick-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .modal-content,
-  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu {
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-dropdown {
     background: #1e293b;
   }
 }
