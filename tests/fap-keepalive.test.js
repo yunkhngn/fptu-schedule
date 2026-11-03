@@ -18,6 +18,12 @@ describe("FAP Keep-Alive Engine", () => {
     assert.strictEqual(isFapSessionCandidate("/Feedback/StudentFeedback.aspx"), true);
   });
 
+  test("isFapSessionCandidate ignores the new login routes", () => {
+    ["/Auth/Login", "/auth/login", "/Auth/GoogleLogin", "/Auth/FeidLogin", "/Auth/LoginParent", "/Auth/Login?returnUrl=/WeeklyTimetable"].forEach((p) =>
+      assert.strictEqual(isFapSessionCandidate(p), false, p));
+    ["/WeeklyTimetable", "/ExamSchedule", "/"].forEach((p) => assert.strictEqual(isFapSessionCandidate(p), true, p));
+  });
+
   test("ping sends request with credentials and cache: no-store", async () => {
     let calledUrl = null;
     let calledOpts = null;
