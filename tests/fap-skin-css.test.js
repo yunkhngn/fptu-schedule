@@ -6,11 +6,18 @@ const { JSDOM } = require("jsdom");
 const { ACCENT_PRESETS } = require("../lib/accent.js");
 
 /**
+ * Strips CSS comments.
+ */
+function stripComments(cssText) {
+  return (cssText || "").replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
+/**
  * Parses CSS text into individual rule blocks, stripping comments and supporting
  * one level of @media / @supports grouping.
  */
 function parseRules(cssText) {
-  const clean = (cssText || "").replace(/\/\*[\s\S]*?\*\//g, "").trim();
+  const clean = stripComments(cssText).trim();
   const rules = [];
 
   let i = 0;
@@ -181,4 +188,15 @@ test("exam schedule table and card mode are styled without overriding content pr
   });
 });
 
-module.exports = { parseRules };
+test("the login skin only restyles: it never targets inputs by type, value or name", () => {
+  assert.doesNotMatch(stripComments(css), /password|\[value|\[autocomplete|\[name=/i); // comments are ignored
+});
+
+test("login styles are gated and use the accent variables", () => {
+  const login = rules.filter((r) => /authentication-bg|account-pages|login-role-tabs|login-auth-backdrop/.test(r.selector));
+  assert.ok(login.length > 0);
+  login.forEach((r) => assert.match(r.selector, /^html:not\(\[data-fptu-skin="off"\]\)/));
+  assert.ok(login.some((r) => /var\(--fptu-accent/.test(r.body)));
+});
+
+module.exports = { parseRules, stripComments };

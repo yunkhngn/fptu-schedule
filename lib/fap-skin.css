@@ -2121,12 +2121,220 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-sheet tbody tr:
 }
 
 /* --------------------------------------------------------------------------
+   Auth & Login Page (/Auth/Login)
+   Glassmorphic auth card, ambient gradient backdrop, pill role tabs,
+   glass action buttons, and accessible input focus indicators.
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) body.authentication-bg {
+  background-color: var(--ct-body-bg);
+  min-height: 100vh;
+}
+
+html:not([data-fptu-skin="off"]) .login-auth-backdrop {
+  background-color: var(--ct-body-bg);
+  background-image:
+    radial-gradient(640px 500px at 10% 5%, var(--fptu-ambient-a), transparent 70%),
+    radial-gradient(600px 450px at 95% 20%, var(--fptu-ambient-b), transparent 70%),
+    radial-gradient(620px 480px at 40% 95%, var(--fptu-ambient-c), transparent 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html:not([data-fptu-skin="off"]) .login-auth-backdrop::after {
+  background: none;
+}
+
+html:not([data-fptu-skin="off"]) .account-pages .card {
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.78);
+  background: color-mix(in srgb, #ffffff 78%, transparent);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), 0 20px 48px -12px color-mix(in srgb, var(--fptu-accent) 18%, rgba(15, 23, 42, 0.12));
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+html:not([data-fptu-skin="off"]) .account-pages .card-header {
+  background: transparent;
+  border-bottom: 0;
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+html:not([data-fptu-skin="off"]) .account-pages .auth-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) .account-pages .auth-brand img {
+  max-height: 75px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px color-mix(in srgb, var(--fptu-accent) 20%, transparent));
+}
+
+html:not([data-fptu-skin="off"]) .account-pages h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1e293b;
+}
+
+html:not([data-fptu-skin="off"]) .login-role-tabs {
+  background: color-mix(in srgb, var(--fptu-accent) 8%, #f1f5f9);
+  border: 1px solid var(--fptu-glass-border);
+  border-radius: 9999px;
+  padding: 0.35rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+html:not([data-fptu-skin="off"]) .login-role-tabs .nav-pills .nav-link {
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.55rem 1rem;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) .login-role-tabs .nav-pills .nav-link:hover:not(.active) {
+  color: var(--fptu-accent);
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .login-role-tabs .nav-pills .nav-link.active {
+  background: var(--fptu-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) #login-google-link {
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, #ffffff 70%, transparent);
+  border: 1px solid var(--fptu-glass-border);
+  color: #1e293b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) #login-google-link:hover,
+html:not([data-fptu-skin="off"]) #login-google-link:focus-visible {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+  color: var(--fptu-accent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--fptu-accent) 18%, transparent);
+  transform: translateY(-1px);
+}
+
+html:not([data-fptu-skin="off"]) #login-feid-link {
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  background: var(--fptu-accent);
+  border-color: var(--fptu-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+  transition: all 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) #login-feid-link:hover,
+html:not([data-fptu-skin="off"]) #login-feid-link:focus-visible {
+  background: var(--fptu-accent-hover);
+  border-color: var(--fptu-accent-hover);
+  color: #ffffff;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--fptu-accent) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .form-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.4rem;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .form-control {
+  border-radius: 12px;
+  border: 1px solid var(--fptu-glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, #ffffff 70%, transparent);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .input-group > .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .input-group-text {
+  border-radius: 0 12px 12px 0;
+  border: 1px solid var(--fptu-glass-border);
+  border-left: 0;
+  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, #ffffff 70%, transparent);
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .form-control:focus {
+  background: #ffffff;
+  border-color: var(--fptu-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fptu-accent) 22%, transparent);
+  outline: none;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .input-group:focus-within .input-group-text {
+  border-color: var(--fptu-accent);
+  background: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login button.btn-primary {
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.65rem 1.75rem;
+  min-width: 140px;
+  background: var(--fptu-accent);
+  border-color: var(--fptu-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+  transition: all 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login button.btn-primary:hover,
+html:not([data-fptu-skin="off"]) form#frm-parent-login button.btn-primary:focus-visible {
+  background: var(--fptu-accent-hover);
+  border-color: var(--fptu-accent-hover);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--fptu-accent) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+html:not([data-fptu-skin="off"]) form#frm-parent-login .text-danger,
+html:not([data-fptu-skin="off"]) .account-pages .text-danger {
+  color: #dc2626 !important;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-transparency: reduce) {
-  html:not([data-fptu-skin="off"]) .wrapper {
+  html:not([data-fptu-skin="off"]) .wrapper,
+  html:not([data-fptu-skin="off"]) .login-auth-backdrop {
     background-image: none;
   }
 

@@ -105,3 +105,51 @@ test("fap-exam fixture is sanitized", () => {
   // No residual third-party extension elements
   assert.strictEqual(examDoc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length, 0, "no third-party extension elements");
 });
+
+const loginFixturePath = path.join(__dirname, "fixtures", "fap-login.html");
+
+test("fap-login fixture has the login blocks the skin targets", () => {
+  const loginHtml = fs.readFileSync(loginFixturePath, "utf8");
+  const loginDoc = new JSDOM(loginHtml).window.document;
+  ["#login-google-link", "#login-feid-link", "#frm-parent-login"]
+    .forEach((sel) => assert.ok(loginDoc.querySelector(sel), sel));
+});
+
+test("fap-login fixture is sanitized", () => {
+  const loginHtml = fs.readFileSync(loginFixturePath, "utf8");
+  const loginDoc = new JSDOM(loginHtml).window.document;
+
+  // 0 scripts
+  assert.strictEqual(loginDoc.querySelectorAll("script").length, 0, "no scripts");
+
+  // 0 input values
+  const inputsWithValues = Array.from(loginDoc.querySelectorAll("input")).filter(
+    (input) => input.getAttribute("value") && input.getAttribute("value").trim() !== ""
+  );
+  assert.strictEqual(inputsWithValues.length, 0, "no input values");
+
+  // 0 site keys
+  assert.doesNotMatch(loginHtml, /6Lc_[A-Za-z0-9_-]+/, "no recaptcha site key");
+  const recaptchaAttrs = Array.from(loginDoc.querySelectorAll("[data-recaptcha-site-key]")).filter(
+    (el) => el.getAttribute("data-recaptcha-site-key") && el.getAttribute("data-recaptcha-site-key").trim() !== ""
+  );
+  assert.strictEqual(recaptchaAttrs.length, 0, "no recaptcha site key attributes with values");
+
+  // External stylesheets stripped
+  assert.strictEqual(
+    loginDoc.querySelectorAll('link[rel="stylesheet"][href^="http"], link[rel="stylesheet"][href^="//"]').length,
+    0,
+    "no external stylesheets"
+  );
+
+  // Hidden tokens
+  assert.strictEqual(loginDoc.querySelectorAll('input[type="hidden"]').length, 0, "no hidden tokens");
+
+  // No residual third-party extension elements
+  assert.strictEqual(
+    loginDoc.querySelectorAll("#jpenglishdictionaryLang, #jpenglishdictionary, #englishjpSetting, #jpenglishdictionaryOff, #mttContainer").length,
+    0,
+    "no third-party extension elements"
+  );
+});
+
