@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" data-layout-mode="fluid" data-layout-position="fixed" data-menu-color="light" data-sidenav-size="default" data-sidenav-user="true" data-topbar-color="light" lang="vi"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="Hệ thống quản lý đào tạo trường đại học fpt" name="description"/>
+<meta content="vi" http-equiv="Content-Language"/>
+<title>Trang chủ - FAP - FPT Education</title>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#0e2a47" name="theme-color"/>
+<meta content="no" name="msapplication-tap-highlight"/>
+<link href="https://fap.fpt.edu.vn/favicon.ico?v=G2XWYR_Fhb79HpwJRmFa0uwCiv9MUmuzKlfpdiSr3ZQ" rel="icon" type="image/x-icon"/>
+<!-- Theme config must stay before app CSS so first paint matches user preference -->
+
+
+
+
+
+
+</head>
+<body>
+<div id="preloader" style="display: none;">
+<div id="status" style="display: none;">
+<div class="bouncing-loader"><div></div><div></div><div></div></div>
+</div>
+</div>
+<!-- Begin page — no full-page #preloader (it waits window.load and delays FCP) -->
+<div class="wrapper">
+<!-- ========== Topbar Start ========== -->
+<div class="navbar-custom">
+<div class="topbar container-fluid fap-topbar">
+<div class="d-flex align-items-center gap-lg-2 gap-1 fap-topbar__brand">
+<!-- Topbar Brand Logo -->
+<div class="logo-topbar">
+<!-- Logo light -->
+<a class="logo-light" href="https://fap.fpt.edu.vn/">
+<span class="logo-lg">
+<img alt="FPT University" decoding="async" fetchpriority="high" height="48" src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" width="160"/>
+</span>
+<span class="logo-sm">
+<img alt="FPT" decoding="async" height="32" src="https://fap.fpt.edu.vn/assets/images/logo-fpt.png" width="32"/>
+</span>
+</a>
+<!-- Logo Dark -->
+<a class="logo-dark" href="https://fap.fpt.edu.vn/">
+<span class="logo-lg">
+<img alt="" decoding="async" height="48" loading="lazy" src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" width="160"/>
+</span>
+<span class="logo-sm">
+<img alt="" decoding="async" height="32" loading="lazy" src="https://fap.fpt.edu.vn/assets/images/logo-fpt.png" width="32"/>
+</span>
+</a>
+</div>
+<!-- Sidebar Menu Toggle Button -->
+<button aria-label="Toggle sidebar" class="button-toggle-menu" type="button">
+<i aria-hidden="true" class="ri-menu-2-fill"></i>
+</button>
+<!-- Horizontal Menu Toggle Button -->
+<button class="navbar-toggle" data-bs-target="#topnav-menu-content" data-bs-toggle="collapse">
+<div class="lines">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</button>
+</div>
+<ul class="topbar-menu d-flex align-items-center gap-2 fap-topbar__menu">
+<li class="dropdown jidox-campus-topbar">
+<button aria-expanded="false" aria-haspopup="true" aria-label="Campus" class="nav-link dropdown-toggle arrow-none jidox-campus-topbar__static" data-bs-toggle="dropdown" title="Cơ sở Hà Nội (HN)" type="button">
+<i class="ri-map-pin-2-line align-middle me-0 me-sm-1"></i>
+<span class="align-middle d-none d-lg-inline-block">Cơ sở Hà Nội (HN)</span>
+<i class="ri-arrow-down-s-line d-none d-sm-inline-block align-middle"></i>
+</button>
+<div class="dropdown-menu dropdown-menu-end dropdown-menu-animated jidox-campus-topbar__menu">
+<div class="dropdown-header noti-title py-2">
+<h6 class="text-overflow m-0">Campus</h6>
+</div>
+<div class="dropdown-item-text jidox-campus-topbar__info">
+<div aria-hidden="true" class="jidox-campus-topbar__info-icon">
+<i class="ri-building-4-line"></i>
+</div>
+<div class="min-w-0">
+<div class="fw-semibold text-body">
+                            Cơ sở Hà Nội (HN)
+                        </div>
+<div class="small text-muted">
+                                HN
+                                    <span class="text-primary"> - Chính</span>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li class="dropdown">
+<a aria-expanded="false" aria-haspopup="false" aria-label="Chọn ngôn ngữ" class="nav-link dropdown-toggle arrow-none fap-topbar-pill fap-language-toggle" data-bs-toggle="dropdown" href="https://fap.fpt.edu.vn/#" title="Chọn ngôn ngữ">
+<img alt="culture-flag" class="me-0 me-sm-1" height="12" src="https://fap.fpt.edu.vn/assets/images/flags/vn.jpg"/>
+<span class="align-middle d-none d-lg-inline-block">Tiếng Việt</span> <i class="ri-arrow-down-s-line d-none d-sm-inline-block align-middle"></i>
+</a>
+<div class="dropdown-menu dropdown-menu-end dropdown-menu-animated">
+<form action="https://fap.fpt.edu.vn/Language/SetLanguage" class="px-2 py-1" method="post">
+<button class="dropdown-item active" name="culture" type="submit" value="vi">
+<img alt="flag-vi" class="me-1" height="12" src="https://fap.fpt.edu.vn/assets/images/flags/vn.jpg"/> <span class="align-middle">Tiếng Việt</span>
+</button>
+<button class="dropdown-item" name="culture" type="submit" value="en">
+<img alt="flag-en" class="me-1" height="12" src="https://fap.fpt.edu.vn/assets/images/flags/gb.jpg"/> <span class="align-middle">English</span>
+</button>
+</form>
+</div>
+</li>
+<li class="dropdown notification-list jidox-notification-bell" data-default-title="Thông báo mới" data-just-now="Vừa xong" data-load-failed="Không tải được danh sách thông báo." data-load-url="/Notification/BellList" data-mark-all-read-url="/Notification/MarkReadAll" data-mark-read="Đã đọc" data-mark-read-url="/Notification/MarkRead" data-notification-panel="true" data-page-size="5" data-unread-url="/Notification/UnreadCount">
+<a aria-expanded="false" aria-haspopup="false" aria-label="Thông báo" class="nav-link dropdown-toggle arrow-none jidox-notification-bell__toggle fap-topbar-icon" data-bs-auto-close="outside" data-bs-toggle="dropdown" href="https://fap.fpt.edu.vn/#" title="Thông báo">
+<span class="jidox-notification-bell__icon-wrap">
+<i class="ri-notification-4-line fs-22"></i>
+<span class="jidox-notification-bell__badge" data-notification-badge="true"></span>
+</span>
+</a>
+<div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg py-0 jidox-notification-bell__menu">
+<div class="jidox-notification-bell__header p-2 border-top-0 border-start-0 border-end-0 border-dashed border">
+<div class="d-flex align-items-center gap-2">
+<h6 class="m-0 fs-16 fw-medium">Thông báo</h6>
+<button class="btn btn-sm btn-soft-primary ms-auto me-1 jidox-notification-bell__mark-all" data-notification-mark-all="true" type="button">
+                                        Đã đọc tất cả
+                                    </button>
+</div>
+</div>
+<div class="notification-bell-list" data-notification-list="true" data-simplebar="init"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div aria-label="scrollable content" class="simplebar-content-wrapper" role="region" style="height: auto; overflow: hidden;" tabindex="0"><div class="simplebar-content" style="padding: 0px;">
+<div class="dropdown-item text-muted">Đang tải thông báo...</div>
+</div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 33px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: hidden;"><div class="simplebar-scrollbar" style="height: 0px; display: none;"></div></div></div>
+</div>
+</li>
+<li class="d-none d-sm-inline-block">
+<div class="nav-link fap-topbar-icon" id="light-dark-mode">
+<i class="ri-moon-fill fs-22"></i>
+</div>
+</li>
+<li class="d-none d-md-inline-block">
+<a aria-label="Fullscreen" class="nav-link fap-topbar-icon" data-toggle="fullscreen" href="https://fap.fpt.edu.vn/" title="Fullscreen">
+<i class="ri-fullscreen-line fs-22"></i>
+</a>
+</li>
+<li class="dropdown me-md-2">
+<a aria-expanded="false" aria-haspopup="false" class="nav-link dropdown-toggle arrow-none nav-user px-2 fap-topbar-user" data-bs-toggle="dropdown" href="https://fap.fpt.edu.vn/#">
+<span aria-hidden="true" class="account-user-avatar fap-topbar-avatar">
+                                NK
+                            </span>
+<span class="d-lg-flex flex-column gap-1 d-none">
+<h5 class="my-0">Nguyễn Văn A</h5>
+<h6 class="my-0 fw-normal">SE000000</h6>
+</span>
+</a>
+<div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+<!-- item-->
+<div class="dropdown-header noti-title">
+<h6 class="text-overflow m-0">Nguyễn Văn A</h6>
+<small class="text-muted">SE000000</small>
+</div>
+<!-- item-->
+<a class="dropdown-item" href="https://fap.fpt.edu.vn/Account">
+<i class="ri-account-circle-fill align-middle me-1"></i>
+<span>My Account</span>
+</a>
+<form action="https://fap.fpt.edu.vn/Auth/Logout" class="px-0 mb-0" method="post">
+<button class="dropdown-item border-0 bg-transparent w-100 text-start" type="submit">
+<i class="ri-logout-box-fill align-middle me-1"></i>
+<span>Đăng xuất</span>
+</button>
+</form>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========== Topbar End ========== -->
+<!-- ========== Left Sidebar Start ========== -->
+<aside aria-label="Main navigation" class="leftside-menu fap-sidebar">
+<a class="logo logo-light" href="https://fap.fpt.edu.vn/">
+<span class="logo-lg">
+<img alt="FPT University" decoding="async" height="70" src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" width="160"/>
+</span>
+<span class="logo-sm">
+<img alt="FPT" decoding="async" height="32" src="https://fap.fpt.edu.vn/assets/images/logo-fpt.png" width="32"/>
+</span>
+</a>
+<a aria-hidden="true" class="logo logo-dark" href="https://fap.fpt.edu.vn/" tabindex="-1">
+<span class="logo-lg">
+<img alt="" decoding="async" height="70" loading="lazy" src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" width="160"/>
+</span>
+<span class="logo-sm">
+<img alt="" decoding="async" height="32" loading="lazy" src="https://fap.fpt.edu.vn/assets/images/logo-fpt.png" width="32"/>
+</span>
+</a>
+<div aria-label="Show Full Sidebar" class="button-sm-hover" data-bs-original-title="Show Full Sidebar" data-bs-placement="right" data-bs-toggle="tooltip">
+<i aria-hidden="true" class="ri-checkbox-blank-circle-line align-middle"></i>
+</div>
+<div aria-label="Close menu" class="button-close-fullsidebar" role="button" tabindex="0">
+<i aria-hidden="true" class="ri-close-fill align-middle"></i>
+</div>
+<div class="h-100 fap-sidebar__scroll" data-simplebar="init" id="leftside-menu-container"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div aria-label="scrollable content" class="simplebar-content-wrapper" role="region" style="height: 100%; overflow: hidden scroll;" tabindex="0"><div class="simplebar-content" style="padding: 0px;">
+<ul class="side-nav">
+<li class="side-nav-title mt-1">Học tập</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-lịch-học-first----0" aria-expanded="true" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-l%E1%BB%8Bch-h%E1%BB%8Dc-first----0">
+<i class="ri-calendar-2-line"></i>
+<span>Lịch học</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse show" id="frontend-sidebar-group-lịch-học-first----0" style="">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/WeeklyTimetable">
+<i class="ri-menu-line"></i>
+<span>Thời khóa biểu</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/ExamSchedule">
+<i class="ri-menu-line"></i>
+<span>Lịch thi</span>
+</a>
+</li>
+</ul>
+</div>
+</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-báo-cáo-học-tập-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-b%C3%A1o-c%C3%A1o-h%E1%BB%8Dc-t%E1%BA%ADp-first----0">
+<i class="ri-bar-chart-box-line"></i>
+<span>Báo cáo học tập</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-báo-cáo-học-tập-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Report/Attendance">
+<i class="ri-menu-line"></i>
+<span>Báo cáo điểm danh</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Report/Grade">
+<i class="ri-menu-line"></i>
+<span>Báo cáo điểm</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Report/Transcript">
+<i class="ri-menu-line"></i>
+<span>Bảng điểm</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Report/OjtConditions">
+<i class="ri-menu-line"></i>
+<span>Điều kiện OJT</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Report/ThesisConditions">
+<i class="ri-menu-line"></i>
+<span>Điều kiện KLTN</span>
+</a>
+</li>
+</ul>
+</div>
+</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-môn-học---chương-trình-first----0" aria-expanded="false" class="side-nav-link collapsed" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-m%C3%B4n-h%E1%BB%8Dc---ch%C6%B0%C6%A1ng-tr%C3%ACnh-first----0">
+<i class="ri-book-mark-line"></i>
+<span>Môn học &amp; chương trình</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-môn-học---chương-trình-first----0" style="">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Subject">
+<i class="ri-menu-line"></i>
+<span>Môn học</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Curriculum">
+<i class="ri-menu-line"></i>
+<span>Khung chương trình</span>
+</a>
+</li>
+</ul>
+</div>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/MyCertificates">
+<i class="ri-award-line"></i>
+<span>Chứng chỉ</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-tin-tức---tài-liệu-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-tin-t%E1%BB%A9c---t%C3%A0i-li%E1%BB%87u-first----0">
+<i class="ri-newspaper-line"></i>
+<span>Tin tức &amp; tài liệu</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-tin-tức---tài-liệu-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/News">
+<i class="ri-menu-line"></i>
+<span>Tin tức</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Document">
+<i class="ri-menu-line"></i>
+<span>Tài liệu</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Document/DrivePdf" rel="noopener noreferrer" target="_blank">
+<i class="ri-menu-line"></i>
+<span>Hướng dẫn sử dụng</span>
+</a>
+</li>
+</ul>
+</div>
+</li><li class="side-nav-title mt-1">Đơn từ</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Application">
+<i class="ri-file-list-3-line"></i>
+<span>Xem đơn</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Application/Catalog">
+<i class="ri-file-edit-line"></i>
+<span>Gửi đơn</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/CrossClassChange">
+<i class="ri-exchange-line"></i>
+<span>Đơn đổi lớp chéo</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-đơn-khởi-nghiệp-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-%C4%91%C6%A1n-kh%E1%BB%9Fi-nghi%E1%BB%87p-first----0">
+<i class="ri-lightbulb-line"></i>
+<span>Đơn khởi nghiệp</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-đơn-khởi-nghiệp-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/StartupGroup">
+<i class="ri-menu-line"></i>
+<span>Danh sách đơn khởi nghiệp</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/StartupGroup/Add">
+<i class="ri-menu-line"></i>
+<span>Gửi đơn khởi nghiệp</span>
+</a>
+</li>
+</ul>
+</div>
+</li><li class="side-nav-title mt-1">Tài chính</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-thanh-toán-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-thanh-to%C3%A1n-first----0">
+<i class="ri-bank-card-line"></i>
+<span>Thanh toán</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-thanh-toán-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/ShoppingCart">
+<i class="ri-menu-line"></i>
+<span>Thanh toán các khoản phí</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/CoursePendingPayment">
+<i class="ri-menu-line"></i>
+<span>Phí xếp lớp</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Transaction">
+<i class="ri-menu-line"></i>
+<span>Lịch sử giao dịch</span>
+</a>
+</li>
+</ul>
+</div>
+</li><li class="side-nav-title mt-1">Wishlist</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Wishlist">
+<i class="ri-menu-line"></i>
+<span>Danh sách chờ lớp</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Wishlist/Register">
+<i class="ri-menu-line"></i>
+<span>Đăng ký wishlist</span>
+</a>
+</li><li class="side-nav-title mt-1">Hoạt động sinh viên</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-fye-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-fye-first----0">
+<i class="ri-heart-pulse-line"></i>
+<span>FYE</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-fye-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/FyeCheckInLog">
+<i class="ri-menu-line"></i>
+<span>Check-in Log</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/FyeMentorFeedback">
+<i class="ri-menu-line"></i>
+<span>Feedback Mentor</span>
+</a>
+</li>
+</ul>
+</div>
+</li><li class="side-nav-title mt-1">Tài khoản</li>
+<li class="side-nav-item">
+<a aria-controls="frontend-sidebar-group-cá-nhân-first----0" aria-expanded="false" class="side-nav-link" data-bs-toggle="collapse" href="https://fap.fpt.edu.vn/#frontend-sidebar-group-c%C3%A1-nh%C3%A2n-first----0">
+<i class="ri-user-settings-line"></i>
+<span>Cá nhân</span>
+<span class="menu-arrow"></span>
+</a>
+<div class="collapse" id="frontend-sidebar-group-cá-nhân-first----0">
+<ul class="side-nav-second-level">
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/Account">
+<i class="ri-user-star-line"></i>
+<span>Thông tin cá nhân</span>
+</a>
+</li>
+<li class="side-nav-item">
+<a class="side-nav-link" href="https://fap.fpt.edu.vn/StudentProfile">
+<i class="ri-edit-box-line"></i>
+<span>Cập nhật hồ sơ</span>
+</a>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 894px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 842px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+</aside>
+<!-- ========== Left Sidebar End ========== -->
+<!-- ============================================================== -->
+<!-- Start Page Content here -->
+<!-- ============================================================== -->
+<div class="content-page">
+<div class="content">
+<!-- Start Content-->
+<div class="container-fluid">
+<div class="row">
+<div class="col-12">
+<div class="page-title-box fap-page-title justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+<div class="fap-page-title__main min-w-0">
+<nav aria-label="breadcrumb" class="fap-page-title__crumb">
+<ol class="fap-page-title__crumb-list">
+<li class="fap-page-title__crumb-item">
+<span class="fap-page-title__crumb-current">Chào mừng</span>
+</li>
+</ol>
+</nav>
+</div>
+</div>
+</div>
+</div>
+<div data-bootbox-script-url="/assets/vendor/bootbox/bootbox.all.min.js?v=9X1l4FXHBT7S00b-EA9JlUSq6VrvsvUSWMUxQ-migVE" data-fetch-url="/Home/StudentContentPartial" data-load-error-text="Không tải được danh sách tin tức." data-loading-text="Đang tải..." data-payment-script-url="/js/pages/home.js?v=IER0atPmFWBtmG8z5yhAAGhciRlkKC78WnSWcnouBAM" data-pinned-script-url="/js/pages/home-pinned-modal.js?v=RuV-MSAaKghUvGweeFiJuzIWz48oDva9miAczhSlumw" id="home-student-shell">
+<div data-home-slot="fee"></div>
+<div data-home-slot="student">
+<div class="row mb-3">
+<div class="col-12">
+<div class="card fap-home-student-card">
+<div class="card-body p-0">
+<div class="row g-0 align-items-stretch">
+<div class="col-lg-3 fap-home-student-card__left p-4 d-flex flex-column justify-content-center">
+<div class="d-flex align-items-center gap-3">
+<div class="fap-home-student-card__avatar">
+<i class="ri-graduation-cap-line"></i>
+</div>
+<div class="min-w-0">
+<div class="text-white-50 small text-uppercase fw-semibold mb-1">
+                                    Thông tin sinh viên
+                                </div>
+<div class="fap-home-student-card__name mb-1">Nguyễn Văn A</div>
+<div class="fap-home-student-card__roll">SE000000</div>
+</div>
+</div>
+</div>
+<div class="col-lg-9 p-4">
+<div class="row g-3">
+<div class="col-sm-6 col-xl">
+<div class="fap-home-student-card__metric">
+<div class="fap-home-student-card__label fap-home-student-card__label--primary">
+<i class="ri-shield-check-line"></i>Trạng thái
+                                    </div>
+<div class="fap-home-student-card__value">HD</div>
+</div>
+</div>
+<div class="col-sm-6 col-xl">
+<div class="fap-home-student-card__metric">
+<div class="fap-home-student-card__label fap-home-student-card__label--info">
+<i class="ri-book-open-line"></i>Mã chương trình
+                                    </div>
+<div class="fap-home-student-card__value text-primary">BIT_SE_19B_NJ</div>
+</div>
+</div>
+<div class="col-sm-6 col-xl">
+<div class="fap-home-student-card__metric">
+<div class="fap-home-student-card__label fap-home-student-card__label--warning">
+<i class="ri-mail-line"></i>Email
+                                    </div>
+<div class="fap-home-student-card__value text-break">student@example.com</div>
+</div>
+</div>
+<div class="col-sm-6 col-xl">
+<div class="fap-home-student-card__metric">
+<div class="fap-home-student-card__label fap-home-student-card__label--secondary">
+<i class="ri-calendar-line"></i>Khóa
+                                    </div>
+<div class="fap-home-student-card__value">19</div>
+</div>
+</div>
+<div class="col-sm-6 col-xl">
+<div class="fap-home-student-card__metric fap-home-student-card__metric--wallet">
+<div class="fap-home-student-card__label fap-home-student-card__label--success">
+<i class="ri-wallet-3-line"></i>Số dư
+                                    </div>
+<div class="fap-home-student-card__wallet-amount">
+                                        0 <span class="fs-6 fw-medium">VND</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row g-3">
+<div class="col-lg-8">
+<div data-home-slot="news">
+<div class="card fap-home-news-card">
+<div class="d-flex card-header justify-content-between align-items-center flex-wrap gap-2">
+<h4 class="header-title m-0 fap-home-news-card__header-title">
+<i class="ri-newspaper-line me-1 text-primary"></i>Tin tức mới nhất
+            </h4>
+<a class="btn btn-sm btn-soft-primary" href="https://fap.fpt.edu.vn/News">
+                Xem tất cả <i class="ri-arrow-right-line ms-1"></i>
+</a>
+</div>
+<div class="fap-home-news-card__filter">
+<div class="d-flex flex-wrap gap-1 align-items-center">
+<span class="fap-home-news-card__filter-label me-1">Loại tin:</span>
+<a class="badge bg-primary fap-home-news-card__filter-btn" href="https://fap.fpt.edu.vn/News">Tất cả</a>
+<a class="badge bg-light text-dark border fap-home-news-card__filter-btn" href="https://fap.fpt.edu.vn/News?FAPNewsTypeId=01a07a13-8e0b-7002-a6a9-7ce20a40ab08">Thông báo tài chính</a>
+<a class="badge bg-light text-dark border fap-home-news-card__filter-btn" href="https://fap.fpt.edu.vn/News?FAPNewsTypeId=01a07a13-8e0b-7000-ad8b-5ba620c6e91e">Thông tin chung</a>
+<a class="badge bg-light text-dark border fap-home-news-card__filter-btn" href="https://fap.fpt.edu.vn/News?FAPNewsTypeId=01a0eb6b-e6cb-74c4-828a-706f371cbbc2">Thông tin Đào tạo</a>
+<a class="badge bg-light text-dark border fap-home-news-card__filter-btn" href="https://fap.fpt.edu.vn/News?FAPNewsTypeId=01a0d1a7-5d2c-7c89-91e7-3bf096c4e782">Thông tin Khảo Thí</a>
+</div>
+</div>
+<div class="card-body p-0">
+<div class="fap-home-news-list">
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a19d16-7dae-7b7e-adbb-3a86d4b7b3bf">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo lịch thi kết thúc học phần lần 1, lần 2 các môn học Block 1-4 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>02/11/2026 23:27</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a19b13-939d-7dd8-9414-bca262bc4bc2">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo danh sách thi kết thúc học phần lần 2 võ 1 VOV114 half 1 ngày 04/11/2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>02/11/2026 14:05</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a19b11-3f80-7091-9edb-b982747018a5">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo điểm thi giữa kỳ môn KRG301 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>02/11/2026 14:02</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a190ce-93c8-730e-9552-c41778f789f7">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo điểm thi giữa kỳ KOR411, KRL402﻿, điểm thi kết thúc học phần lần 1 võ 1 VOV114, điểm thi kết thúc học phần lần 2 võ 2,3 VOV124, VOV134 half 1 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>31/10/2026 14:13</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a187db-a7c9-769c-b89b-6b40ea1e6555">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo điểm thi kết thúc học phần lần 2 các môn kết thúc sớm, các môn tiếng anh chuẩn bị half 1 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>29/10/2026 20:31</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a1830e-f4c6-73f3-bab3-a179718f6bbd">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo lịch thi giữa kỳ học phần KRG301, KRL402 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>28/10/2026 22:09</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a18141-0b7a-7324-8602-628a7550eb9a">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo danh sách thi kết thúc học phần lần 2 ngày 29/10/2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>28/10/2026 13:44</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a180c3-98b3-71d2-9728-a410a970a343">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">V/v: Cập nhật mã môn các mức tiếng anh chuẩn bị từ Half 2 – Học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Đào tạo</span>
+<span><i class="ri-calendar-line"></i>28/10/2026 11:27</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a17c04-4a9d-794d-852f-6973381acb15">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo điểm thi kết thúc học phần lần 1, 2 các môn kết thúc sớm, điểm thi lần 1 các môn tiếng anh chuẩn bị half 1 học kỳ Fall 2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>27/10/2026 13:20</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+<a class="fap-home-news-item" href="https://fap.fpt.edu.vn/News/Detail/01a17bf9-a6b9-777c-850a-dbc203ab08e6">
+<span class="fap-home-news-item__icon">
+<i class="ri-article-line"></i>
+</span>
+<span class="fap-home-news-item__body">
+<span class="fap-home-news-item__title">Thông báo danh sách thi kết thúc học phần lần 2 ngày 28/10/2026</span>
+<span class="fap-home-news-item__meta">
+<span><i class="ri-folder-2-line"></i>Thông tin Khảo Thí</span>
+<span><i class="ri-calendar-line"></i>27/10/2026 13:08</span>
+</span>
+</span>
+<i class="ri-arrow-right-s-line fap-home-news-item__arrow align-self-center"></i>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-4">
+<aside aria-labelledby="homeQuickMenuTitle" class="fap-home-quick-menu">
+<div aria-hidden="true" class="fap-home-quick-menu__accent"></div>
+<div class="fap-home-quick-menu__header">
+<span aria-hidden="true" class="fap-home-quick-menu__icon">
+<i class="ri-apps-2-fill"></i>
+</span>
+<div class="fap-home-quick-menu__heading">
+<h4 class="fap-home-quick-menu__title" id="homeQuickMenuTitle">
+                Menu nhanh
+            </h4>
+<p class="fap-home-quick-menu__subtitle">Truy cập nhanh các chức năng thường dùng</p>
+</div>
+</div>
+<nav aria-label="Menu nhanh" class="fap-home-quick-menu__nav">
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Học tập</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/WeeklyTimetable">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Thời khóa biểu</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/ExamSchedule">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Lịch thi</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Report/Attendance">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Báo cáo điểm danh</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Report/Grade">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Báo cáo điểm</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Report/Transcript">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Bảng điểm</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Report/OjtConditions">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Điều kiện OJT</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Report/ThesisConditions">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Điều kiện KLTN</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Subject">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Môn học</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Curriculum">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Khung chương trình</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/MyCertificates">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-award-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Chứng chỉ</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/News">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Tin tức</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Document">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Tài liệu</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Document/DrivePdf" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Hướng dẫn sử dụng</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Đơn từ</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Application">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-file-list-3-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Xem đơn</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Application/Catalog">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-file-edit-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Gửi đơn</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/CrossClassChange">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-exchange-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Đơn đổi lớp chéo</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/StartupGroup">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Danh sách đơn khởi nghiệp</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/StartupGroup/Add">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Gửi đơn khởi nghiệp</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Tài chính</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/ShoppingCart">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Thanh toán các khoản phí</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/CoursePendingPayment">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Phí xếp lớp</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Transaction">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Lịch sử giao dịch</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Wishlist</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Wishlist">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Danh sách chờ lớp</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Wishlist/Register">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Đăng ký wishlist</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Hoạt động sinh viên</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/FyeCheckInLog">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Check-in Log</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/FyeMentorFeedback">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-menu-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Feedback Mentor</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<div class="fap-home-quick-menu__group">
+<span class="fap-home-quick-menu__group-label">Tài khoản</span>
+</div>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/Account">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-user-star-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Thông tin cá nhân</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+<a class="fap-home-quick-menu__link" href="https://fap.fpt.edu.vn/StudentProfile">
+<span aria-hidden="true" class="fap-home-quick-menu__link-icon">
+<i class="ri-edit-box-line"></i>
+</span>
+<span class="fap-home-quick-menu__link-text">Cập nhật hồ sơ</span>
+<i aria-hidden="true" class="ri-arrow-right-s-line fap-home-quick-menu__chevron"></i>
+</a>
+</nav>
+</aside>
+</div>
+</div>
+<div data-has-pinned="0" data-home-slot="extras" data-load-payment="0">
+</div>
+</div>
+<form action="https://fap.fpt.edu.vn/ShoppingCart/ResumePendingPayment" class="d-none" id="js-home-resume-pending-form" method="post">
+</form>
+<div class="d-none" data-account="Tài khoản" data-account-name="Tên tài khoản" data-amount="Số tiền" data-bank="Ngân hàng" data-bank-transfer="Chuyển khoản" data-bank-transfer-message="Vui lòng chuyển khoản theo thông tin tài khoản bên dưới." data-bank-transfer-warning="Thông tin chuyển khoản sẽ được hiển thị cho đơn này." data-cancel="Hủy" data-cannot-get-fpt-pay="Không lấy được liên kết FPT Pay" data-cannot-get-qr="Không lấy được mã QR" data-close="Đóng" data-confirm-bank-transfer-payment="Bạn có chắc muốn làm mới thông tin chuyển khoản không?" data-confirm-bank-transfer-title="Xác nhận chuyển khoản" data-confirm-fpt-pay="Bạn có chắc muốn thanh toán bằng FPT Pay không?" data-confirm-payment-title="Xác nhận thanh toán" data-confirm-qr-payment="Bạn có chắc muốn tạo mã QR thanh toán không?" data-confirm-qr-title="Xác nhận thanh toán QR" data-continue-to-shopping-cart="Tiếp tục thanh toán DNG" data-create-invoice-confirm="Bạn có chắc muốn tạo đơn thanh toán không?" data-create-invoice-warning="Đơn thanh toán sẽ được tạo cho số tiền này." data-create-payment-invoice="Tạo đơn thanh toán học phí" data-default-bank-name="VietinBank - Ngân hàng Công Thương Việt Nam" data-final-amount="Số tiền cuối cùng" data-foxpay-api-error="Lỗi API FPT Pay" data-fpt-pay="FPT Pay" data-important="Lưu ý" data-invoice-created-message="Đơn thanh toán đã được tạo thành công." data-invoice-created-title="Tạo đơn thành công" data-latest-payment-info-warning="Vui lòng dùng thông tin thanh toán mới nhất hiển thị sau khi tạo hóa đơn." data-loading="Đang tải..." data-new-qr-warning="Mã QR VietinBank mới sẽ được tạo cho đơn này." data-no="Không" data-old-bank-transfer-warning="Không dùng lại thông tin chuyển khoản cũ vì tài khoản hoặc số tiền có thể thay đổi." data-old-qr-held-warning="Nếu bạn chuyển khoản bằng mã QR cũ, khoản thanh toán có thể bị ngân hàng treo tối đa &lt;b&gt;3 ngày làm việc&lt;/b&gt;." data-old-qr-invalid-warning="Mọi mã QR đã tạo trước đó sẽ không còn hiệu lực." data-or="HOẶC" data-pay-with-fpt-pay="Thanh toán bằng FPT Pay" data-payment-invoice-title="Hóa đơn thanh toán" data-processing="Đang xử lý..." data-processing-error="Có lỗi xảy ra trong quá trình xử lý." data-qr-api-error="Lỗi API QR" data-qr-code-vietinbank="Mã QR VietinBank" data-redirect-fpt-pay="Chuyển đến FPT Pay" data-scan-bank-app="Quét mã để thanh toán bằng ứng dụng ngân hàng" data-shopping-cart-url="/ShoppingCart" data-use-balance-label="Dùng số dư" data-wallet-held-label="Tiền đang giữ (chờ DNG):" data-yes="Có" id="paymentI18n">
+</div>
+</div>
+<!-- container -->
+</div>
+<!-- content -->
+<!-- Footer Start -->
+<footer class="footer">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-6">
+<span class="list-inline-item">
+                                Bản quyền © 2026
+                                <a class="link-secondary" href="https://fap.fpt.edu.vn/">FAP - Trường đại học FPT</a>. Đã đăng ký bản quyền.
+                            </span>
+</div>
+<div class="col-md-6">
+<div class="text-md-end footer-links d-none d-md-block">
+<span class="list-inline-item">
+<span class="text-secondary">Phiên bản: 2.0.0.0</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<!-- end Footer -->
+</div>
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+<div aria-hidden="true" class="modal fade" id="addUpdateModal" tabindex="-1">
+<div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Loading</h5>
+<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+</div>
+<div class="modal-body">
+<div class="text-center py-4">
+<span aria-hidden="true" class="spinner-border text-primary"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="d-none" data-ask-permission="Bạn có muốn bật thông báo đẩy để nhận thông tin học tập mới nhất không?" data-ask-permission-title="Cho phép nhận thông báo" data-debug-log-enabled="False" data-firebase-api-key="REDACTED_FIREBASE_WEB_KEY" data-firebase-app-id="1:21537143108:web:0815656478e1e55db43f11" data-firebase-auth-domain="fuct-76c8b.firebaseapp.com" data-firebase-measurement-id="G-QWVS0WFYHQ" data-firebase-messaging-sender-id="21537143108" data-firebase-project-id="fuct-76c8b" data-firebase-service-worker-path="/firebase-messaging-sw.js" data-firebase-storage-bucket="fuct-76c8b.appspot.com" data-firebase-vapid-key="BODdVLwPa0LmfMjZMIhLW0ERQ_Gh9Xv_t1ZpJkWLHO8W-hVS4zUWJpEFbgzxZt98WP1w_wHCw5SM7vyvhdFfywU" data-firebase-web-enabled="True" data-is-authenticated="True" data-login-registration-id="b1815caf47d54b80be61984e13057d5a" data-notification-default-title="Thông báo mới" data-notification-just-now="Vừa xong" data-permission-default="Chưa chọn quyền thông báo" data-permission-denied="Đã chặn thông báo" data-permission-granted="Đã cho phép thông báo" data-permission-unsupported="Trình duyệt không hỗ trợ thông báo" data-prompt-after-login="True" data-request-verification-token="CfDJ8IPsJUoLRnlMl9hToTu1vBwbj6gg2GYItlVMd_VUV3nTA2z8jRc-Lwr-cQzdExKj6qkD_4eSH0pwLSaF5uKNiq-34mc2vKx6DWQYDgoe0n76v5VltFNibUL6JbBqOFoqdclRqn_JiIJ06E6d7dN5-6QI029qISOC5pZYyta7Vy6p0P0CGYFUi2UTPgnUHLa4DA" data-sync-url="/Notification/SyncWebDevice" data-token-unavailable="Đã cấp quyền nhưng chưa lấy được mã thiết bị nhận push. Vui lòng tải lại trang và thử lại." data-user-id="01a0dfa7-5de9-72f4-93e8-33dabaa1b5af" id="web-notification-config">
+</div>
+<!-- Core JS at end of body: parse HTML/CSS first; order kept for jQuery plugins -->
+<div default="true" id="jpenglishdictionaryLang" value="vi"></div><div id="jpenglishdictionary"><div class="o-search-mobile" style="top: 0px; left: 0px; display: none;"><img alt="JP English Dictionary" height="27" src="data:image/png;base64,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" style="width: 27px; height: 27px;" width="27"/></div><div class="o-popup-tag o-bg-white o-border o-rounded o-shadow" style="width: 400px; top: 0px; left: 0px; display: none;"><div><button aria-label="Close" class="o-btn-close o-position-absolute o-top-0 o-end-0 o-mt-1 o-me-1" type="button"></button><ul class="o-nav o-nav-tabs o-pop-nav" role="tablist"><span><svg aria-hidden="true" class="o-pop-speak o-link-secondary o-svg-inline--fa" data-icon="volume-high" focusable="false" role="img" viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.3 640 165.8 640 256s-41.5 170.8-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z" fill="currentColor"></path></svg></span><li class="o-nav-item" role="presentation"><div aria-selected="true" class="o-nav-link o-active" data-bs-toggle="tab">Look up</div></li><li class="o-nav-item" role="presentation"><div aria-selected="false" class="o-nav-link" data-bs-toggle="tab">Translate</div></li><li class="o-nav-item" role="presentation"><div aria-selected="false" class="o-nav-link" data-bs-toggle="tab">Setting</div></li></ul><div class="o-selected-result o-pt-1"><div> Searching for ... </div></div></div></div></div><div id="englishjpSetting" url="https://english.jpdictionary.com/vi/setting/"></div><div id="jpenglishdictionaryOff"></div><div class="bootstrapiso notranslate" data-original-title="BIT_SE_19B_NJ" dir="ltr" id="mttContainer" style="transform: translate(374px, 441px);" title=""></div></body></html>
