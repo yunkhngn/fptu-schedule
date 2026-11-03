@@ -222,6 +222,44 @@ img, svg {
   gap: 10px;
 }
 
+/* Keep the header on one line: the brand and actions never shrink or wrap, and the nav gives way
+   first (tighter links, then fewer links, then hidden below 1000px). */
+.site-brand,
+.header-actions {
+  flex-shrink: 0;
+}
+
+.site-brand__title,
+.site-nav a {
+  white-space: nowrap;
+}
+
+@media (max-width: 1360px) {
+  .site-header__inner {
+    gap: 14px;
+  }
+  .site-nav {
+    gap: 2px;
+  }
+  .site-nav a {
+    font-size: 13px;
+    padding: 7px 9px;
+  }
+}
+
+@media (max-width: 1240px) {
+  .site-nav a[href="#simulator"],
+  .site-nav a[href="privacy.html"] {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .site-nav {
+    display: none;
+  }
+}
+
 .theme-toggle-btn {
   display: flex;
   align-items: center;
