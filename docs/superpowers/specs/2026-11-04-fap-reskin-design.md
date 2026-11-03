@@ -15,7 +15,7 @@ Mẫu tham chiếu: dashboard "Finexy" (thẻ nổi bo góc lớn trên nền x�
 
 Người dùng đã xem hai bản mockup và chọn **hướng A: giữ nguyên bố cục và vị trí các khối của FAP, chỉ đổi diện mạo**. Không có thẻ nào lấy dữ liệu từ extension được thêm vào trang FAP (hướng B bị loại).
 
-Mockup đã duyệt: `.superpowers/brainstorm/.../content/dashboard-directions.html` (nằm trong scratchpad phiên làm việc, phần A). Các điểm chính của nó:
+Mockup đã duyệt: `docs/superpowers/specs/assets/2026-11-04-fap-reskin-mockup.html` (mở bằng trình duyệt; phần A là hướng được duyệt, phần B bị loại). Các điểm chính của nó:
 - Thanh trên nổi dạng viên thuốc: logo, ô tìm kiếm, chip cơ sở, nút sáng/tối, chuông, người dùng.
 - Menu trái là một thẻ kính bo lớn có nhóm nhãn; mục đang chọn là viên thuốc gradient màu nhấn.
 - Thẻ thông tin sinh viên là gradient màu nhấn với các ô số liệu bo góc.
@@ -64,7 +64,10 @@ Mockup đã duyệt: `.superpowers/brainstorm/.../content/dashboard-directions.h
 - Trang chủ: khối thông tin sinh viên, học phí và tin tức không có sẵn trong HTML ban đầu mà được đổ vào `[data-home-slot="fee|student|news"]` bằng `fetch` tới `/Home/StudentContentPartial`. CSS áp được cho phần tải sau.
 - Script của FAP (`home.js`, `fap-table-cards.js`, `sidebar-state.js`, `notification-bell.js`...) bám vào lớp và ID hiện có.
 - Các CSS của FAP có mã phiên bản (`?v=...`) nên FAP triển khai lại thường xuyên; selector có thể đổi theo thời gian.
-- Chưa có bản lưu đầy đủ của trang đăng nhập, `/WeeklyTimetable` và `/ExamSchedule`. Các fixture hiện có (`tests/fixtures/week.html`, `exam.html`) chỉ là phần ruột nội dung, không có khung.
+- **Lịch học (`/WeeklyTimetable`)**: cùng khung với trang chủ. Nội dung: breadcrumb `fap-page-title__*`, thẻ lọc `.card.fap-filter-card` với ô chọn tuần (`#weekly-timetable-week`, `input[type=week]`) và ba nút `weekly-timetable-week-actions__button` (`#weekly-timetable-prev|current|next`), thẻ kết quả `.fap-result-card` chứa `.weekly-timetable-grid` (bảng desktop; ô có `weekly-timetable-cell-title`, `weekly-timetable-attendance-status`, badge `bg-secondary-subtle`) và các thẻ di động `weekly-timetable-mobile-card` (`__slot`, `__content`, `weekly-timetable-mobile-anchor`). Parser của extension dựa trên chính DOM này.
+- **Lịch thi (`/ExamSchedule`)**: cùng khung; nội dung là một `.card.fap-result-card` chứa `table.table-striped.table-hover.fap-sheet.fap-table--stack[data-fap-table-cards]` với các ô `data-label` (script `fap-table-cards.js` của FAP dựng chế độ thẻ xếp chồng trên điện thoại).
+- **Đăng nhập (`/Auth/Login?ReturnUrl=...`)**: khác khung. `body.authentication-bg` với `.login-auth-backdrop` (gradient xanh của FAP) và `.account-pages > .container > .card`; chỉ nạp `app.min.css`, `icons.min.css` và `login.css` (không có `style.css`). Thẻ đăng nhập có hai tab Bootstrap: "Cán bộ & Sinh viên" (hai liên kết `#login-google-link`, `#login-feid-link` dẫn sang đăng nhập Google/FeID bên ngoài; **không có ô mật khẩu**) và "Phụ huynh" (`form#frm-parent-login` có `#Username`, `#Password` và reCAPTCHA). Trang không có nút sáng/tối.
+- Đã có đủ bản lưu MHTML của bốn trang trong `page-fap/` (không commit).
 
 ## Các quyết định
 
@@ -97,8 +100,8 @@ Mockup đã duyệt: `.superpowers/brainstorm/.../content/dashboard-directions.h
 
 1. **Hạ tầng skin và khung chung:** nạp CSS ở `document_start`, thuộc tính điều khiển trên `<html>`, công tắc trong popup, màu nhấn, các token chung, thanh trên, menu trái, chân trang, thẻ, nút, form, bảng, badge, hộp thoại, phân trang. Kèm test hợp đồng CSS.
 2. **Dashboard:** thẻ thông tin sinh viên, học phí (`fap-home-fee*`), tin tức (`fap-home-news-*`), Menu nhanh (`fap-home-quick-menu__*`). Cần dữ liệu thật đã có (bản MHTML).
-3. **Lịch học và lịch thi:** trau chuốt `/WeeklyTimetable` (`weekly-timetable-grid`, `weekly-timetable-cell-*`) và `/ExamSchedule` (`fap-sheet`, `fap-table--stack`, thẻ thi). Cần bản lưu đầy đủ hai trang này.
-4. **Đăng nhập:** chỉ đổi giao diện trang đăng nhập của chính FAP. Skin không đọc, không chạm vào ô nhập hay mật khẩu, không thay đổi thuộc tính của chúng, và không che thông tin bảo mật hay giả lập nút. Nếu FAP chuyển sang trang của FPT hoặc Google để đăng nhập thì phần đó nằm ngoài tầm với của extension (chỉ chạy trên `fap.fpt.edu.vn`). Cần bản lưu trang đăng nhập khi chưa đăng nhập.
+3. **Lịch học và lịch thi:** trau chuốt `/WeeklyTimetable` (`weekly-timetable-grid`, `weekly-timetable-cell-*`) và `/ExamSchedule` (`fap-sheet`, `fap-table--stack`, thẻ thi).
+4. **Đăng nhập:** chỉ đổi giao diện trang `/Auth/Login` của chính FAP (thẻ đăng nhập, hai tab, nút Google/FeID, biểu mẫu phụ huynh). Skin không đọc, không chạm vào ô nhập hay mật khẩu, không thay đổi thuộc tính của chúng, không che thông tin bảo mật (như reCAPTCHA) hay giả lập nút. Trang Google/FeID nơi sinh viên thực sự đăng nhập nằm ngoài tầm với của extension (chỉ chạy trên `fap.fpt.edu.vn`). Trang đăng nhập không có công tắc sáng/tối của FAP, nên dùng chế độ sáng mặc định.
 
 ## Cách kiểm chứng
 
@@ -123,6 +126,14 @@ Khi skin đang bật và người dùng vào một trang FAP lần đầu sau kh
 - Kích thước, bán kính, độ mờ chính xác, cách bố trí khung nổi, hiệu ứng chuyển.
 - Hình thức và vị trí của lối thoát "xem giao diện gốc" trên trang FAP.
 - Cách đặt tên thuộc tính điều khiển trên `<html>` và khóa lưu trong `chrome.storage`.
+
+## Phát hiện kèm theo (ngoài phạm vi skin)
+
+Khi đọc trang đăng nhập thật phát hiện `lib/fap-keepalive.js` (`isFapSessionCandidate`) không nhận ra các đường dẫn `/Auth/Login`, `/Auth/GoogleLogin`, `/Auth/FeidLogin`, `/Auth/LoginParent`: bộ giữ phiên vẫn chạy trên trang đăng nhập, trái quy tắc "dừng ngay khi ở trang đăng nhập" trong `AGENTS.md`. Plan có một task nhỏ riêng để sửa; có thể bỏ nếu người dùng không muốn.
+
+## Giai đoạn 5: các trang còn lại
+
+Người dùng đã cung cấp bản lưu của toàn bộ 32 trang FAP (trong `page-fap/`, không commit). Khảo sát cho thấy chúng dùng chung một khung và khoảng sáu mẫu lặp lại, nên giai đoạn này chia theo **mẫu** thay vì theo trang: danh sách/bảng kết quả (có DataTables và Select2), báo cáo học tập, biểu mẫu và hộp thoại (gồm trang thanh toán có mã QR), trang chi tiết (tin tức, tài liệu), hồ sơ cá nhân, và các trang trạng thái rỗng. Mục tiêu có thể kiểm chứng: mọi lớp CSS của FAP xuất hiện trong các trang này đều có kiểu trong skin hoặc nằm trong danh sách miễn trừ có lý do, do một test tự động quét các fixture đã làm sạch. Hai ràng buộc bổ sung: mã QR thanh toán giữ nền trắng đặc để quét được, và nội dung người dùng hoặc nhà trường nhập (tin tức, tài liệu) chỉ được chỉnh ở vùng chứa. Kế hoạch: `docs/superpowers/plans/2026-11-04-fap-reskin-remaining-pages.md` (chạy sau plan `2026-11-04-fap-reskin.md`).
 
 ## Rủi ro
 

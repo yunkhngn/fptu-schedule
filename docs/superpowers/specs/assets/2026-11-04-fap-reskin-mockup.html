@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup giao diện FAP mới (hướng A được duyệt, B bị loại)</title>
+<style>
+body{margin:0;padding:28px 32px 48px;background:#d7dae2;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;color:#14171f}
+h2{margin:0 0 6px;font-size:24px}.subtitle{margin:0 0 8px;color:#4b5563;max-width:900px;line-height:1.5}
+</style></head><body>
+<p class="subtitle"><strong>Chỉ dùng làm tham chiếu hình ảnh.</strong> Hướng <strong>A</strong> (giữ bố cục FAP, đổi diện mạo) đã được duyệt; hướng <strong>B</strong> (thêm thẻ dữ liệu của extension vào trang FAP) bị loại. Dữ liệu là dữ liệu giả. Màu cam chỉ là một preset; màu nhấn thật lấy theo extension.</p>
+<style>
+.fx-wrap{--ac:#ee5a2a;--ac2:#ff8a4c;--ink:#14171f;--mut:#6b7280;--glass:rgba(255,255,255,.62);--edge:rgba(255,255,255,.75);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+.fx-scale{zoom:.74}
+.fx{position:relative;width:1240px;border-radius:30px;padding:26px;overflow:hidden;
+  background:
+   radial-gradient(520px 380px at 8% -4%,rgba(238,90,42,.30),transparent 70%),
+   radial-gradient(480px 360px at 100% 18%,rgba(129,140,248,.28),transparent 70%),
+   radial-gradient(520px 380px at 30% 108%,rgba(45,212,191,.22),transparent 70%),
+   #eceef3}
+.fx *{box-sizing:border-box}
+.fx .g{background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(165%);backdrop-filter:blur(18px) saturate(165%);
+  border:1px solid var(--edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 14px 34px -14px rgba(40,50,100,.28)}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.fx-top{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:26px;margin-bottom:18px}
+.fx-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;padding:4px 14px 4px 4px;border-radius:999px;background:rgba(255,255,255,.55)}
+.fx-logo b{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--ac2),var(--ac));display:grid;place-items:center;color:#fff;font-size:13px}
+.fx-search{flex:1;display:flex;align-items:center;gap:10px;height:44px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid var(--edge);padding:0 16px;color:var(--mut)}
+.fx-search kbd{margin-left:auto;font:600 11px inherit;background:rgba(15,23,42,.06);border-radius:6px;padding:3px 7px}
+.fx-ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.6);border:1px solid var(--edge);color:#374151;position:relative}
+.fx-ib i{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--ac);border:2px solid #fff}
+.fx-user{display:flex;align-items:center;gap:10px;padding:4px 14px 4px 4px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid var(--edge)}
+.fx-user b{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#22d3ee);color:#fff;display:grid;place-items:center;font-size:13px}
+.fx-user span{font-size:13px;font-weight:700;line-height:1.2}.fx-user small{display:block;font-weight:500;color:var(--mut);font-size:11px}
+.fx-body{display:grid;grid-template-columns:232px 1fr;gap:18px}
+.fx-side{border-radius:26px;padding:16px 12px;align-self:start}
+.fx-side h6{margin:10px 12px 8px;font-size:12px;font-weight:600;color:var(--mut);letter-spacing:.02em}
+.fx-side a{display:flex;align-items:center;gap:12px;height:42px;padding:0 14px;border-radius:12px;font-size:14px;font-weight:600;color:#374151;margin-bottom:3px}
+.fx-side a.on{background:linear-gradient(180deg,var(--ac2),var(--ac));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 20px -8px rgba(238,90,42,.6)}
+.fx-side a em{margin-left:auto;font-style:normal;font-size:11px;font-weight:700;background:rgba(238,90,42,.14);color:var(--ac);border-radius:999px;padding:2px 7px}
+.fx-main h1{font-size:26px;letter-spacing:-.02em;margin:2px 0 14px;display:flex;justify-content:space-between;align-items:center}
+.fx-pill{font-size:13px;font-weight:600;border-radius:999px;padding:9px 16px;background:rgba(255,255,255,.6);border:1px solid var(--edge);display:inline-flex;gap:8px;align-items:center}
+.fx-stu{border-radius:24px;padding:20px 22px;display:grid;grid-template-columns:230px 1fr;gap:20px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(238,90,42,.88),rgba(255,138,76,.78)) !important;color:#fff;border-color:rgba(255,255,255,.5)}
+.fx-stu h3{font-size:19px;margin:6px 0 2px}.fx-stu small{opacity:.85}
+.fx-met{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fx-met div{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:16px;padding:12px 14px}
+.fx-met small{display:block;opacity:.85;font-size:12px;margin-bottom:6px}.fx-met b{font-size:17px}
+.fx-grid{display:grid;grid-template-columns:1fr 300px;gap:16px}
+.fx-card{border-radius:24px;padding:18px 20px;margin-bottom:16px}
+.fx-card h4{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.fx-chip{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:5px 12px;background:rgba(255,255,255,.6);border:1px solid var(--edge);margin-right:6px;color:#4b5563}
+.fx-chip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.fx-news a{display:flex;gap:12px;align-items:center;padding:12px 4px;border-top:1px solid rgba(15,23,42,.07)}
+.fx-news .ic{width:38px;height:38px;border-radius:12px;background:rgba(238,90,42,.12);color:var(--ac);display:grid;place-items:center}
+.fx-news b{display:block;font-size:13.5px;font-weight:650;line-height:1.35}.fx-news small{color:var(--mut);font-size:12px}
+.fx-quick a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13.5px;font-weight:600;color:#374151}
+.fx-quick a:hover{background:rgba(255,255,255,.6)}.fx-quick a svg:last-child{margin-left:auto;color:#9ca3af;width:16px}
+.fx-quick h6{margin:8px 12px 4px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.fx-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.fx-stat{border-radius:22px;padding:16px 18px}
+.fx-stat small{color:var(--mut);font-size:12.5px;display:flex;justify-content:space-between;align-items:center}
+.fx-stat .n{font-size:34px;font-weight:800;letter-spacing:-.03em;margin:8px 0 4px}
+.fx-stat .n sup{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;vertical-align:middle;margin-left:6px}
+.up{background:rgba(34,197,94,.16);color:#15803d}.warn{background:rgba(245,158,11,.18);color:#b45309}.bad{background:rgba(239,68,68,.15);color:#b91c1c}
+.fx-stat .s{font-size:12.5px;color:var(--mut)}
+.fx-tag{position:absolute;right:20px;top:-1px;font-size:10.5px;font-weight:700;color:#fff;background:#334155;border-radius:0 0 10px 10px;padding:3px 9px;letter-spacing:.04em}
+.fx-agenda .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(15,23,42,.07)}
+.fx-agenda .t{width:74px;font-size:13px;font-weight:700}.fx-agenda .p{flex:1;font-size:13.5px;font-weight:650}
+.fx-agenda .r{font-size:12px;color:var(--mut)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#15803d;background:rgba(34,197,94,.16);border-radius:999px;padding:3px 9px}
+.live:before{content:"";width:6px;height:6px;border-radius:50%;background:#22c55e}
+.lab{display:flex;align-items:center;gap:10px;margin:22px 0 10px}
+.lab span{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:800}
+</style>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+<symbol id="i-news" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+<symbol id="i-go" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+</defs></svg>
+
+<h2>Giao diện mới cho trang chủ FAP</h2>
+<p class="subtitle">Theo mẫu Finexy của bạn: thẻ nổi bo lớn, thanh trên dạng viên thuốc, menu trái là một thẻ riêng, nút chính màu cam. Pha kính mờ ở nền, thanh và thẻ. Dữ liệu bên dưới là dữ liệu giả.</p>
+
+<div class="lab"><span>A</span><strong>Giữ đúng bố cục FAP, chỉ thay diện mạo</strong></div>
+<div class="fx-wrap"><div class="fx-scale"><div class="fx">
+  <div class="fx-top g">
+    <div class="fx-logo"><b>FAP</b>FPT Education</div>
+    <div class="fx-search"><svg class="i"><use href="#i-search"/></svg>Tìm chức năng, môn học, tin tức<kbd>Ctrl K</kbd></div>
+    <div class="fx-pill"><svg class="i"><use href="#i-home"/></svg>Hà Nội</div>
+    <div class="fx-ib"><svg class="i"><use href="#i-moon"/></svg></div>
+    <div class="fx-ib"><svg class="i"><use href="#i-bell"/></svg><i></i></div>
+    <div class="fx-user"><b>NA</b><span>Nguyễn Văn A<small>Sinh viên</small></span></div>
+  </div>
+  <div class="fx-body">
+    <aside class="fx-side g">
+      <h6>Menu</h6>
+      <a class="on"><svg class="i"><use href="#i-home"/></svg>Trang chủ</a>
+      <a><svg class="i"><use href="#i-cal"/></svg>Lịch học</a>
+      <a><svg class="i"><use href="#i-chart"/></svg>Báo cáo học tập</a>
+      <a><svg class="i"><use href="#i-book"/></svg>Môn học, chương trình</a>
+      <a><svg class="i"><use href="#i-news"/></svg>Tin tức, tài liệu<em>3</em></a>
+      <h6>Khác</h6>
+      <a><svg class="i"><use href="#i-card"/></svg>Thanh toán</a>
+      <a><svg class="i"><use href="#i-user"/></svg>Cá nhân</a>
+    </aside>
+    <section class="fx-main">
+      <h1>Chào mừng trở lại <span class="fx-pill">Học kỳ Fall 2026</span></h1>
+      <div class="fx-stu g">
+        <div><small>Thông tin sinh viên</small><h3>Nguyễn Văn A</h3><small>SE000000</small></div>
+        <div class="fx-met">
+          <div><small>Trạng thái</small><b>Đang học</b></div>
+          <div><small>Chương trình</small><b>BIT_SE_19B</b></div>
+          <div><small>Khóa</small><b>19</b></div>
+          <div><small>Số dư</small><b>0 VND</b></div>
+        </div>
+      </div>
+      <div class="fx-grid">
+        <div class="fx-card g fx-news">
+          <h4>Tin tức mới nhất <span class="fx-pill">Xem tất cả</span></h4>
+          <div><span class="fx-chip on">Tất cả</span><span class="fx-chip">Tài chính</span><span class="fx-chip">Đào tạo</span><span class="fx-chip">Khảo thí</span></div>
+          <div style="margin-top:10px">
+            <a><span class="ic"><svg class="i"><use href="#i-news"/></svg></span><span><b>Thông báo lịch thi kết thúc học phần lần 1, lần 2 các môn Block 1-4 học kỳ Fall 2026</b><small>Khảo thí · 02/11/2026 23:27</small></span></a>
+            <a><span class="ic"><svg class="i"><use href="#i-news"/></svg></span><span><b>Danh sách thi kết thúc học phần lần 2 ngày 04/11/2026</b><small>Khảo thí · 02/11/2026 14:05</small></span></a>
+            <a><span class="ic"><svg class="i"><use href="#i-news"/></svg></span><span><b>Thông báo đăng ký học lại, học cải thiện kỳ Spring 2027</b><small>Đào tạo · 01/11/2026 09:30</small></span></a>
+          </div>
+        </div>
+        <div class="fx-card g fx-quick">
+          <h4>Menu nhanh</h4>
+          <h6>Học tập</h6>
+          <a><svg class="i"><use href="#i-cal"/></svg>Thời khóa biểu<svg class="i"><use href="#i-go"/></svg></a>
+          <a><svg class="i"><use href="#i-clip"/></svg>Lịch thi<svg class="i"><use href="#i-go"/></svg></a>
+          <a><svg class="i"><use href="#i-chart"/></svg>Báo cáo điểm danh<svg class="i"><use href="#i-go"/></svg></a>
+          <a><svg class="i"><use href="#i-book"/></svg>Báo cáo điểm<svg class="i"><use href="#i-go"/></svg></a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div></div></div>
+
+<div class="lab"><span>B</span><strong>Dựng lại trang chủ, thêm các thẻ lấy từ dữ liệu của extension</strong></div>
+<div class="fx-wrap"><div class="fx-scale"><div class="fx">
+  <div class="fx-top g">
+    <div class="fx-logo"><b>FAP</b>FPT Education</div>
+    <div class="fx-search"><svg class="i"><use href="#i-search"/></svg>Tìm chức năng, môn học, tin tức<kbd>Ctrl K</kbd></div>
+    <div class="fx-pill"><svg class="i"><use href="#i-home"/></svg>Hà Nội</div>
+    <div class="fx-ib"><svg class="i"><use href="#i-moon"/></svg></div>
+    <div class="fx-ib"><svg class="i"><use href="#i-bell"/></svg><i></i></div>
+    <div class="fx-user"><b>NA</b><span>Nguyễn Văn A<small>SE000000</small></span></div>
+  </div>
+  <div class="fx-body">
+    <aside class="fx-side g">
+      <h6>Menu</h6>
+      <a class="on"><svg class="i"><use href="#i-home"/></svg>Trang chủ</a>
+      <a><svg class="i"><use href="#i-cal"/></svg>Lịch học</a>
+      <a><svg class="i"><use href="#i-chart"/></svg>Báo cáo học tập</a>
+      <a><svg class="i"><use href="#i-book"/></svg>Môn học, chương trình</a>
+      <a><svg class="i"><use href="#i-news"/></svg>Tin tức, tài liệu<em>3</em></a>
+      <h6>Khác</h6>
+      <a><svg class="i"><use href="#i-card"/></svg>Thanh toán</a>
+      <a><svg class="i"><use href="#i-user"/></svg>Cá nhân</a>
+    </aside>
+    <section class="fx-main">
+      <h1>Hôm nay, thứ Tư 4/11 <span class="fx-pill">Học kỳ Fall 2026</span></h1>
+      <div class="fx-stats">
+        <div class="fx-stat g" style="position:relative"><span class="fx-tag">EXTENSION</span><small>Buổi học hôm nay <svg class="i"><use href="#i-cal"/></svg></small><div class="n">3<sup class="up">1 đang học</sup></div><div class="s">Tiếp theo: SWP391 lúc 12:50</div></div>
+        <div class="fx-stat g" style="position:relative"><span class="fx-tag">EXTENSION</span><small>Kỳ thi gần nhất <svg class="i"><use href="#i-clip"/></svg></small><div class="n">8 ngày<sup class="warn">PE</sup></div><div class="s">PRJ301, ngày 12/11, phòng BE-405</div></div>
+        <div class="fx-stat g" style="position:relative"><span class="fx-tag">EXTENSION</span><small>Cảnh báo điểm danh <svg class="i"><use href="#i-alert"/></svg></small><div class="n">1<sup class="bad">MAD101</sup></div><div class="s">Vắng 100%, tránh cấm thi</div></div>
+        <div class="fx-stat g"><small>Số dư <svg class="i"><use href="#i-card"/></svg></small><div class="n">0<sup class="up">Không nợ</sup></div><div class="s">VND · BIT_SE_19B · Khóa 19</div></div>
+      </div>
+      <div class="fx-grid">
+        <div>
+          <div class="fx-card g fx-agenda" style="position:relative"><span class="fx-tag">EXTENSION</span>
+            <h4>Lịch học hôm nay <span class="live">Đang diễn ra</span></h4>
+            <div class="row"><span class="t">07:30</span><span class="p">PRJ301<br><span class="r">Slot 1 · AL-L302</span></span><span class="live">Còn 10 phút</span></div>
+            <div class="row"><span class="t">12:50</span><span class="p">SWP391<br><span class="r">Slot 3 · AL-L305</span></span><span class="fx-chip">Sắp học</span></div>
+            <div class="row"><span class="t">17:50</span><span class="p">JPD123<br><span class="r">Slot 5 · Online</span></span><span class="fx-chip">Mở Google Meet</span></div>
+          </div>
+          <div class="fx-card g fx-news">
+            <h4>Tin tức mới nhất <span class="fx-pill">Xem tất cả</span></h4>
+            <a><span class="ic"><svg class="i"><use href="#i-news"/></svg></span><span><b>Thông báo lịch thi kết thúc học phần lần 1, lần 2 các môn Block 1-4 học kỳ Fall 2026</b><small>Khảo thí · 02/11/2026 23:27</small></span></a>
+            <a><span class="ic"><svg class="i"><use href="#i-news"/></svg></span><span><b>Danh sách thi kết thúc học phần lần 2 ngày 04/11/2026</b><small>Khảo thí · 02/11/2026 14:05</small></span></a>
+          </div>
+        </div>
+        <div>
+          <div class="fx-card g fx-quick">
+            <h4>Menu nhanh</h4>
+            <a><svg class="i"><use href="#i-cal"/></svg>Thời khóa biểu<svg class="i"><use href="#i-go"/></svg></a>
+            <a><svg class="i"><use href="#i-clip"/></svg>Lịch thi<svg class="i"><use href="#i-go"/></svg></a>
+            <a><svg class="i"><use href="#i-chart"/></svg>Báo cáo điểm danh<svg class="i"><use href="#i-go"/></svg></a>
+            <a><svg class="i"><use href="#i-book"/></svg>Báo cáo điểm<svg class="i"><use href="#i-go"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div></div></div>
+
+</body></html>
