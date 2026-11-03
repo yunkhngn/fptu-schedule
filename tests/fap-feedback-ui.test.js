@@ -1,6 +1,10 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { injectFapFeedbackToolbar } = require("../lib/fap-feedback.js");
+
+const SYMBOL_CHARS = /[\u2190-\u2BFF\u{1F000}-\u{1FAFF}]/u;
 
 function createMockDocument() {
   const elements = [];
@@ -94,5 +98,21 @@ describe("FAP Feedback Toolbar UI Injection", () => {
     const first = injectFapFeedbackToolbar(doc);
     const second = injectFapFeedbackToolbar(doc);
     assert.strictEqual(first, second);
+  });
+
+  test("toolbar markup uses inline SVG icons and no character emoji or symbols", () => {
+    const doc = createMockDocument();
+    const toolbar = injectFapFeedbackToolbar(doc);
+    const panel = toolbar.children[0];
+    const pill = toolbar.children[1];
+    assert.ok(panel.innerHTML.includes("<svg"), "panel should render SVG icons");
+    assert.ok(pill.innerHTML.includes("<svg"), "pill should render an SVG icon");
+    assert.doesNotMatch(panel.innerHTML, SYMBOL_CHARS);
+    assert.doesNotMatch(pill.innerHTML, SYMBOL_CHARS);
+  });
+
+  test("fap-feedback.js source contains no emoji or symbol characters", () => {
+    const src = fs.readFileSync(path.join(__dirname, "..", "lib", "fap-feedback.js"), "utf8");
+    assert.doesNotMatch(src, SYMBOL_CHARS);
   });
 });

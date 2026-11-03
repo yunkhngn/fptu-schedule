@@ -1509,14 +1509,12 @@ if (typeof window !== "undefined" && typeof window.location !== "undefined") {
 
   if (isCandidate) {
     try {
-      const createFn = typeof createFapKeepAlive === "function"
-        ? createFapKeepAlive
-        : (typeof FapKeepAlive !== "undefined" && FapKeepAlive.createFapKeepAlive ? FapKeepAlive.createFapKeepAlive : null);
-      if (createFn) {
-        const pingUrl = isCandidate && window.location.pathname ? window.location.pathname : undefined;
-        const keepAlive = createFn(pingUrl ? { pingUrl } : {});
-        keepAlive.start();
-        window.__fapKeepAlive = keepAlive;
+      const ensureFn = typeof ensureFapKeepAlive === "function"
+        ? ensureFapKeepAlive
+        : (typeof FapKeepAlive !== "undefined" && FapKeepAlive.ensureFapKeepAlive ? FapKeepAlive.ensureFapKeepAlive : null);
+      if (ensureFn) {
+        const pingUrl = window.location.pathname || undefined;
+        ensureFn(window, pingUrl ? { pingUrl } : {});
       }
     } catch (_) {}
   }

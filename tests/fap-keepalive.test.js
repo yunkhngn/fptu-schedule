@@ -1,6 +1,6 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert/strict");
-const { isFapSessionCandidate, createFapKeepAlive } = require("../lib/fap-keepalive.js");
+const { isFapSessionCandidate, createFapKeepAlive, ensureFapKeepAlive } = require("../lib/fap-keepalive.js");
 
 describe("FAP Keep-Alive Engine", () => {
   test("isFapSessionCandidate ignores login, logout, and non-FAP pages", () => {
@@ -78,5 +78,18 @@ describe("FAP Keep-Alive Engine", () => {
     assert.strictEqual(res.ok, false);
     assert.strictEqual(res.reason, "disabled-by-user");
     assert.strictEqual(fetchCount, 0);
+  });
+
+  test("ensureFapKeepAlive starts once per window and reuses the instance on re-injection", () => {
+    const win = {};
+    const first = ensureFapKeepAlive(win, { fetchFn: async () => ({}), storage: null, intervalMs: 60000 });
+    const second = ensureFapKeepAlive(win, { fetchFn: async () => ({}), storage: null, intervalMs: 60000 });
+    try {
+      assert.strictEqual(first, second);
+      assert.strictEqual(win.__fapKeepAlive, first);
+      assert.strictEqual(first.getStatus().active, true);
+    } finally {
+      first.stop();
+    }
   });
 });
