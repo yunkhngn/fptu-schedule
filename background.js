@@ -12,6 +12,11 @@ try {
   console.error("background: could not load lib/notifications.js", e);
 }
 try {
+  importScripts("lib/agenda.js");
+} catch (e) {
+  console.error("background: could not load lib/agenda.js", e);
+}
+try {
   importScripts("lib/grades.js");
 } catch (e) {
   console.error("background: could not load lib/grades.js", e);
@@ -372,6 +377,34 @@ function notifyScheduleChanges(changes) {
 // popup is the only other thing that re-arms them. Re-arm on every startup/install, and keep a
 // daily alarm (named without the "fptu:" prefix so rescheduleAllAlarms never clears it).
 const MAINTENANCE_ALARM = "fptu-refresh";
+// Wakes the worker when the toolbar badge count should change (a class ends, or midnight).
+const BADGE_ALARM = "fptu-badge";
+const BADGE_BACKGROUND = "#1e293b";
+
+function swallow(result) {
+  if (result && typeof result.catch === "function") result.catch(() => {});
+}
+
+/** Show today's remaining classes on the toolbar icon and arm the alarm for its next change. */
+function updateActionBadge(classEvents, settings, now = new Date()) {
+  if (!chrome.action || typeof computeTodayBadge !== "function") return;
+  const enabled = !(settings && settings.badge && settings.badge.enabled === false);
+  let text = "";
+  if (enabled) {
+    const { count, nextChangeAt } = computeTodayBadge(classEvents, now);
+    text = count > 99 ? "99+" : count > 0 ? String(count) : "";
+    if (chrome.alarms) chrome.alarms.create(BADGE_ALARM, { when: nextChangeAt });
+  } else if (chrome.alarms) {
+    chrome.alarms.clear(BADGE_ALARM);
+  }
+  try {
+    swallow(chrome.action.setBadgeText({ text }));
+    if (text) {
+      swallow(chrome.action.setBadgeBackgroundColor({ color: BADGE_BACKGROUND }));
+      if (chrome.action.setBadgeTextColor) swallow(chrome.action.setBadgeTextColor({ color: "#ffffff" }));
+    }
+  } catch (_) {}
+}
 
 function ensureMaintenanceAlarm() {
   if (!chrome.alarms) return;
@@ -418,6 +451,7 @@ function rescheduleAllAlarms(callback) {
     } catch (_) {}
 
     const now = new Date();
+    updateActionBadge(classEvents, settings, now);
     const classAlarms = typeof buildClassAlarmItems === "function"
       ? buildClassAlarmItems(classEvents, settings, now)
       : [];
@@ -451,7 +485,7 @@ function rescheduleAllAlarms(callback) {
 
 if (typeof chrome !== "undefined" && chrome.alarms && chrome.alarms.onAlarm) {
   chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm && alarm.name === MAINTENANCE_ALARM) {
+    if (alarm && (alarm.name === MAINTENANCE_ALARM || alarm.name === BADGE_ALARM)) {
       rescheduleAllAlarms();
       return;
     }
@@ -549,6 +583,31 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       const mine = (all || []).filter((a) => a && a.name && a.name.startsWith("fptu:"));
       const next = mine.reduce((min, a) => (min === null || a.scheduledTime < min ? a.scheduledTime : min), null);
       sendResponse && sendResponse({ count: mine.length, nextTime: next });
+    });
+    return true;
+  }
+
+  if (msg.type === "SAVE_WEEK_SCHEDULE") {
+    if (!Array.isArray(msg.schedule) || msg.schedule.length === 0) {
+      sendResponse && sendResponse({ ok: false, changed: false });
+      return false;
+    }
+    chrome.storage.local.get(["classSchedule", "weekRangeSyncRunning"], (res) => {
+      // A multi-week sync owns the schedule while it runs; it reports its own changes.
+      if (res && res.weekRangeSyncRunning) {
+        sendResponse && sendResponse({ ok: true, changed: false, reason: "sync-running" });
+        return;
+      }
+      const out = applyWeekCapture(res && res.classSchedule, msg.schedule, msg.skipped || 0, new Date());
+      if (!out.changed) {
+        sendResponse && sendResponse({ ok: true, changed: false });
+        return;
+      }
+      chrome.storage.local.set({ classSchedule: out.mergedJson }, () => {
+        rescheduleAllAlarms();
+        notifyScheduleChanges(out.changes);
+        sendResponse && sendResponse({ ok: true, changed: true, changes: out.changes.length });
+      });
     });
     return true;
   }

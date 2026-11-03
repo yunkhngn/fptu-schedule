@@ -17,6 +17,7 @@ test("DEFAULT_NOTIFICATION_SETTINGS has expected initial state", () => {
   assert.strictEqual(DEFAULT_NOTIFICATION_SETTINGS.exam.offset1Day, true);
   assert.strictEqual(DEFAULT_NOTIFICATION_SETTINGS.exam.offset1Hour, true);
   assert.strictEqual(DEFAULT_NOTIFICATION_SETTINGS.changes.enabled, true);
+  assert.strictEqual(DEFAULT_NOTIFICATION_SETTINGS.badge.enabled, true);
 });
 
 test("parseAlarmName correctly parses encoded alarm names", () => {

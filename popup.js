@@ -125,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const notifExam1Hour = document.getElementById("notifExam1Hour");
   const testNotificationBtn = document.getElementById("testNotificationBtn");
   const notifChangesEnabled = document.getElementById("notifChangesEnabled");
+  const notifBadgeEnabled = document.getElementById("notifBadgeEnabled");
   const notifStatus = document.getElementById("notifStatus");
   const saveNotificationBtn = document.getElementById("saveNotificationBtn");
   const fapKeepSessionToggle = document.getElementById("fapKeepSessionToggle");
@@ -135,7 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
         enabled: true,
         class: { enabled: true, offset15: true, offset30: false },
         exam: { enabled: true, offset1Day: true, offset1Hour: true },
-        changes: { enabled: true }
+        changes: { enabled: true },
+        badge: { enabled: true }
       };
 
   function updateNotificationButtonState(enabled) {
@@ -155,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (notifExam1Hour) notifExam1Hour.checked = !!(s.exam && s.exam.offset1Hour);
     // Settings saved before this option existed have no "changes" key: treat that as on.
     if (notifChangesEnabled) notifChangesEnabled.checked = !(s.changes && s.changes.enabled === false);
+    if (notifBadgeEnabled) notifBadgeEnabled.checked = !(s.badge && s.badge.enabled === false);
     updateNotificationButtonState(s.enabled);
   }
 
@@ -364,6 +367,9 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         changes: {
           enabled: notifChangesEnabled ? notifChangesEnabled.checked : true
+        },
+        badge: {
+          enabled: notifBadgeEnabled ? notifBadgeEnabled.checked : true
         }
       };
 

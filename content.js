@@ -1487,6 +1487,55 @@ async function fetchCourseGradeFromPage(url) {
   }
 }
 
+/**
+ * Reads the timetable the student is already looking at and hands it to `send`, so the schedule
+ * stays current without opening the popup. It only reads the current page (no extra requests to
+ * FAP) and sends a week again only when its content changed.
+ */
+function createWeekAutoCapture(options) {
+  const doc = options.doc;
+  const win = options.win || null;
+  const send = options.send;
+  const debounceMs = options.debounceMs === undefined ? 1000 : options.debounceMs;
+  let lastSignature = null;
+  let timer = null;
+  let observer = null;
+
+  function capture() {
+    try {
+      const { schedule, skipped } = extractWeeklyScheduleFromTable(doc);
+      if (!schedule || schedule.length === 0) return false;
+      const signature = JSON.stringify(schedule) + "|" + (skipped || 0);
+      if (signature === lastSignature) return false;
+      lastSignature = signature;
+      send({ schedule, skipped: skipped || 0 });
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function start() {
+    capture();
+    const MO = win && win.MutationObserver;
+    if (MO && doc.body && !observer) {
+      observer = new MO(() => {
+        clearTimeout(timer);
+        timer = setTimeout(capture, debounceMs);
+      });
+      observer.observe(doc.body, { childList: true, subtree: true, characterData: true });
+    }
+  }
+
+  function stop() {
+    clearTimeout(timer);
+    if (observer) observer.disconnect();
+    observer = null;
+  }
+
+  return { capture, start, stop };
+}
+
 if (typeof window !== "undefined" && /(StudentGrade|GradeReport|Grade|Report\/Grade)/i.test(window.location.pathname || "")) {
   setTimeout(() => {
     try {
@@ -1498,6 +1547,26 @@ if (typeof window !== "undefined" && /(StudentGrade|GradeReport|Grade|Report\/Gr
       }
     } catch (_) {}
   }, 500);
+}
+
+// Timetable pages: keep the stored schedule current while the student browses (guarded so the
+// popup re-injecting this script does not start a second watcher).
+if (typeof window !== "undefined" && typeof document !== "undefined" &&
+    /(WeeklyTimetable|ScheduleOfWeek)/i.test(window.location.pathname || "") &&
+    !window.__fptuWeekCapture) {
+  try {
+    window.__fptuWeekCapture = createWeekAutoCapture({
+      doc: document,
+      win: window,
+      send: (payload) => {
+        if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.sendMessage) return;
+        chrome.runtime
+          .sendMessage({ action: "SAVE_WEEK_SCHEDULE", type: "SAVE_WEEK_SCHEDULE", schedule: payload.schedule, skipped: payload.skipped })
+          .catch(() => {});
+      }
+    });
+    setTimeout(() => window.__fptuWeekCapture.start(), 800);
+  } catch (_) {}
 }
 
 if (typeof window !== "undefined" && typeof window.location !== "undefined") {
@@ -1552,6 +1621,7 @@ if (typeof window !== "undefined") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     extractWeeklyScheduleFromTable,
+    createWeekAutoCapture,
     extractExamScheduleFromPage,
     getScheduleOfWeekControls,
     getIsoWeeksForYear,

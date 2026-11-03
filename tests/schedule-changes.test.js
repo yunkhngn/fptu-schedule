@@ -140,3 +140,50 @@ test("formatScheduleChangeNotifications returns nothing for no changes", () => {
   assert.deepStrictEqual(formatScheduleChangeNotifications([]), []);
   assert.deepStrictEqual(formatScheduleChangeNotifications(null), []);
 });
+
+const { applyWeekCapture } = require("../lib/schedule.js");
+
+test("applyWeekCapture merges a viewed week into storage and reports changes", () => {
+  const stored = JSON.stringify([ev("SWP391", 22, 9, { location: "P.201" }), ev("MAD101", 30, 9)]);
+  const out = applyWeekCapture(stored, [ev("SWP391", 22, 9, { location: "P.305" })], 0, NOW);
+  assert.strictEqual(out.changed, true);
+  const saved = JSON.parse(out.mergedJson);
+  assert.strictEqual(saved.length, 2, "the other week is untouched");
+  assert.strictEqual(saved.find((e) => e.title === "SWP391").location, "P.305");
+  assert.strictEqual(out.changes.length, 1);
+  assert.deepStrictEqual(out.changes[0].fields, ["room"]);
+});
+
+test("applyWeekCapture reports unchanged when the same week is viewed again, even if order differs", () => {
+  const week = [ev("PRJ301", 21, 7), ev("SWP391", 22, 9)];
+  const stored = JSON.stringify([ev("MAD101", 30, 9), ...week]);
+  const out = applyWeekCapture(stored, week.slice().reverse().map((e) => ({ ...e })), 0, NOW);
+  assert.strictEqual(out.changed, false);
+  assert.deepStrictEqual(out.changes, []);
+});
+
+test("applyWeekCapture treats the first capture as a silent baseline", () => {
+  const out = applyWeekCapture(undefined, [ev("PRJ301", 21, 7)], 0, NOW);
+  assert.strictEqual(out.changed, true);
+  assert.strictEqual(JSON.parse(out.mergedJson).length, 1);
+  assert.deepStrictEqual(out.changes, []);
+});
+
+test("applyWeekCapture never erases classes when cells were skipped", () => {
+  const stored = JSON.stringify([ev("PRJ301", 21, 7), ev("SWP391", 22, 9)]);
+  const out = applyWeekCapture(stored, [ev("PRJ301", 21, 7)], 2, NOW);
+  assert.strictEqual(JSON.parse(out.mergedJson).length, 2);
+  assert.deepStrictEqual(out.changes, []);
+});
+
+test("applyWeekCapture survives corrupt stored data", () => {
+  const out = applyWeekCapture("{not json", [ev("PRJ301", 21, 7)], 0, NOW);
+  assert.strictEqual(JSON.parse(out.mergedJson).length, 1);
+});
+
+test("applyWeekCapture notices an attendance update", () => {
+  const stored = JSON.stringify([ev("PRJ301", 21, 7)]);
+  const out = applyWeekCapture(stored, [ev("PRJ301", 21, 7, { attendanceStatus: "attended" })], 0, NOW);
+  assert.strictEqual(out.changed, true);
+  assert.deepStrictEqual(out.changes, [], "attendance is not a schedule change");
+});

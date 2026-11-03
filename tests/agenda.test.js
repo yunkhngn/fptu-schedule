@@ -114,3 +114,43 @@ test("computeTodayAgenda includes today's exam alert if present", () => {
   assert.strictEqual(result.todayExams.length, 1);
   assert.strictEqual(result.todayExams[0].title, "PRJ301 - PE");
 });
+
+const { describe } = require("node:test");
+const { computeTodayBadge } = require("../lib/agenda.js");
+
+describe("computeTodayBadge", () => {
+  const cls = (day, sh, eh, title = "PRJ301") => ({
+    title,
+    rawDate: { year: 2026, month: 9, day, startHour: sh, startMinute: 0, endHour: eh, endMinute: 0 }
+  });
+
+  test("counts today's classes that have not ended and reports when the count next changes", () => {
+    const now = new Date(2026, 8, 21, 8, 0, 0);
+    const out = computeTodayBadge([cls(21, 7, 9), cls(21, 13, 15), cls(21, 18, 20), cls(22, 7, 9)], now);
+    assert.strictEqual(out.count, 3);
+    assert.strictEqual(new Date(out.nextChangeAt).getHours(), 9, "next change is when the first class ends");
+    assert.ok(out.nextChangeAt > new Date(2026, 8, 21, 9, 0, 0).getTime(), "just after the class ends, so it has ended when we wake");
+  });
+
+  test("drops classes that already ended", () => {
+    const now = new Date(2026, 8, 21, 16, 0, 0);
+    const out = computeTodayBadge([cls(21, 7, 9), cls(21, 13, 15), cls(21, 18, 20)], now);
+    assert.strictEqual(out.count, 1);
+  });
+
+  test("is empty after the last class and waits for midnight", () => {
+    const now = new Date(2026, 8, 21, 21, 0, 0);
+    const out = computeTodayBadge([cls(21, 7, 9)], now);
+    assert.strictEqual(out.count, 0);
+    const next = new Date(out.nextChangeAt);
+    assert.strictEqual(next.getDate(), 22);
+    assert.strictEqual(next.getHours(), 0);
+  });
+
+  test("handles no data and unusable events", () => {
+    const now = new Date(2026, 8, 21, 8, 0, 0);
+    assert.strictEqual(computeTodayBadge([], now).count, 0);
+    assert.strictEqual(computeTodayBadge(null, now).count, 0);
+    assert.strictEqual(computeTodayBadge([{ title: "x" }], now).count, 0);
+  });
+});
