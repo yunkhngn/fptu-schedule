@@ -51,6 +51,7 @@
         "lib/fap-keepalive.js",
         "lib/fap-feedback.js",
         "lib/grades.js",
+        "lib/fap-skin-ui.js",
         "content.js"
       ],
       "run_at": "document_idle"
