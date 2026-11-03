@@ -174,4 +174,90 @@ test("list and table pattern styles (DataTables, Select2, Sheet, Filter) are sty
   });
 });
 
+test("academic reports (grade, attendance, transcript, conditions) are styled and score columns use tabular-nums", () => {
+  const targetClasses = [
+    "academic-report",
+    "academic-report-content",
+    "academic-report-loading",
+    "academic-report-select-hint",
+    "academic-report-term-select",
+    "academic-report-course-select",
+    "attendance-chip",
+    "attendance-status",
+    "attendance-summary",
+    "attendance-session-sheet",
+    "attendance-col-index",
+    "grade-status",
+    "grade-average",
+    "mark-score",
+    "student-mark-sheet",
+    "student-mark-col-score",
+    "is-passed",
+    "is-failed",
+    "graduate-condition-table-scroll"
+  ];
+  targetClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
+
+  const academicRules = rules.filter((r) =>
+    /(academic-report|attendance-|grade-|student-mark|student-thesis|graduate-condition|is-passed|is-failed|mark-score)/.test(
+      r.selector
+    )
+  );
+  assert.ok(academicRules.length > 0, "must have academic report rules");
+  academicRules.forEach((r) => {
+    assert.match(
+      r.selector,
+      /^html:not\(\[data-fptu-skin="off"\]\)/,
+      `selector must be gated: ${r.selector}`
+    );
+    assert.doesNotMatch(
+      r.selector,
+      /:nth-(?:child|of-type)/,
+      `academic report selectors must not use :nth-child or :nth-of-type: ${r.selector}`
+    );
+    assert.doesNotMatch(
+      r.body,
+      /(?:^|;)\s*content\s*:\s*["']/i,
+      `skin must not override content property with string literals on ${r.selector}`
+    );
+  });
+
+  // Verify student-mark-sheet score columns are right-aligned and use tabular-nums
+  const scoreRule = rules.find(
+    (r) =>
+      r.selector.includes("student-mark-col-score") &&
+      r.selector.includes("mark-score")
+  );
+  assert.ok(scoreRule, "must have score column rule");
+  assert.match(scoreRule.body, /tabular-nums/, "score column must use tabular-nums");
+  assert.match(scoreRule.body, /text-align:\s*right/, "score column must be right-aligned");
+});
+
+test("academic report status variants have dedicated rules and do not use accent variables", () => {
+  const statusVariants = ["present", "absent", "pending", "passed", "failed"];
+  for (const variant of statusVariants) {
+    const matchingRules = rules.filter((r) =>
+      new RegExp(`(?:attendance-status--|grade-status--|is-)${variant}\\b`).test(r.selector)
+    );
+    assert.ok(
+      matchingRules.length > 0,
+      `status variant "${variant}" must have dedicated CSS rules`
+    );
+    matchingRules.forEach((r) => {
+      assert.match(
+        r.selector,
+        /^html:not\(\[data-fptu-skin="off"\]\)/,
+        `rule must be gated: ${r.selector}`
+      );
+      assert.doesNotMatch(
+        r.body,
+        /var\(--fptu-accent/,
+        `status variant "${variant}" must not use accent variable: ${r.selector} { ${r.body} }`
+      );
+    });
+  }
+});
+
 module.exports = { parseRules, stripComments, css, rules };
