@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FPTU Schedule — Tiện ích Đồng bộ Lịch học & Kỳ thi FPTU</title>
   <meta name="description"
-    content="FPTU Schedule v4.0.0: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, hỗ trợ giao diện FAP mới (WeeklyTimetable & ExamSchedule), thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
+    content="FPTU Schedule v4.1.0: Tiện ích mở rộng Chrome đồng bộ lịch học, lịch thi từ FAP, cảnh báo khi lịch học thay đổi, tự cập nhật khi xem FAP, hỗ trợ giao diện FAP mới (WeeklyTimetable & ExamSchedule), thời khóa biểu ma trận tuần, bộ công cụ FAP Survival Kit (Keep-Alive & Khảo sát 1-Click), quét QR chuyển lịch sang điện thoại và cảnh báo cấm thi." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/png" href="./icon.png" />
 </head>
@@ -19,7 +19,7 @@
         <img class="site-brand__logo" src="icon-128.png" alt="FPTU Schedule Logo" width="36" height="36" />
         <span class="site-brand__title">
           FPTU Schedule
-          <span class="site-brand__badge">v4.0.0</span>
+          <span class="site-brand__badge">v4.1.0</span>
         </span>
       </a>
 
@@ -71,7 +71,7 @@
         <div class="hero__content">
           <div class="hero__kicker">
             <span class="hero__kicker-dot"></span>
-            <span>Bản phát hành chính thức v4.0.0</span>
+            <span>Bản phát hành chính thức v4.1.0</span>
           </div>
 
           <h1>Lịch học, kỳ thi &amp; điểm số <span class="gradient-text">FPTU trong tầm tay</span></h1>
@@ -458,12 +458,73 @@
     <section class="section section--surface" id="features">
       <div class="container">
         <div class="section-head">
-          <span class="section-head__tag">Đổi mới trong v4.0.0</span>
+          <span class="section-head__tag">Đổi mới trong v4.1.0</span>
           <h2>Những tính năng vượt trội cho sinh viên FPTU</h2>
           <p>Thiết kế tinh gọn, tốc độ tức thì và giải quyết trọn vẹn mọi nhu cầu học tập mỗi học kỳ.</p>
         </div>
 
         <div class="feature-cards-grid">
+          <!-- Feat New v4.1.0: Schedule change alerts -->
+          <article class="feat-card">
+            <div class="feat-card__icon">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </div>
+            <h3>Cảnh báo thay đổi lịch học</h3>
+            <p>
+              Sau mỗi lần đồng bộ, extension so sánh với lịch cũ và báo ngay khi lớp đổi phòng, đổi giờ, bị hủy hoặc có buổi mới. Chỉ cần mở trang thời khóa biểu trên FAP, lịch được tự cập nhật nền mà không cần mở popup và không gửi thêm request nào.
+            </p>
+            <div class="feat-card__footer">
+              <svg class="icon icon--sm" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Biết lớp đổi phòng trước khi đến trường</span>
+            </div>
+          </article>
+
+          <!-- Feat New v4.1.0: Toolbar badge -->
+          <article class="feat-card">
+            <div class="feat-card__icon">
+              <svg class="icon" viewBox="0 0 24 24">
+                <line x1="4" y1="9" x2="20" y2="9"></line>
+                <line x1="4" y1="15" x2="20" y2="15"></line>
+                <line x1="10" y1="3" x2="8" y2="21"></line>
+                <line x1="16" y1="3" x2="14" y2="21"></line>
+              </svg>
+            </div>
+            <h3>Số buổi học hôm nay trên icon</h3>
+            <p>
+              Chấm số trên icon extension cho biết còn bao nhiêu buổi học hôm nay và tự giảm khi mỗi buổi kết thúc, tự tắt sau buổi cuối. Có thể bật hoặc tắt trong phần Cài đặt.
+            </p>
+            <div class="feat-card__footer">
+              <svg class="icon icon--sm" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Liếc icon là biết hôm nay còn mấy buổi</span>
+            </div>
+          </article>
+
+          <!-- Feat New v4.1.0: Accent color -->
+          <article class="feat-card">
+            <div class="feat-card__icon">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+              </svg>
+            </div>
+            <h3>Tùy chọn màu nhấn</h3>
+            <p>
+              Chọn một trong 7 màu nhấn (xanh dương, chàm, tím, hồng, xanh ngọc, xanh lá, xám than). Mỗi màu được tinh chỉnh riêng cho giao diện Sáng và Tối, áp dụng tức thì cho nút, thẻ, checkbox và cả logo.
+            </p>
+            <div class="feat-card__footer">
+              <svg class="icon icon--sm" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Đổi màu một chạm, nhớ lựa chọn của bạn</span>
+            </div>
+          </article>
+
           <!-- Feat New: Week Matrix -->
           <article class="feat-card">
             <div class="feat-card__icon">
@@ -787,7 +848,7 @@
 
           <!-- Card 2: Manual ZIP -->
           <div class="dl-card">
-            <h3>Bản ZIP v4.0.0 (GitHub Release)</h3>
+            <h3>Bản ZIP v4.1.0 (GitHub Release)</h3>
             <p>Dành cho các bạn muốn cài đặt thủ công qua chế độ Developer Mode hoặc trải nghiệm phiên bản đóng gói độc
               lập.</p>
             <ul>
@@ -796,14 +857,14 @@
               <li>Bật <strong>Developer mode</strong> và chọn <strong>Load unpacked</strong></li>
             </ul>
             <a class="btn btn--secondary btn--lg"
-              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v4.0.0/fptu-schedule.zip"
+              href="https://github.com/yunkhngn/fptu-schedule/releases/download/v4.1.0/fptu-schedule.zip"
               target="_blank" rel="noopener">
               <svg class="icon" viewBox="0 0 24 24">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              <span>Tải file ZIP (v4.0.0)</span>
+              <span>Tải file ZIP (v4.1.0)</span>
             </a>
           </div>
         </div>
@@ -875,12 +936,33 @@
         </div>
 
         <div class="changelog-container">
-          <!-- Release v4.0.0 -->
+          <!-- Release v4.1.0 -->
           <article class="changelog-card changelog-card--latest">
             <div class="changelog-card__head">
               <div class="changelog-version-tag">
-                <span class="version-name">v4.0.0</span>
+                <span class="version-name">v4.1.0</span>
                 <span class="version-status">Bản mới nhất</span>
+              </div>
+              <time class="changelog-date">03/11/2026</time>
+            </div>
+            <div class="changelog-body">
+              <h4>Cảnh báo thay đổi lịch &amp; Cá nhân hóa giao diện</h4>
+              <ul class="changelog-list">
+                <li><strong>Cảnh báo thay đổi lịch học:</strong> Báo ngay khi lớp đổi phòng, đổi giờ, bị hủy hoặc có buổi mới sau mỗi lần đồng bộ, kèm thông tin phòng cũ và phòng mới. Có công tắc bật/tắt trong Cài đặt.</li>
+                <li><strong>Tự cập nhật khi xem FAP:</strong> Mở trang thời khóa biểu là lịch được làm mới ở chế độ nền, không cần mở popup và không gửi thêm request tới FAP.</li>
+                <li><strong>Số buổi học hôm nay trên icon:</strong> Chấm số trên icon extension tự giảm khi mỗi buổi kết thúc.</li>
+                <li><strong>Tùy chọn màu nhấn:</strong> 7 màu nhấn cho cả giao diện Sáng và Tối, áp dụng tức thì và đồng bộ với logo.</li>
+                <li><strong>Nhắc nhở ổn định hơn:</strong> Khôi phục alarm sau khi khởi động lại trình duyệt, hiển thị số nhắc nhở đang đặt và báo rõ khi thông báo bị chặn.</li>
+                <li><strong>Diện mạo mới:</strong> Icon phẳng mới và nút Cài đặt dạng bánh răng. Đồng bộ lại một tuần sẽ thay thế tuần đó, buổi bị hủy hoặc đổi giờ không còn tồn tại song song.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Release v4.0.0 -->
+          <article class="changelog-card">
+            <div class="changelog-card__head">
+              <div class="changelog-version-tag">
+                <span class="version-name">v4.0.0</span>
               </div>
               <time class="changelog-date">28/09/2026</time>
             </div>

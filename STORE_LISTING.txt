@@ -1,4 +1,33 @@
 ================================================================================
+CHROME WEB STORE - WHAT'S NEW IN VERSION 4.1.0 (ENGLISH)
+[Ready to paste into Chrome Web Store Description / Release Notes]
+================================================================================
+
+WHAT'S NEW IN VERSION 4.1.0:
+
+• SCHEDULE CHANGE ALERTS
+Get a desktop notification when a class changes room or time, is cancelled, or is newly added after you sync. Messages are specific, for example the old and new room, and long lists collapse into one summary. Can be switched off in settings.
+
+• AUTOMATIC TIMETABLE REFRESH
+Simply open your weekly timetable on FAP and the extension updates your saved schedule in the background, no popup required. It only reads the page you are already viewing and sends no extra requests to FAP.
+
+• TODAY'S CLASS COUNT ON THE TOOLBAR ICON
+A badge on the extension icon shows how many of today's classes are still ahead and counts down as each one ends. Can be switched off in settings.
+
+• CHOOSE YOUR ACCENT COLOR
+Pick from seven accent colors, each tuned for both light and dark themes. The popup, controls and logo update instantly.
+
+• MORE RELIABLE REMINDERS
+Reminder alarms are now restored after a browser restart or extension update. The settings dialog shows how many reminders are armed and when the next one fires, and the test notification now tells you if notifications are blocked.
+
+• FRESH LOOK
+A new flat extension icon and a settings gear replace the previous 3D icon and bell.
+
+• IMPROVEMENTS
+Re-syncing a week now replaces it, so cancelled or moved classes disappear instead of lingering. Fixed stacked keep-alive heartbeats and removed the last emoji glyphs from the survey toolbar.
+
+
+================================================================================
 CHROME WEB STORE - WHAT'S NEW IN VERSION 4.0.0 (ENGLISH)
 [Ready to paste into Chrome Web Store Description / Release Notes]
 ================================================================================

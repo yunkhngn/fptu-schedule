@@ -5,6 +5,29 @@ All notable changes to the **FPTU Schedule** extension are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-11-03
+
+### Added
+- **Schedule Change Alerts**: After every sync the extension compares the previous and the fresh copy of the synced weeks and raises a desktop notification for room changes, time changes, cancelled classes and newly added classes (for example "Ngày 22/9: đổi phòng từ P.201 sang P.305"). First syncs and incomplete syncs stay silent, and long lists collapse into a single summary. A new "notify on schedule changes" switch lives in settings.
+- **Passive Timetable Capture**: Opening the FAP weekly timetable page now refreshes the stored schedule automatically, without opening the popup. The content script reads only the week the student is already viewing (no extra requests to FAP) and re-captures when the page content changes. Changes found this way trigger the same alerts, refresh reminder alarms and update the toolbar badge.
+- **Toolbar Badge**: The extension icon shows how many of today's classes have not finished yet and counts down as each class ends. It clears after the last class and at midnight, caps at `99+`, and can be switched off in settings.
+- **Accent Color Setting**: Choose one of seven accent colors (blue, indigo, violet, pink, teal, green, graphite) in settings. Each preset has a light and a dark variant that keeps white button text above a 3.5:1 contrast ratio. The choice applies instantly, is remembered, and also recolors the popup header logo.
+- **Reminder Diagnostics**: The settings dialog shows how many reminders are armed and when the next one fires.
+
+### Changed
+- **Week Replacement on Sync**: Re-syncing a week now replaces that week instead of only merging, so cancelled or moved classes no longer linger next to their replacement. Syncs that skipped unreadable cells fall back to the additive merge and never erase stored classes.
+- **New Visual Identity**: Replaced the 3D extension icon with a flat calendar-and-clock icon in the popup accent palette, and replaced the header bell with a settings gear.
+- **Accent-Driven Styling**: Roughly fifty hard-coded blue values in the popup stylesheet now derive from `--accent` through `color-mix()`, and every checkbox follows the accent color.
+
+### Fixed
+- **Reminder Alarms Lost After Restart**: Alarms are now re-armed on install, update and browser startup, and a daily maintenance alarm keeps them fresh, since Chrome does not guarantee alarms survive a restart.
+- **Misleading Test Notification**: The "Test notification" button now reports blocked notification permissions and API errors instead of always claiming success.
+- **Stacked Keep-Alive Heartbeats**: Re-injecting the content script no longer starts an additional heartbeat timer.
+- **Zero-Emoji Compliance**: Replaced the emoji and symbol glyphs in the survey toolbar with inline SVG icons.
+
+### Security & Compliance
+- Passive capture only reads the timetable page the student is already viewing and stores the result locally. It performs no additional network requests, and the survey auto-fill still never submits forms automatically.
+
 ## [4.0.0] - 2026-09-29
 
 ### Added
