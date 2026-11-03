@@ -46,6 +46,15 @@ function mirrorExamScheduleToStorage(events) {
   } catch (_) {}
 })();
 
+// Apply the saved accent colour before first paint of the popup content (localStorage is synchronous).
+(function () {
+  try {
+    if (typeof applyAccent === "function" && typeof localStorage !== "undefined") {
+      applyAccent(document, localStorage.getItem("accentColor"));
+    }
+  } catch (_) {}
+})();
+
 // Schedule view mode state
 let currentScheduleViewMode = "list";
 try {
@@ -155,6 +164,44 @@ document.addEventListener("DOMContentLoaded", () => {
       syncNotificationForm(res && res.notificationSettings);
     });
   }
+
+  // Accent colour picker: applies and saves immediately, no Save button needed.
+  const accentPicker = document.getElementById("accentPicker");
+  function currentAccentId() {
+    try {
+      return normalizeAccentId(localStorage.getItem("accentColor"));
+    } catch (_) {
+      return DEFAULT_ACCENT_ID;
+    }
+  }
+  function renderAccentPicker() {
+    if (!accentPicker || typeof ACCENT_PRESETS === "undefined") return;
+    const active = currentAccentId();
+    accentPicker.textContent = "";
+    ACCENT_PRESETS.forEach((preset) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "accent-swatch";
+      btn.dataset.accent = preset.id;
+      btn.title = preset.label;
+      btn.setAttribute("role", "radio");
+      btn.setAttribute("aria-label", preset.label);
+      btn.setAttribute("aria-checked", preset.id === active ? "true" : "false");
+      btn.style.setProperty("--swatch-light", preset.light);
+      btn.style.setProperty("--swatch-dark", preset.dark);
+      btn.addEventListener("click", () => {
+        try {
+          localStorage.setItem("accentColor", preset.id);
+        } catch (_) {}
+        applyAccent(document, preset.id);
+        accentPicker.querySelectorAll(".accent-swatch").forEach((el) => {
+          el.setAttribute("aria-checked", el === btn ? "true" : "false");
+        });
+      });
+      accentPicker.appendChild(btn);
+    });
+  }
+  renderAccentPicker();
 
   // Theme management
   const themeToggleBtn = document.getElementById("themeToggleBtn");

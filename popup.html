@@ -90,14 +90,37 @@
     <header class="popup-header">
       <div class="popup-header__brand">
         <div class="popup-header__mark" aria-hidden="true">
-          <img
-            class="popup-header__logo"
-            src="icon-128.png"
-            alt=""
-            width="40"
-            height="40"
-            decoding="async"
-          />
+          <svg class="popup-header__logo" viewBox="0 0 1024 1024" width="40" height="40" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="logoBg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" style="stop-color: color-mix(in srgb, var(--accent) 88%, #fff)"/>
+                <stop offset="1" style="stop-color: var(--accent-700)"/>
+              </linearGradient>
+              <clipPath id="logoBody"><rect x="196" y="262" width="632" height="556" rx="78"/></clipPath>
+            </defs>
+            <rect width="1024" height="1024" rx="230" fill="url(#logoBg)"/>
+            <rect x="196" y="262" width="632" height="556" rx="78" fill="#fff"/>
+            <rect x="196" y="262" width="632" height="168" clip-path="url(#logoBody)" style="fill: var(--accent-800)"/>
+            <rect x="313" y="204" width="54" height="128" rx="27" fill="#fff"/>
+            <rect x="657" y="204" width="54" height="128" rx="27" fill="#fff"/>
+            <rect x="316" y="482" width="108" height="108" rx="26" style="fill: var(--accent)"/>
+            <rect x="458" y="482" width="108" height="108" rx="26" style="fill: var(--accent-100)"/>
+            <rect x="600" y="482" width="108" height="108" rx="26" style="fill: var(--accent-100)"/>
+            <rect x="316" y="624" width="108" height="108" rx="26" style="fill: var(--accent-100)"/>
+            <rect x="458" y="624" width="108" height="108" rx="26" style="fill: var(--accent-100)"/>
+            <rect x="600" y="624" width="108" height="108" rx="26" style="fill: var(--accent-100)"/>
+            <circle cx="768" cy="760" r="176" style="fill: var(--accent)"/>
+            <circle cx="768" cy="760" r="142" fill="#fff"/>
+            <g style="fill: var(--accent-300)">
+              <circle cx="768" cy="652" r="9"/><circle cx="876" cy="760" r="9"/>
+              <circle cx="768" cy="868" r="9"/><circle cx="660" cy="760" r="9"/>
+            </g>
+            <g style="fill: var(--accent-800)">
+              <rect x="756" y="668" width="24" height="104" rx="12"/>
+              <rect x="756" y="748" width="90" height="24" rx="12"/>
+            </g>
+            <circle cx="768" cy="760" r="20" style="fill: var(--accent)"/>
+          </svg>
         </div>
         <div class="popup-header__titles">
           <h1 class="popup-header__title">FPTU Schedule</h1>
@@ -341,6 +364,11 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="notif-section accent-section">
+            <div class="accent-section__title" id="accentPickerLabel"><strong>Màu nhấn</strong></div>
+            <div class="accent-picker" id="accentPicker" role="radiogroup" aria-labelledby="accentPickerLabel"></div>
+          </div>
+
           <div class="notif-section">
             <label class="notif-switch-label">
               <input type="checkbox" id="notifMasterToggle" checked>
@@ -455,6 +483,7 @@
     <script src="lib/notifications.js"></script>
     <script src="lib/grades.js"></script>
     <script src="lib/theme.js"></script>
+    <script src="lib/accent.js"></script>
     <script src="lib/agenda.js"></script>
     <script src="lib/qrcode.js"></script>
     <script src="popup.js"></script>

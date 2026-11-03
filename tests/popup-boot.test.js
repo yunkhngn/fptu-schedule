@@ -1079,3 +1079,22 @@ test("toggling showAttendanceStats in scheduleFilterModal toggles display of abs
   attRow = Array.from(prmCard.querySelectorAll(".meta-row")).find(r => r.querySelector(".meta-label")?.textContent.includes("Điểm danh"));
   assert.ok(attRow, "attendance row is restored when showAttendanceStats is true");
 });
+
+test("accent picker lists the presets, applies a choice and remembers it", async () => {
+  const { window, calls } = await boot();
+  const doc = window.document;
+  const swatches = doc.querySelectorAll("#accentPicker .accent-swatch");
+  assert.strictEqual(swatches.length, window.ACCENT_PRESETS.length);
+  assert.strictEqual(doc.querySelector('.accent-swatch[aria-checked="true"]').dataset.accent, "blue", "blue is selected by default");
+  assert.strictEqual(doc.getElementById("accent-style"), null, "default adds no override");
+
+  doc.querySelector('.accent-swatch[data-accent="violet"]').dispatchEvent(new window.Event("click"));
+  const style = doc.getElementById("accent-style");
+  assert.ok(style && style.textContent.includes("#7c3aed"), "violet override applied immediately");
+  assert.strictEqual(window.localStorage.getItem("accentColor"), "violet");
+  assert.strictEqual(doc.querySelector('.accent-swatch[aria-checked="true"]').dataset.accent, "violet");
+
+  doc.querySelector('.accent-swatch[data-accent="blue"]').dispatchEvent(new window.Event("click"));
+  assert.strictEqual(doc.getElementById("accent-style"), null, "going back to blue removes the override");
+  assert.deepStrictEqual(calls.errors, []);
+});
