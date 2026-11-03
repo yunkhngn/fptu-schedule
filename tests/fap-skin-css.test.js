@@ -75,7 +75,13 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-list-page",
     "fap-status",
     "fap-form-footer",
-    "fap-wishlist-register"
+    "fap-wishlist-register",
+    "fap-news-detail",
+    "fap-news-badge",
+    "fap-news-content",
+    "fap-news-attachment",
+    "fap-detail-",
+    "fap-document-"
   ]; // in home.css or other page components (style.css)
   const used = [...new Set(css.match(/\.fap-[\w-]+/g) || [])].map((c) => c.slice(1));
   used.filter((c) => !KNOWN_ABSENT.some((k) => c.startsWith(k)))
@@ -279,6 +285,63 @@ test("dialogs stack above the topbar and the skin notice", () => {
 test("form validation and disabled states are visibly styled", () => {
   ["\\.is-invalid", "field-validation-error|invalid-feedback", "\\.form-control:disabled|\\.form-control\\[readonly\\]", "\\.form-control:focus"]
     .forEach((p) => assert.match(css, new RegExp(p)));
+});
+
+test("news and document detail pages are styled and safe content rules are preserved", () => {
+  const targetClasses = [
+    "fap-news-detail-card",
+    "fap-news-detail-header",
+    "fap-news-detail-title",
+    "fap-news-detail-meta",
+    "fap-news-badge",
+    "fap-news-content-wrapper",
+    "fap-news-content",
+    "fap-news-attachment",
+    "fap-news-detail-actions",
+    "fap-detail-grid",
+    "fap-detail-field",
+    "fap-detail-flags",
+    "fap-document-detail",
+    "fap-document-body",
+    "fap-document-content",
+    "fap-document-file-btn"
+  ];
+  targetClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
+
+  const detailRules = rules.filter((r) =>
+    /(fap-news-|fap-detail-|fap-document-)/.test(r.selector)
+  );
+  assert.ok(detailRules.length > 0, "must have news and document detail rules");
+
+  detailRules.forEach((r) => {
+    r.selector.split(",").forEach((s) => {
+      assert.match(
+        s.trim(),
+        /^html:not\(\[data-fptu-skin="off"\]\)/,
+        `selector must be gated: ${s.trim()}`
+      );
+    });
+  });
+
+  // Contract assertion: no selector targeting .fap-news-content uses child combinators
+  // other than img|video|iframe|table|a|pre|code|blockquote
+  const allowedDescendants = /^(?:img|video|iframe|table|a|pre|code|blockquote)(?::[a-z-]+)?$/;
+  rules.forEach((r) => {
+    r.selector.split(",").forEach((s) => {
+      const trimmed = s.trim();
+      const match = trimmed.match(/\.fap-news-content\b\s*([>+~]|\s)\s*(.+)$/);
+      if (match) {
+        const descendant = match[2].trim();
+        assert.match(
+          descendant,
+          allowedDescendants,
+          `disallowed child combinator/descendant on .fap-news-content: ${trimmed}`
+        );
+      }
+    });
+  });
 });
 
 module.exports = { parseRules, stripComments, css, rules };

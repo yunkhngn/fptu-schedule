@@ -3692,6 +3692,540 @@ html:not([data-fptu-skin="off"]) .flatpickr-day.endRange {
 }
 
 /* --------------------------------------------------------------------------
+   News and Document Detail Pages (/News/Detail/..., /Document/Detail/...)
+   - Glassmorphic detail cards (.fap-news-detail-card, .fap-document-detail)
+   - High-contrast news header, badges, titles, and metadata
+   - Pill badges for category type and pinned status
+   - Safe content container (.fap-news-content, .fap-document-content):
+     only safe typography & media constraints (max-width: 100%), links with accent
+     never modifies layout or display of user-entered markup
+   - Attachment card and actions bar (.fap-news-attachment, .fap-news-detail-actions)
+   - Key-value detail grid and field boxes (.fap-detail-grid, .fap-detail-field)
+   - Status flag list (.fap-detail-flags)
+   - Document body wrapper, title, and empty state
+   -------------------------------------------------------------------------- */
+
+/* Glass Detail Cards */
+html:not([data-fptu-skin="off"]) .fap-news-detail-card {
+  border-radius: 22px;
+  background: var(--fptu-glass-bg);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-card {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-card > .card-body,
+html:not([data-fptu-skin="off"]) .fap-news-detail-card .card-body {
+  background: transparent;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-detail {
+  border-radius: 22px;
+  background: var(--fptu-glass-bg);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-detail {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+}
+
+/* News Detail Header & Badges */
+html:not([data-fptu-skin="off"]) .fap-news-detail-header {
+  padding: 2rem 2.25rem 1.5rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fptu-accent) 6%, transparent) 0%, transparent 100%);
+  border-bottom: 1px solid var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-header {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fptu-accent) 12%, transparent) 0%, transparent 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-badge--type {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  color: var(--fptu-accent);
+  border: 1px solid color-mix(in srgb, var(--fptu-accent) 24%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-badge--type {
+  background: color-mix(in srgb, var(--fptu-accent) 18%, transparent);
+  color: var(--fptu-accent);
+  border-color: color-mix(in srgb, var(--fptu-accent) 30%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-badge--pinned {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-badge--pinned {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* News Detail Title & Metadata */
+html:not([data-fptu-skin="off"]) .fap-news-detail-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: #0f172a;
+  margin: 0 0 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-title {
+  color: #f8fafc;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-meta__item {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-meta__item i {
+  font-size: 1rem;
+  color: var(--fptu-accent);
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-meta__item--expiry {
+  color: #f59e0b;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-detail-meta__item--expiry i {
+  color: #f59e0b;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-meta__item--expiry {
+  color: #fbbf24;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-meta__item--expiry i {
+  color: #fbbf24;
+}
+
+/* News Attachments */
+html:not([data-fptu-skin="off"]) .fap-news-attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 1.5rem 2.25rem 0;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--fptu-accent) 20%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--fptu-accent) 6%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-attachment {
+  border-color: color-mix(in srgb, var(--fptu-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-attachment__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--fptu-accent) 14%, transparent);
+  color: var(--fptu-accent);
+  font-size: 1.25rem;
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-attachment__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-attachment__label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-attachment__label {
+  color: #f1f5f9;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-attachment__hint {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-attachment__hint {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-attachment__btn {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* News Content Wrapper & Safe Content Container */
+html:not([data-fptu-skin="off"]) .fap-news-content-wrapper {
+  padding: 1.75rem 2.25rem 2rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content {
+  line-height: 1.8;
+  color: #1e293b;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-content {
+  color: #cbd5e1;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content img,
+html:not([data-fptu-skin="off"]) .fap-news-content video,
+html:not([data-fptu-skin="off"]) .fap-news-content iframe {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content a {
+  color: var(--fptu-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content a:hover {
+  color: var(--fptu-accent-hover);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content pre {
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-content pre {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content code {
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.875em;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-content code {
+  background: color-mix(in srgb, var(--fptu-accent) 18%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-news-content blockquote {
+  border-left: 4px solid var(--fptu-accent);
+  padding: 0.75rem 1.25rem;
+  margin: 1.25rem 0;
+  color: #64748b;
+  font-style: italic;
+  background: color-mix(in srgb, var(--fptu-accent) 5%, transparent);
+  border-radius: 0 12px 12px 0;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-content blockquote {
+  color: #94a3b8;
+  background: color-mix(in srgb, var(--fptu-accent) 8%, transparent);
+}
+
+/* News Detail Actions Footer */
+html:not([data-fptu-skin="off"]) .fap-news-detail-actions {
+  padding: 1.25rem 2.25rem 1.75rem;
+  border-top: 1px solid var(--fptu-glass-border);
+  background: color-mix(in srgb, var(--fptu-glass-bg) 60%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-actions {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+/* Key-Value Detail Grid & Fields */
+html:not([data-fptu-skin="off"]) .fap-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  html:not([data-fptu-skin="off"]) .fap-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  html:not([data-fptu-skin="off"]) .fap-detail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+html:not([data-fptu-skin="off"]) .fap-detail-field {
+  padding: 0.75rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid var(--fptu-glass-border);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(30, 41, 59, 0.45);
+}
+
+html:not([data-fptu-skin="off"]) .fap-detail-field__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #64748b;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field__label {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-detail-field__value {
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field__value {
+  color: #f1f5f9;
+}
+
+html:not([data-fptu-skin="off"]) .fap-detail-field__value--muted {
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field__value--muted {
+  color: #64748b;
+}
+
+html:not([data-fptu-skin="off"]) .fap-detail-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Document Body, Content & Empty State */
+html:not([data-fptu-skin="off"]) .fap-document-body {
+  margin-top: 0.5rem;
+  border: 1px solid var(--fptu-glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--fptu-glass-bg) 75%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-body {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-body__head {
+  padding: 0.75rem 1.15rem;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  background: color-mix(in srgb, var(--fptu-accent) 5%, transparent);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-body__head {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--fptu-accent) 8%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-body__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-body__title {
+  color: #f1f5f9;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-body__title i {
+  color: var(--fptu-accent);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content {
+  padding: 1rem 1.15rem 1.25rem;
+  color: #1e293b;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-content {
+  color: #cbd5e1;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content img,
+html:not([data-fptu-skin="off"]) .fap-document-content video,
+html:not([data-fptu-skin="off"]) .fap-document-content iframe {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content a {
+  color: var(--fptu-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content a:hover {
+  color: var(--fptu-accent-hover);
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-content--empty {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #64748b;
+  font-weight: 500;
+  padding: 1.5rem 1rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-content--empty {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .fap-document-file-btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Detail Responsive Adjustments */
+@media (max-width: 767.98px) {
+  html:not([data-fptu-skin="off"]) .fap-news-detail-header {
+    padding: 1.25rem 1rem 1rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-detail-title {
+    font-size: 1.35rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-detail-meta {
+    gap: 0.4rem 1rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-detail-meta__item {
+    font-size: 0.78rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-attachment {
+    margin: 1rem 1rem 0;
+    padding: 0.75rem 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-attachment__btn {
+    width: 100%;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-content-wrapper {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-detail-actions {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  html:not([data-fptu-skin="off"]) .fap-news-detail-title {
+    font-size: 1.2rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .fap-news-detail-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -3721,6 +4255,9 @@ html:not([data-fptu-skin="off"]) .flatpickr-day.endRange {
   html:not([data-fptu-skin="off"]) .fap-filter-card,
   html:not([data-fptu-skin="off"]) .fap-empty-card,
   html:not([data-fptu-skin="off"]) .fap-result-card,
+  html:not([data-fptu-skin="off"]) .fap-news-detail-card,
+  html:not([data-fptu-skin="off"]) .fap-document-detail,
+  html:not([data-fptu-skin="off"]) .fap-detail-field,
   html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr,
@@ -3739,6 +4276,9 @@ html:not([data-fptu-skin="off"]) .flatpickr-day.endRange {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-detail,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody tr,
