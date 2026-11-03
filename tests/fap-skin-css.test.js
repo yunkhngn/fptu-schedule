@@ -65,6 +65,7 @@ test("the fap-* classes the skin targets exist in the home fixture", () => {
     "fap-chip",
     "fap-empty-state",
     "fap-page-title__crumb-link",
+    "fap-page-title__crumb-sep",
     "fap-sheet",
     "fap-table--stack",
     "fap-page-size-select",
@@ -408,6 +409,32 @@ test("account and profile pages are styled with hero gradient, glass cards, and 
   assert.ok(tabActiveRule, "must have .account-tabs .nav-link.active rule");
   assert.match(tabActiveRule.body, /var\(--fptu-accent\)/);
   assert.match(tabActiveRule.body, /color:\s*#fff(fff)?\b/i);
+});
+
+test("remaining common page components (buttons, table modifiers, breadcrumbs, footers) are styled", () => {
+  const targetClasses = [
+    "btn-outline-success",
+    "btn-warning",
+    "btn-sm",
+    "table-bordered",
+    "table-light",
+    "table-sm",
+    "table-vcenter",
+    "fap-page-title__main",
+    "fap-page-title__crumb-list",
+    "fap-page-title__crumb-item",
+    "fap-page-title__crumb-sep",
+    "footer-links",
+    "link-secondary",
+    "weekly-timetable-location-notes",
+    "weekly-timetable-page",
+    "weekly-timetable-week-actions__picker",
+    "input-group-merge",
+    "spinner-border"
+  ];
+  targetClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
 });
 
 module.exports = { parseRules, stripComments, css, rules };

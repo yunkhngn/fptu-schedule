@@ -417,6 +417,23 @@ html:not([data-fptu-skin="off"]) .footer {
   box-shadow: none !important;
 }
 
+html:not([data-fptu-skin="off"]) .footer-links a,
+html:not([data-fptu-skin="off"]) .link-secondary {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .footer-links a,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .link-secondary {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .footer-links a:hover,
+html:not([data-fptu-skin="off"]) .link-secondary:hover {
+  color: var(--fptu-accent);
+}
+
 /* --------------------------------------------------------------------------
    Common & Shared Components
    Cards, Buttons, Form Controls, Tables, Badges, Modals, Pagination
@@ -520,6 +537,43 @@ html:not([data-fptu-skin="off"]) .btn-outline-secondary:active {
   color: var(--fptu-accent);
 }
 
+html:not([data-fptu-skin="off"]) .btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.45);
+}
+
+html:not([data-fptu-skin="off"]) .btn-warning:hover,
+html:not([data-fptu-skin="off"]) .btn-warning:focus,
+html:not([data-fptu-skin="off"]) .btn-warning:active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 20px -2px rgba(245, 158, 11, 0.6);
+}
+
+html:not([data-fptu-skin="off"]) .btn-outline-success {
+  border-color: #10b981;
+  color: #10b981;
+  background: transparent;
+}
+
+html:not([data-fptu-skin="off"]) .btn-outline-success:hover,
+html:not([data-fptu-skin="off"]) .btn-outline-success:focus,
+html:not([data-fptu-skin="off"]) .btn-outline-success:active {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.45);
+}
+
+html:not([data-fptu-skin="off"]) .btn-sm {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+  border-radius: 9999px;
+}
+
 html:not([data-fptu-skin="off"]) .btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
@@ -621,6 +675,41 @@ html:not([data-fptu-skin="off"]) .table-striped > tbody > tr:nth-of-type(odd) > 
 
 html:not([data-fptu-skin="off"]) .table-hover > tbody > tr:hover > * {
   background-color: var(--ct-table-hover-bg) !important;
+}
+
+html:not([data-fptu-skin="off"]) .table-bordered {
+  border: 1px solid var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"]) .table-bordered > :not(caption) > * > * {
+  border-width: 0 1px;
+  border-color: var(--fptu-glass-border);
+}
+
+html:not([data-fptu-skin="off"]) .table-light,
+html:not([data-fptu-skin="off"]) .table-light > th,
+html:not([data-fptu-skin="off"]) .table-light > td {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.28);
+  --bs-table-hover-bg: color-mix(in srgb, var(--fptu-accent) 8%, transparent);
+  --bs-table-color: inherit;
+  background-color: rgba(255, 255, 255, 0.45);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .table-light,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .table-light > th,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .table-light > td {
+  background-color: rgba(30, 41, 59, 0.55);
+  color: inherit;
+}
+
+html:not([data-fptu-skin="off"]) .table-sm > :not(caption) > * > * {
+  padding: 0.35rem 0.5rem;
+}
+
+html:not([data-fptu-skin="off"]) .table-vcenter > :not(caption) > * > * {
+  vertical-align: middle;
 }
 
 /* Badges, Chips and Semantic Indicators */
@@ -880,12 +969,36 @@ html:not([data-fptu-skin="off"]) .pagination .page-item.disabled .page-link {
   pointer-events: none;
 }
 
+html:not([data-fptu-skin="off"]) .spinner-border {
+  border-width: 0.2em;
+}
+
 /* Page Header, Filters & State Placeholders */
 html:not([data-fptu-skin="off"]) .content-page .page-title-box.fap-page-title,
 html:not([data-fptu-skin="off"]) .feedback-layout-content .page-title-box.fap-page-title {
   border-bottom: 1px solid var(--fptu-glass-border);
   margin-bottom: 1.25rem;
   padding-bottom: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-title__main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-title__crumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.35rem;
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-title__crumb-item {
+  display: inline-flex;
+  align-items: center;
 }
 
 html:not([data-fptu-skin="off"]) .fap-page-title__crumb-link {
@@ -902,6 +1015,16 @@ html:not([data-fptu-skin="off"]) .fap-page-title__crumb-link:hover,
 html:not([data-fptu-skin="off"]) .fap-page-title__crumb-link:focus-visible {
   color: var(--fptu-accent);
   background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-page-title__crumb-sep {
+  color: #94a3b8;
+  user-select: none;
+  font-size: 0.85em;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-page-title__crumb-sep {
+  color: #64748b;
 }
 
 html:not([data-fptu-skin="off"]) .fap-page-title__crumb-current {
@@ -1701,6 +1824,21 @@ html:not([data-fptu-skin="off"]) #weekly-timetable-week-actions {
   align-items: center;
 }
 
+html:not([data-fptu-skin="off"]) .weekly-timetable-week-actions__picker {
+  display: flex;
+  flex-direction: column;
+}
+
+html:not([data-fptu-skin="off"]) .weekly-timetable-location-notes {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-location-notes {
+  color: #94a3b8;
+}
+
 html:not([data-fptu-skin="off"]) #weekly-timetable-week {
   border-radius: 12px;
   font-weight: 600;
@@ -1764,7 +1902,8 @@ html:not([data-fptu-skin="off"]) #weekly-timetable-next:focus-visible {
 }
 
 /* Result Card */
-html:not([data-fptu-skin="off"]) .fap-result-card {
+html:not([data-fptu-skin="off"]) .fap-result-card,
+html:not([data-fptu-skin="off"]) .weekly-timetable-page {
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.62);
   background: color-mix(in srgb, #ffffff 62%, transparent);
@@ -1773,7 +1912,8 @@ html:not([data-fptu-skin="off"]) .fap-result-card {
   overflow: hidden;
 }
 
-html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card {
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-result-card,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-page {
   background: rgba(30, 41, 59, 0.6);
   background: color-mix(in srgb, #1e293b 60%, transparent);
 }
@@ -2908,6 +3048,18 @@ html:not([data-fptu-skin="off"]) form#frm-parent-login .form-control:focus {
 html:not([data-fptu-skin="off"]) form#frm-parent-login .input-group:focus-within .input-group-text {
   border-color: var(--fptu-accent);
   background: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .input-group-merge > .form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+}
+
+html:not([data-fptu-skin="off"]) .input-group-merge > .input-group-text:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
 }
 
 html:not([data-fptu-skin="off"]) form#frm-parent-login button.btn-primary {
