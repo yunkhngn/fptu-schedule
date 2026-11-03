@@ -14,8 +14,9 @@ function popupDocument() {
   );
 }
 
-function chromeStub(calls) {
+function chromeStub(calls, initialStorage = {}) {
   const noop = () => {};
+  const storageData = { ...initialStorage };
   return {
     runtime: {
       lastError: undefined,
@@ -25,8 +26,38 @@ function chromeStub(calls) {
     },
     storage: {
       local: {
-        get: (_keys, cb) => cb && cb({}),
-        set: (items, cb) => { calls.storageSet.push(items); cb && cb(); },
+        get: (keys, cb) => {
+          if (typeof keys === "function") {
+            cb = keys;
+            keys = null;
+          }
+          if (!keys) return cb && cb({ ...storageData });
+          if (typeof keys === "string") {
+            const res = {};
+            if (keys in storageData) res[keys] = storageData[keys];
+            return cb && cb(res);
+          }
+          if (Array.isArray(keys)) {
+            const res = {};
+            for (const k of keys) {
+              if (k in storageData) res[k] = storageData[k];
+            }
+            return cb && cb(res);
+          }
+          if (typeof keys === "object") {
+            const res = { ...keys };
+            for (const k of Object.keys(keys)) {
+              if (k in storageData) res[k] = storageData[k];
+            }
+            return cb && cb(res);
+          }
+          return cb && cb({ ...storageData });
+        },
+        set: (items, cb) => {
+          Object.assign(storageData, items);
+          calls.storageSet.push(items);
+          cb && cb();
+        },
         remove: noop,
       },
     },
@@ -53,7 +84,7 @@ async function boot(options = {}) {
           window.localStorage.setItem(key, String(val));
         }
       }
-      window.chrome = chromeStub(calls);
+      window.chrome = chromeStub(calls, options && options.storage);
       window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       window.addEventListener("error", (e) => calls.errors.push(e.error || e.message));
     },
@@ -1113,5 +1144,21 @@ test("the accent choice is mirrored to chrome.storage so FAP pages can read it",
 test("an accent chosen before the mirror existed is copied over on boot", async () => {
   const { calls } = await boot({ localStorage: { accentColor: "violet" } });
   assert.ok(calls.storageSet.some((o) => o.accentColor === "violet"));
+});
+
+test("the FAP skin switch reflects storage and writes changes straight away", async () => {
+  const { window, calls } = await boot({ storage: { fapSkinEnabled: false } });
+  const box = window.document.getElementById("fapSkinToggle");
+  window.document.getElementById("notificationBtn").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(box.checked, false);
+  box.checked = true;
+  box.dispatchEvent(new window.Event("change"));
+  assert.ok(calls.storageSet.some((o) => o.fapSkinEnabled === true));
+});
+
+test("the FAP skin switch defaults to on", async () => {
+  const { window } = await boot();
+  window.document.getElementById("notificationBtn").dispatchEvent(new window.Event("click"));
+  assert.strictEqual(window.document.getElementById("fapSkinToggle").checked, true);
 });
 

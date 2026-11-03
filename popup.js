@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const notifStatus = document.getElementById("notifStatus");
   const saveNotificationBtn = document.getElementById("saveNotificationBtn");
   const fapKeepSessionToggle = document.getElementById("fapKeepSessionToggle");
+  const fapSkinToggle = document.getElementById("fapSkinToggle");
 
   const DEFAULT_SETTINGS = (typeof DEFAULT_NOTIFICATION_SETTINGS !== "undefined")
     ? DEFAULT_NOTIFICATION_SETTINGS
@@ -313,10 +314,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (notificationBtn && notificationModal) {
     notificationBtn.addEventListener("click", () => {
       if (locStorage) {
-        locStorage.get(["notificationSettings", "fapKeepSessionEnabled"], (res) => {
+        locStorage.get(["notificationSettings", "fapKeepSessionEnabled", "fapSkinEnabled"], (res) => {
           syncNotificationForm(res && res.notificationSettings);
           if (fapKeepSessionToggle) {
             fapKeepSessionToggle.checked = res && res.fapKeepSessionEnabled !== false;
+          }
+          if (fapSkinToggle) {
+            fapSkinToggle.checked = res && res.fapSkinEnabled !== false;
           }
           notificationModal.style.display = "block";
           refreshNotificationStatus();
@@ -331,6 +335,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fapKeepSessionToggle.addEventListener("change", () => {
       if (locStorage) {
         locStorage.set({ fapKeepSessionEnabled: fapKeepSessionToggle.checked });
+      }
+    });
+  }
+
+  if (fapSkinToggle) {
+    fapSkinToggle.addEventListener("change", () => {
+      if (locStorage) {
+        locStorage.set({ fapSkinEnabled: fapSkinToggle.checked });
       }
     });
   }
@@ -384,9 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       const fapKeepSessionEnabled = fapKeepSessionToggle ? fapKeepSessionToggle.checked : true;
+      const fapSkinEnabled = fapSkinToggle ? fapSkinToggle.checked : true;
 
       if (locStorage) {
-        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled }, () => {
+        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled, fapSkinEnabled }, () => {
           if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
             chrome.runtime.sendMessage({ type: "RESCHEDULE_ALARMS" }).catch(() => {});
           }
