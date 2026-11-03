@@ -5,7 +5,7 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Default Accent Theme Variables (Blue Preset)
+   Default Accent Theme Variables & Design Tokens (Blue Preset)
    When another accent is selected in settings, lib/fap-skin.js overrides these
    variables via an injected <style id="fptu-skin-accent"> element.
    -------------------------------------------------------------------------- */
@@ -13,12 +13,422 @@ html:not([data-fptu-skin="off"]) {
   --fptu-accent: #2563eb;
   --fptu-accent-hover: #1f54c8;
   --fptu-accent-soft: #eef3fd;
+  --ct-primary: var(--fptu-accent);
+  --ct-link-color: var(--fptu-accent);
+  --ct-link-hover-color: var(--fptu-accent-hover);
+  --ct-border-radius: 0.9rem;
+  --ct-body-bg: #eceef3;
+  --ct-font-sans-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ct-topbar-bg: transparent;
+  --ct-menu-bg: transparent;
+  --fptu-ambient-a: color-mix(in srgb, var(--fptu-accent) 30%, transparent);
+  --fptu-ambient-b: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 35%, #818cf8) 28%, transparent);
+  --fptu-ambient-c: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 40%, #2dd4bf) 22%, transparent);
+  --fptu-glass-bg: rgba(255, 255, 255, 0.62);
+  --fptu-glass-border: rgba(255, 255, 255, 0.75);
+  --fptu-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --fptu-glass-shadow: 0 14px 34px -14px rgba(40, 50, 100, 0.18);
 }
 
 html:not([data-fptu-skin="off"])[data-bs-theme="dark"] {
   --fptu-accent: #3b82f6;
   --fptu-accent-hover: #6ca1f8;
   --fptu-accent-soft: rgba(59, 130, 246, 0.2);
+  --ct-primary: var(--fptu-accent);
+  --ct-link-color: var(--fptu-accent);
+  --ct-link-hover-color: var(--fptu-accent-hover);
+  --ct-border-radius: 0.9rem;
+  --ct-body-bg: #0b1020;
+  --ct-topbar-bg: transparent;
+  --ct-menu-bg: transparent;
+  --fptu-ambient-a: color-mix(in srgb, var(--fptu-accent) 26%, transparent);
+  --fptu-ambient-b: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 30%, #6366f1) 22%, transparent);
+  --fptu-ambient-c: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 35%, #0d9488) 18%, transparent);
+  --fptu-glass-bg: rgba(15, 23, 42, 0.65);
+  --fptu-glass-border: rgba(255, 255, 255, 0.12);
+  --fptu-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --fptu-glass-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   Ambient Shell Background
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) .wrapper {
+  min-height: 100vh;
+  background-color: var(--ct-body-bg);
+  background-image:
+    radial-gradient(560px 420px at 8% -4%, var(--fptu-ambient-a), transparent 70%),
+    radial-gradient(520px 380px at 100% 18%, var(--fptu-ambient-b), transparent 70%),
+    radial-gradient(560px 420px at 30% 108%, var(--fptu-ambient-c), transparent 70%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* --------------------------------------------------------------------------
+   Floating Pill Topbar
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) .navbar-custom {
+  position: sticky;
+  top: 12px;
+  margin: 12px 12px 0 calc(var(--ct-leftbar-width) + 24px);
+  min-height: 4.25rem;
+  border-radius: 26px;
+  background: var(--fptu-glass-bg);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  z-index: 1001;
+  transition: margin 0.25s ease-in-out, background 0.25s ease-in-out;
+}
+
+html:not([data-fptu-skin="off"]) .navbar-custom .topbar.fap-topbar {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 26px;
+  padding: 0 1rem;
+}
+
+/* Topbar Brand & Toggle Buttons */
+html:not([data-fptu-skin="off"]) .navbar-custom .button-toggle-menu,
+html:not([data-fptu-skin="off"]) .navbar-custom .navbar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0.4rem;
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"]) .navbar-custom .button-toggle-menu:hover,
+html:not([data-fptu-skin="off"]) .navbar-custom .button-toggle-menu:focus-visible,
+html:not([data-fptu-skin="off"]) .navbar-custom .navbar-toggle:hover,
+html:not([data-fptu-skin="off"]) .navbar-custom .navbar-toggle:focus-visible {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  color: var(--fptu-accent);
+  outline: none;
+}
+
+html:not([data-fptu-skin="off"]) .navbar-toggle .lines span {
+  background-color: currentColor;
+}
+
+/* Topbar Navigation & Actions */
+html:not([data-fptu-skin="off"]) .topbar-menu .jidox-campus-topbar > .nav-link,
+html:not([data-fptu-skin="off"]) .topbar-menu .jidox-campus-topbar__static,
+html:not([data-fptu-skin="off"]) .fap-language-toggle,
+html:not([data-fptu-skin="off"]) .fap-topbar-pill {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--fptu-glass-border);
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .topbar-menu .jidox-campus-topbar > .nav-link,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .topbar-menu .jidox-campus-topbar__static,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-language-toggle,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-topbar-pill {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html:not([data-fptu-skin="off"]) .topbar-menu .jidox-campus-topbar > .nav-link:hover,
+html:not([data-fptu-skin="off"]) .topbar-menu .jidox-campus-topbar__static:hover,
+html:not([data-fptu-skin="off"]) .fap-language-toggle:hover,
+html:not([data-fptu-skin="off"]) .fap-topbar-pill:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 14%, transparent);
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .fap-topbar-icon {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--fptu-glass-border);
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-topbar-icon {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html:not([data-fptu-skin="off"]) .fap-topbar-icon:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 14%, transparent);
+  color: var(--fptu-accent);
+}
+
+html:not([data-fptu-skin="off"]) .topbar-menu .nav-user,
+html:not([data-fptu-skin="off"]) .topbar-menu .fap-topbar-user {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--fptu-glass-border);
+  padding: 4px 14px 4px 4px;
+  transition: all 0.18s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .topbar-menu .nav-user,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .topbar-menu .fap-topbar-user {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html:not([data-fptu-skin="off"]) .fap-topbar-avatar {
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--fptu-accent), var(--fptu-accent-hover));
+  color: #ffffff;
+  box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--fptu-accent) 40%, transparent);
+}
+
+/* --------------------------------------------------------------------------
+   Glass Sidebar Card
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) aside.leftside-menu.fap-sidebar,
+html:not([data-fptu-skin="off"]) .leftside-menu,
+html:not([data-fptu-skin="off"]) .fap-sidebar {
+  top: 12px;
+  bottom: 12px;
+  left: 12px;
+  height: calc(100vh - 24px);
+  border-radius: 26px;
+  background: var(--fptu-glass-bg);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), var(--fptu-glass-shadow);
+  padding-bottom: 0.75rem;
+  transition: width 0.25s ease-in-out, margin 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+
+html:not([data-fptu-skin="off"]) .leftside-menu .logo,
+html:not([data-fptu-skin="off"]) .fap-sidebar > .logo {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid var(--fptu-glass-border);
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
+}
+
+html:not([data-fptu-skin="off"]) .fap-sidebar__scroll {
+  height: calc(100% - 70px) !important;
+}
+
+/* Sidebar Section Headers */
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-title,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-title {
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0.85rem 0.75rem 0.35rem;
+  padding: 0;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu .side-nav .side-nav-title,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar .side-nav .side-nav-title {
+  color: #94a3b8;
+}
+
+/* Sidebar Navigation Items */
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link {
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  margin-bottom: 3px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.16s ease;
+}
+
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link:hover,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link:hover,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link:focus-visible,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link:focus-visible {
+  color: var(--fptu-accent);
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  box-shadow: none;
+  outline: none;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu .side-nav .side-nav-link,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar .side-nav .side-nav-link {
+  color: #cbd5e1;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu .side-nav .side-nav-link:hover,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar .side-nav .side-nav-link:hover,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu .side-nav .side-nav-link:focus-visible,
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar .side-nav .side-nav-link:focus-visible {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link > .menu-svg-icon,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link > .menu-svg-icon {
+  background: transparent;
+  color: inherit;
+  font-size: 1.15rem;
+  width: 1.75rem;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Active and Open Items — Gradient Pill */
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link.active,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link.active,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.active > .side-nav-link,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.active > .side-nav-link,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.menuitem-active > .side-nav-link,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.menuitem-active > .side-nav-link,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link[aria-expanded="true"],
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link[aria-expanded="true"] {
+  background: linear-gradient(135deg, var(--fptu-accent), var(--fptu-accent-hover)) !important;
+  color: #ffffff !important;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 8px 18px -6px color-mix(in srgb, var(--fptu-accent) 55%, transparent) !important;
+  font-weight: 700;
+}
+
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link.active > i,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link.active > i,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link.active > .menu-svg-icon,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link.active > .menu-svg-icon,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.active > .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.active > .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.menuitem-active > .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.menuitem-active > .side-nav-link > i,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link[aria-expanded="true"] > i,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link[aria-expanded="true"] > i,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link[aria-expanded="true"] > .menu-svg-icon,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link[aria-expanded="true"] > .menu-svg-icon,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link.active span,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link.active span,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.active > .side-nav-link span,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.active > .side-nav-link span,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-item.menuitem-active > .side-nav-link span,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-item.menuitem-active > .side-nav-link span,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link[aria-expanded="true"] span,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link[aria-expanded="true"] span,
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-link[aria-expanded="true"] .menu-arrow,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-link[aria-expanded="true"] .menu-arrow {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Sidebar Submenus */
+html:not([data-fptu-skin="off"]) .leftside-menu .side-nav .side-nav-second-level .side-nav-link,
+html:not([data-fptu-skin="off"]) .fap-sidebar .side-nav .side-nav-second-level .side-nav-link {
+  font-size: 0.825rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+html:not([data-fptu-skin="off"]) .leftside-menu .button-close-fullsidebar {
+  border-radius: 999px;
+  color: inherit;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Layout Spacing & Responsive Collapse Behaviors
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) .content-page {
+  margin-left: calc(var(--ct-leftbar-width) + 12px);
+  padding: 16px 12px var(--ct-footer-height);
+  transition: margin-left 0.25s ease-in-out;
+}
+
+/* Condensed Sidebar Mode */
+html:not([data-fptu-skin="off"])[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .navbar-custom {
+  margin-left: calc(var(--ct-leftbar-width-sm) + 24px);
+}
+
+html:not([data-fptu-skin="off"])[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .content-page {
+  margin-left: calc(var(--ct-leftbar-width-sm) + 12px);
+}
+
+html:not([data-fptu-skin="off"])[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper aside.leftside-menu.fap-sidebar,
+html:not([data-fptu-skin="off"])[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .leftside-menu,
+html:not([data-fptu-skin="off"])[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .fap-sidebar {
+  width: var(--ct-leftbar-width-sm);
+  min-width: var(--ct-leftbar-width-sm);
+  overflow: visible;
+}
+
+/* Small Hover Sidebar Mode */
+html:not([data-fptu-skin="off"])[data-sidenav-size="sm-hover"]:not([data-layout="topnav"]) .wrapper .navbar-custom {
+  margin-left: calc(var(--ct-leftbar-width-sm) + 24px);
+}
+
+html:not([data-fptu-skin="off"])[data-sidenav-size="sm-hover"]:not([data-layout="topnav"]) .wrapper .content-page {
+  margin-left: calc(var(--ct-leftbar-width-sm) + 12px);
+}
+
+html:not([data-fptu-skin="off"])[data-sidenav-size="sm-hover"]:not([data-layout="topnav"]) .wrapper .leftside-menu:not(:hover),
+html:not([data-fptu-skin="off"])[data-sidenav-size="sm-hover"]:not([data-layout="topnav"]) .wrapper .fap-sidebar:not(:hover) {
+  width: var(--ct-leftbar-width-sm);
+  min-width: var(--ct-leftbar-width-sm);
+}
+
+/* Full / Fullscreen / Topnav Modes */
+html:not([data-fptu-skin="off"])[data-sidenav-size="full"]:not([data-layout="topnav"]) .wrapper .navbar-custom,
+html:not([data-fptu-skin="off"])[data-sidenav-size="fullscreen"]:not([data-layout="topnav"]) .wrapper .navbar-custom,
+html:not([data-fptu-skin="off"])[data-layout="topnav"] .wrapper .navbar-custom {
+  margin-left: 12px;
+}
+
+html:not([data-fptu-skin="off"])[data-sidenav-size="full"]:not([data-layout="topnav"]) .wrapper .content-page,
+html:not([data-fptu-skin="off"])[data-sidenav-size="fullscreen"]:not([data-layout="topnav"]) .wrapper .content-page,
+html:not([data-fptu-skin="off"])[data-layout="topnav"] .wrapper .content-page {
+  margin-left: 0;
+}
+
+/* Screens under 992px */
+@media (max-width: 991.98px) {
+  html:not([data-fptu-skin="off"]) .navbar-custom {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  html:not([data-fptu-skin="off"]) .content-page {
+    margin-left: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) footer.footer,
+html:not([data-fptu-skin="off"]) .footer {
+  background: transparent !important;
+  border-top: none !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Glass Dropdowns & Dialogs
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) .navbar-custom .dropdown-menu,
+html:not([data-fptu-skin="off"]) .fap-topbar .dropdown-menu,
+html:not([data-fptu-skin="off"]) .dropdown-menu {
+  border-radius: 18px;
+  background: var(--fptu-glass-bg);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: var(--fptu-glass-highlight), 0 16px 36px -10px rgba(0, 0, 0, 0.22);
 }
 
 /* --------------------------------------------------------------------------
@@ -27,6 +437,10 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] {
    filters and restore solid backgrounds for bars, sidebars, and overlays.
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-transparency: reduce) {
+  html:not([data-fptu-skin="off"]) .wrapper {
+    background-image: none;
+  }
+
   html:not([data-fptu-skin="off"]) .navbar-custom,
   html:not([data-fptu-skin="off"]) .fap-topbar,
   html:not([data-fptu-skin="off"]) .leftside-menu,
