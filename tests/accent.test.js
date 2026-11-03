@@ -107,3 +107,13 @@ test("the popup header logo is inline SVG painted from the accent variables, not
   assert.ok(mark.includes("var(--accent"), "colours come from the accent variables");
   assert.doesNotMatch(mark, /#(2563eb|3b82f6|1d4ed8|1e40af|dbeafe)\b/i, "no hard-coded blue in the logo");
 });
+
+test("orange is available as a preset and blue stays the default", () => {
+  const orange = ACCENT_PRESETS.find((p) => p.id === "orange");
+  assert.ok(orange);
+  assert.strictEqual(orange.label, "Cam");
+  assert.strictEqual(DEFAULT_ACCENT_ID, "blue");
+  assert.ok(ACCENT_PRESETS.findIndex((p) => p.id === "orange") === ACCENT_PRESETS.findIndex((p) => p.id === "pink") + 1);
+  assert.ok(contrastRatio("#ffffff", orange.light) >= 3.5 && contrastRatio("#ffffff", orange.dark) >= 3.5);
+});
+
