@@ -1,0 +1,53 @@
+/* ==========================================================================
+   FAP Modern Glassmorphic Skin Skeleton
+   All rules MUST be gated by html:not([data-fptu-skin="off"]) so that students
+   can disable the reskin instantly via settings without a page reload.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Default Accent Theme Variables (Blue Preset)
+   When another accent is selected in settings, lib/fap-skin.js overrides these
+   variables via an injected <style id="fptu-skin-accent"> element.
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) {
+  --fptu-accent: #2563eb;
+  --fptu-accent-hover: #1f54c8;
+  --fptu-accent-soft: #eef3fd;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] {
+  --fptu-accent: #3b82f6;
+  --fptu-accent-hover: #6ca1f8;
+  --fptu-accent-soft: rgba(59, 130, 246, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Transparency Fallback
+   When the user or system requests reduced transparency, disable backdrop
+   filters and restore solid backgrounds for bars, sidebars, and overlays.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+  html:not([data-fptu-skin="off"]) .navbar-custom,
+  html:not([data-fptu-skin="off"]) .fap-topbar,
+  html:not([data-fptu-skin="off"]) .leftside-menu,
+  html:not([data-fptu-skin="off"]) .fap-sidebar,
+  html:not([data-fptu-skin="off"]) .modal-content,
+  html:not([data-fptu-skin="off"]) .dropdown-menu {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  html:not([data-fptu-skin="off"]) .navbar-custom,
+  html:not([data-fptu-skin="off"]) .fap-topbar,
+  html:not([data-fptu-skin="off"]) .leftside-menu,
+  html:not([data-fptu-skin="off"]) .fap-sidebar {
+    background: #ffffff;
+  }
+
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .navbar-custom,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-topbar,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar {
+    background: #1e293b;
+  }
+}

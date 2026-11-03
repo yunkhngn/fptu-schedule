@@ -34,6 +34,19 @@
       "matches": [
         "*://fap.fpt.edu.vn/*"
       ],
+      "css": [
+        "lib/fap-skin.css"
+      ],
+      "js": [
+        "lib/accent.js",
+        "lib/fap-skin.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://fap.fpt.edu.vn/*"
+      ],
       "js": [
         "lib/fap-keepalive.js",
         "lib/fap-feedback.js",
