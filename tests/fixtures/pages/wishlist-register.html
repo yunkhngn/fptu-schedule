@@ -1,0 +1,189 @@
+<div class="content-page">
+            <div class="content">
+
+                
+                <div class="container-fluid">
+                    
+
+                    
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box fap-page-title  justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+            <div class="fap-page-title__main min-w-0">
+                <nav class="fap-page-title__crumb" aria-label="breadcrumb">
+                    <ol class="fap-page-title__crumb-list">
+                            <li class="fap-page-title__crumb-item">
+                                <a class="fap-page-title__crumb-link" href="https://fap.fpt.edu.vn/">
+                                    <i class="ri-home-5-line" aria-hidden="true"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="fap-page-title__crumb-sep" aria-hidden="true">/</li>
+                        <li class="fap-page-title__crumb-item">
+                            <span class="fap-page-title__crumb-current">Đăng ký chờ lớp</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    <div class="alert alert-warning" role="alert">
+        <i class="ri-alert-line me-1" aria-hidden="true"></i>Lưu ý: Sau khi đăng ký, nếu bạn hủy wishlist sẽ chỉ được hoàn 50% số tiền đã đóng.
+    </div>
+
+    <div id="wishlist-register-config" class="d-none" data-search-url="/Wishlist/SearchSubjects" data-preview-url="/Wishlist/RegistrationPreview" data-deposit-url="/Wishlist/Deposit" data-read-only="0" data-lang="vi" data-placeholder="— Chọn môn học —" data-preview-failed="Không tải được thông tin đăng ký. Vui lòng thử lại." data-failed-term="Kỳ trượt gần nhất" data-passed-term="Kỳ đã học gần nhất" data-fee-percent-value="{0}% học phí môn" data-discount-reduction="giảm {0}%" data-grade-improvement-warning="Môn đã đạt — đăng ký chờ lớp để học cải thiện điểm." data-repeat-warning="Đăng ký học lại môn đã trượt." data-submit-label="Đăng ký" data-deposit-label="Nộp tiền vào tài khoản" data-check-balance-label="Kiểm tra số dư" data-checking-balance-label="Đang kiểm tra..." data-waiting-payment-hint="Sau khi chuyển khoản, bấm &quot;Kiểm tra số dư&quot; hoặc đợi hệ thống tự cập nhật (mỗi 1 phút, trong 10 phút)." data-balance-enough="Số dư đã đủ. Vui lòng bấm Đăng ký để hoàn tất." data-insufficient-balance="Số dư không đủ. Cần nộp thêm {0} VND để đăng ký." data-wallet-use-confirm="Xác nhận sử dụng {0} VND từ số dư để đăng ký wishlist?" data-confirm-deposit-title="Hóa đơn thanh toán" data-deposit-confirm="Bạn có chắc muốn tạo đơn thanh toán không?" data-use-balance-label="Dùng số dư" data-final-amount-label="Số tiền cuối cùng" data-amount-label="Số tiền" data-deposit-yes="Có" data-deposit-no="Không" data-confirm-register-title="Đăng ký" data-cancel-refund-warning="Lưu ý: Sau khi đăng ký, nếu bạn hủy wishlist sẽ chỉ được hoàn 50% số tiền đã đóng." data-btn-confirm="Xác nhận" data-btn-cancel="Hủy" data-payment-created="Đã tạo đơn thanh toán. Vui lòng quét mã hoặc chuyển khoản thông tin bên dưới." data-currency-suffix="VNĐ" aria-hidden="true"></div>
+    <template id="wishlist-payment-tpl">
+        <div class="card fap-result-card shopping-cart-payment-card mb-3" data-wishlist-payment-pending="1">
+            <div class="card-header">
+                <h5 class="fap-result-card__title">
+                    <i class="ri-qr-code-line" aria-hidden="true"></i>
+                    Thanh toán DNG
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-5 text-center d-none" data-slot="qr-col">
+                        <img data-slot="qr-img" alt="QR thanh toán" class="shopping-cart-qr"/>
+                    </div>
+                    <div class="col-12" data-slot="info-col">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 fap-sheet">
+                                <tbody>
+                                    <tr data-row="amount">
+                                        <th scope="row" class="shopping-cart-payment-label">Số tiền</th>
+                                        <td class="shopping-cart-amount" data-val=""></td>
+                                    </tr>
+                                    <tr data-row="account">
+                                        <th scope="row" class="shopping-cart-payment-label">Chủ tài khoản</th>
+                                        <td data-val=""></td>
+                                    </tr>
+                                    <tr data-row="virtual">
+                                        <th scope="row" class="shopping-cart-payment-label">Số tài khoản</th>
+                                        <td data-val=""></td>
+                                    </tr>
+                                    
+                                    
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <div id="wishlist-deposit-ajax-message" class="alert d-none" role="alert"></div>
+    <div id="wishlist-deposit-payment-wrap"></div>
+    <div class="card fap-result-card fap-wishlist-register">
+        <div class="card-header">
+            <h5 class="fap-result-card__title">Đăng ký chờ lớp</h5>
+            <p class="fap-result-card__meta">
+                <span><i class="ri-heart-add-line" aria-hidden="true"></i> Chọn môn học để đăng ký vào danh sách chờ lớp. Học kỳ và mức phí được hệ thống xác định theo quy định.</span>
+            </p>
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Aa aa aaaa aaa aa aa (aa aaa aaaa aaa) aa aaa aa aaaa aaa aaa.</p>
+            <form method="post" id="wishlist-register-form" class="row g-3" action="https://fap.fpt.edu.vn/Wishlist/Register">
+                
+                <div class="col-12 col-lg-8 col-xl-6 mx-auto">
+                    <p class="small text-warning mb-2">Aaaaa aaa aaa aaaa aaaa aa aaa Aaaaaaaa aa aaa aaa aaaa aaaaa.</p>
+                    <label class="form-label" for="wishlist-register-subject">Môn học</label>
+                    <select id="wishlist-register-subject" name="SubjectId" class="form-control select2 select2-hidden-accessible" required="" data-select2-id="select2-data-wishlist-register-subject" tabindex="-1" aria-hidden="true">
+                        <option data-select2-id="select2-data-2-8fbp"></option>
+                    </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="select2-data-1-tab8" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-wishlist-register-subject-container" aria-controls="select2-wishlist-register-subject-container"><span class="select2-selection__rendered" id="select2-wishlist-register-subject-container" role="textbox" aria-readonly="true" title="— Chọn môn học —"><span class="select2-selection__placeholder">— Aaaa aaa aaa —</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+
+                <div class="col-12 d-none" id="wishlist-register-preview-wrap">
+                    <div id="wishlist-register-preview-loading" class="text-center py-4 d-none">
+                        <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+                        <div class="small text-muted mt-2">Aaaa aaa aaaaa aaa aaa aaa...</div>
+                    </div>
+                    <div id="wishlist-register-preview-error" class="alert alert-danger d-none" role="alert"></div>
+                    <div id="wishlist-register-preview-panel" class="d-none">
+                        <div id="wishlist-register-preview-alerts"></div>
+                        <div class="wishlist-register-preview-grid mb-3">
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aa aaaa aa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-enrollment-term">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label" id="wishlist-preview-reference-term-label">Aa aaaaa aaa aaaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-reference-term">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aaa aaaa aaaaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-reference-subject">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aaa aaa aaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-base-fee">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aaa aaa aa aaaa</div>
+                                <div class="wishlist-register-preview-stat__value wishlist-register-preview-stat__value--accent" id="wishlist-preview-fee-percent">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aa aaaa aaaa aaaa aaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-discount-amount">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat d-none" id="wishlist-preview-cohort-discount-wrap">
+                                <div class="wishlist-register-preview-stat__label">Aaaa aaaa aaaa / aaaaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-cohort-discount">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat d-none" id="wishlist-preview-district-discount-wrap">
+                                <div class="wishlist-register-preview-stat__label">Aaaa aaaa aaa aaa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-district-discount">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat wishlist-register-preview-stat--emphasis">
+                                <div class="wishlist-register-preview-stat__label">Aaa aaaa aaaa</div>
+                                <div class="wishlist-register-preview-stat__value wishlist-register-preview-stat__value--danger" id="wishlist-preview-final-amount">—</div>
+                            </div>
+                            <div class="wishlist-register-preview-stat">
+                                <div class="wishlist-register-preview-stat__label">Aa aa</div>
+                                <div class="wishlist-register-preview-stat__value" id="wishlist-preview-wallet-balance">—</div>
+                            </div>
+                        </div>
+                        <div id="wishlist-preview-suspended-note" class="small text-warning mb-3 d-none">Aaaaaa aaa aa aaaa aaa aaa: aaa aaaa aaaa aaa aaa aaa aa aaaa aaa 00%/000%.</div>
+                        <div id="wishlist-register-actions" class="fap-form-footer justify-content-start border-0 pt-0 mt-0"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+                </div>
+                
+
+            </div>
+            
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="list-inline-item">
+                                Aaa aaaaa © 0000
+                                <a href="https://fap.fpt.edu.vn/Wishlist/" class="link-secondary">AAA - Aaaaaa aaa aaa AAA</a>. Aa aaaa aa aaa aaaaa.
+                            </span>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <span class="list-inline-item">
+                                <span class="text-secondary">Aaaaa aaa: 0.0.0.0</span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+
+        </div>

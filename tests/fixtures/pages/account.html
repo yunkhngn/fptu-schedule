@@ -1,0 +1,668 @@
+<div class="content-page">
+            <div class="content">
+
+                
+                <div class="container-fluid">
+                    
+
+                    
+<div class="account-page">
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box fap-page-title  justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+            <div class="fap-page-title__main min-w-0">
+                <nav class="fap-page-title__crumb" aria-label="breadcrumb">
+                    <ol class="fap-page-title__crumb-list">
+                            <li class="fap-page-title__crumb-item">
+                                <a class="fap-page-title__crumb-link" href="https://fap.fpt.edu.vn/">
+                                    <i class="ri-home-5-line" aria-hidden="true"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="fap-page-title__crumb-sep" aria-hidden="true">/</li>
+                        <li class="fap-page-title__crumb-item">
+                            <span class="fap-page-title__crumb-current">Thông tin cá nhân</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+        <div class="d-flex flex-wrap justify-content-end gap-2 mb-3">
+            <a class="btn btn-primary" href="https://fap.fpt.edu.vn/StudentProfile">
+                <i class="ri-edit-2-line me-1" aria-hidden="true"></i>Cập nhật hồ sơ sinh viên
+            </a>
+        </div>
+        <ul class="nav nav-pills account-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="account-tab-main" data-bs-toggle="tab" data-bs-target="#account-pane-main" type="button" role="tab" aria-selected="true">
+                    <i class="ri-account-circle-line me-1"></i>Hồ sơ
+                </button>
+            </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="account-tab-feid" data-bs-toggle="tab" data-bs-target="#account-pane-feid" type="button" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="ri-lock-password-line me-1"></i>Đặt lại mật khẩu FeId
+                    </button>
+                </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="account-pane-main" role="tabpanel" aria-labelledby="account-tab-main">
+                
+        
+<div class="student-profile">
+    <div class="row g-3 mb-3">
+        <div class="col-xl-8">
+    <div class="card student-profile-hero h-100">
+        <div class="card-body">
+            <div class="student-profile-hero__content">
+                <div class="student-profile-hero__main">
+                    <div class="student-profile-hero__identity">
+                        <div class="student-profile-avatar" aria-hidden="true">
+                                <span>AA</span>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-muted small">Aa aa aaaa aaaa</div>
+                            <h3 class="student-profile-name">Nguyễn Văn A</h3>
+                            <div class="student-profile-meta">
+                                <span><i class="ri-id-card-line" aria-hidden="true"></i>AA 000000</span>
+                                    <span><i class="ri-building-line" aria-hidden="true"></i>Aa aa Aa Aaa</span>
+                            </div>
+                            <div class="student-profile-badges">
+                                    <span class="badge bg-primary-subtle text-primary">HD</span>
+                                    <span class="badge bg-info-subtle text-info">Công nghệ Thông tin</span>
+                                    <span class="badge bg-secondary-subtle text-secondary">K19</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="student-profile-contact">
+                    <a class="student-profile-contact__item" href="#">
+                        <i class="ri-mail-line" aria-hidden="true"></i>
+                        <span>aaaaaaa.aaaa-aaaaa.aaa</span>
+                    </a>
+                    <a class="student-profile-contact__item" href="#">
+                        <i class="ri-smartphone-line" aria-hidden="true"></i>
+                        <span>0000 0000 00</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+
+            <div class="col-xl-4">
+                
+<div class="card student-parent-card h-100">
+    <div class="card-header"><h5 class="mb-0">Đăng nhập phụ huynh</h5></div>
+    <div class="card-body">
+            <div class="alert alert-info border small mb-3" role="alert">
+                Đăng nhập phụ huynh hiện chưa bật. Phụ huynh dùng MSSV và mật khẩu hệ thống sau khi bạn xác nhận.
+            </div>
+            <form id="formParentLoginEnable" method="post" action="https://fap.fpt.edu.vn/Account/StudentParentLogin">
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="accept" value="true" id="parentLoginAccept" required=""/>
+                    <label class="form-check-label" for="parentLoginAccept">Đồng ý chia sẻ thông tin với phụ huynh</label>
+                </div>
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalParentLoginConfirm">Bật và tạo mật khẩu</button>
+            </form>
+            
+    </div>
+</div>
+
+            </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-xl-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Định danh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid">
+                            <div class="student-profile-field">
+                                <i class="ri-id-card-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">AAAA</div>
+                                    <div class="student-profile-field__value">AA 000000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-user-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa</div>
+                                    <div class="student-profile-field__value">Aaaaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-user-smile-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa</div>
+                                    <div class="student-profile-field__value">Aaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-user-3-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa</div>
+                                    <div class="student-profile-field__value">Aaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaaa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-men-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaaa</div>
+                                    <div class="student-profile-field__value">Aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-group-2-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-moon-clear-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-flag-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaaa</div>
+                                    <div class="student-profile-field__value">Aaaa Aaa</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Khác</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-stack">
+                            <div class="student-profile-field">
+                                <i class="ri-building-4-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aa</div>
+                                    <div class="student-profile-field__value">Aa aa Aa Aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-heart-pulse-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa a aaaa aa aaaaa aaa aaa aaa aaaaa</div>
+                                    <div class="student-profile-field__value">Aaaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-forbid-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa 00</div>
+                                    <div class="student-profile-field__value">Aaaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-time-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-refresh-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aaaa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Học thuật</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid">
+                            <div class="student-profile-field">
+                                <i class="ri-book-open-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa</div>
+                                    <div class="student-profile-field__value">Aaaa aaaa Aaaaa aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-bookmark-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaaa aaaaa</div>
+                                    <div class="student-profile-field__value">Aa aaaaa aaaa aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-numbers-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa</div>
+                                    <div class="student-profile-field__value">00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-group-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-file-list-3-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaaaaa aaaaa</div>
+                                    <div class="student-profile-field__value">AAA_AA_00A_AA</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-file-text-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aa</div>
+                                    <div class="student-profile-field__value">AAA_AA_00A_AA</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-time-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaaa aaa</div>
+                                    <div class="student-profile-field__value">0</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-school-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaa aaa</div>
+                                    <div class="student-profile-field__value">Aaaaa aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-award-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa aaaa</div>
+                                    <div class="student-profile-field__value">AA</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-exchange-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa aaaa aaa/aa</div>
+                                    <div class="student-profile-field__value">AAA</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-check-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aa</div>
+                                    <div class="student-profile-field__value">AA00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-hourglass-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">0 aaa</div>
+                                    <div class="student-profile-field__value">AA00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-history-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa aa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-wallet-3-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aaaaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-barcode-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaa</div>
+                                    <div class="student-profile-field__value">AaaaAAAA000000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-graduation-cap-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aaaaaa AAAA</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Cá nhân &amp; liên hệ</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid student-profile-grid--single-lg">
+                            <div class="student-profile-field">
+                                <i class="ri-mail-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa</div>
+                                    <div class="student-profile-field__value">aaaaaaa.aaaa-aaaaa.aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-mail-add-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa aaaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-smartphone-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaaa aaaaa</div>
+                                    <div class="student-profile-field__value">0000 0000 00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-phone-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaaaa aaa</div>
+                                    <div class="student-profile-field__value">0000 0000 00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-map-pin-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa</div>
+                                    <div class="student-profile-field__value">A0000, AA00A, aaa Aaa Aaaaa, Aa Aaa Aaaaa, Aà Aạa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-community-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa/AA</div>
+                                    <div class="student-profile-field__value">Aaaaa aaa Aa Aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-home-gear-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaaa/Aa</div>
+                                    <div class="student-profile-field__value">Aa Aaa Aaaaa</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">CMND / Hộ chiếu</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid student-profile-grid--single-lg">
+                            <div class="student-profile-field">
+                                <i class="ri-bank-card-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">AAAA/AAAA</div>
+                                    <div class="student-profile-field__value">0000 0000 0000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-event-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-map-2-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa</div>
+                                    <div class="student-profile-field__value">Aaa aaaa aaa aaaa aa aaaa aaaaa aa aaaa aa aa aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-file-user-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaaaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-close-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa AA</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Phụ huynh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid student-profile-grid--single-lg">
+                            <div class="student-profile-field">
+                                <i class="ri-team-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aaa AA</div>
+                                    <div class="student-profile-field__value">Aaaaaa Aaa Aaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-briefcase-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa</div>
+                                    <div class="student-profile-field__value">Aa aa aaa aaaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-building-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa aaaa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-phone-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaaaa AA</div>
+                                    <div class="student-profile-field__value">0000 0000 00</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-mail-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaaa AA</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-home-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaa AA</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Bảo hiểm y tế</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid student-profile-grid--single-lg">
+                            <div class="student-profile-field">
+                                <i class="ri-health-book-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa AAAA</div>
+                                    <div class="student-profile-field__value">AA 0000 0000 0000 0</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-hospital-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aa aaaa aaaa aaaa</div>
+                                    <div class="student-profile-field__value">Aaaa aaaa aa aaaa aaaa aa Aaaaa Aaa</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-check-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-calendar-close-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaa aaaa aaa</div>
+                                    <div class="student-profile-field__value">00/00/0000</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Đồ án tốt nghiệp</h5>
+                </div>
+                <div class="card-body">
+                    <div class="student-profile-grid">
+                            <div class="student-profile-field">
+                                <i class="ri-lightbulb-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aa / AA</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-translate-2" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aa aa (AA)</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                            <div class="student-profile-field">
+                                <i class="ri-edit-line" aria-hidden="true"></i>
+                                <div>
+                                    <div class="student-profile-field__label">Aaaa aaa aa aa</div>
+                                    <div class="student-profile-field__value">-</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div>
+                <div class="tab-pane fade" id="account-pane-feid" role="tabpanel" aria-labelledby="account-tab-feid">
+                    <div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Đổi mật khẩu FeId</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" class="row g-3" action="https://fap.fpt.edu.vn/Account/ChangeFeIdPassword">
+            
+            <div class="col-12 col-md-6">
+                <label for="CurrentPassword" class="form-label">Mật khẩu hiện tại</label>
+                <input id="CurrentPassword" type="password" name="CurrentPassword" class="form-control" required="" autocomplete="current-password"/>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="NewPassword" class="form-label">Mật khẩu mới</label>
+                <input id="NewPassword" type="password" name="NewPassword" class="form-control" required="" autocomplete="new-password"/>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="ConfirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                <input id="ConfirmPassword" type="password" name="ConfirmPassword" class="form-control" required="" autocomplete="new-password"/>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+                </div>
+        </div>
+</div>
+
+
+                </div>
+                
+
+            </div>
+            
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="list-inline-item">
+                                Aaa aaaaa © 0000
+                                <a href="https://fap.fpt.edu.vn/" class="link-secondary">AAA - Aaaaaa aaa aaa AAA</a>. Aa aaaa aa aaa aaaaa.
+                            </span>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <span class="list-inline-item">
+                                <span class="text-secondary">Aaaaa aaa: 0.0.0.0</span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+
+        </div>

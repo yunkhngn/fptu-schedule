@@ -1,0 +1,118 @@
+<div class="content-page">
+    
+
+<div class="login-auth-backdrop" aria-hidden="true"></div>
+<div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5 position-relative">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xxl-4 col-lg-5">
+                <div class="card">
+
+                    
+                    <div class="card-header pt-4 text-center">
+                        <div class="auth-brand mb-0">
+                            <a class="logo-dark" href="https://fap.fpt.edu.vn/">
+                                <span><img src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" alt="dark logo" height="75"/></span>
+                            </a>
+                            <a class="logo-light" href="https://fap.fpt.edu.vn/">
+                                <span><img src="https://fap.fpt.edu.vn/assets/images/logo-fptu.png" alt="logo" height="75"/></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        <div id="login-antiforgery" class="d-none"></div>
+
+                        <div class="text-center w-75 m-auto mb-3">
+                            <h4 class="text-dark-50 text-center pb-0 mb-1">Hệ thống quản lý đào tạo</h4>
+                            <p class="text-muted mb-0 small">Aaaa aaaa</p>
+                        </div>
+
+
+                        <div id="login-step-credentials">
+
+                        <div id="login-card-tabs" class="login-role-tabs mb-3" data-force-tab="" data-storage-key="fap.login.activeTab">
+                            <ul class="nav nav-pills nav-justified w-100" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button type="button" class="nav-link w-100 active" id="login-tab-staff-btn" data-bs-toggle="tab" data-bs-target="#tab-staff-student" role="tab" aria-controls="tab-staff-student" aria-selected="true">
+                                        Cán bộ &amp; Sinh viên
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button type="button" class="nav-link w-100 " id="login-tab-parent-btn" data-bs-toggle="tab" data-bs-target="#tab-parent" role="tab" aria-controls="tab-parent" aria-selected="false" tabindex="-1">
+                                        Phụ huynh
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-staff-student" role="tabpanel" aria-labelledby="login-tab-staff-btn">
+                                <p class="text-center text-muted small mb-3 mb-md-4 lh-sm px-1">Aaaa aaaa aaaa aaa aaa aa aa aaaa aaaa</p>
+                                <div class="d-grid gap-2">
+                                        <a href="https://fap.fpt.edu.vn/Auth/Login" id="login-google-link" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2" data-href="/Auth/GoogleLogin" data-return-url="/">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1 -1.265 .06a6 6 0 1 0 2.103 6.836l.001 -.004h-3.66a1 1 0 0 1 -.992 -.883l-.007 -.117v-2a1 1 0 0 1 1 -1h6.945a1 1 0 0 1 .994 .89c.04 .367 .061 .737 .061 1.11c0 5.523 -4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z"></path>
+                                            </svg>
+                                            Đăng nhập với Google
+                                        </a>
+                                    <a href="https://fap.fpt.edu.vn/Auth/Login" id="login-feid-link" class="btn btn-primary w-100" data-href="/Auth/FeidLogin" data-return-url="/">
+                                        Đăng nhập với FeID
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade " id="tab-parent" role="tabpanel" aria-labelledby="login-tab-parent-btn">
+                                <p class="text-center text-muted small mb-3 mb-md-4 lh-sm px-1">Aaaa aaaa aaaa aaa aaa aaaaa</p>
+                                <form id="frm-parent-login" method="post" data-recaptcha-site-key="6Lc_Z84sAAAAAJ-bXgLBYOAjlMdyils2buU2T14p" action="https://fap.fpt.edu.vn/Auth/LoginParent">
+                                    
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label" for="Username">Tên đăng nhập</label>
+                                        <input class="form-control" placeholder="Nhập tên đăng nhập" type="text" data-val="true" data-val-required="Vui lòng nhập tên đăng nhập" id="Username" name="Username"/>
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="Password">Mật khẩu</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="password" class="form-control" placeholder="Nhập mật khẩu" autocomplete="current-password" data-val="true" data-val-required="Vui lòng nhập mật khẩu" id="Password" name="Password"/>
+                                            <div class="input-group-text" data-password="false">
+                                                <span class="password-eye"></span>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                                    </div>
+                                    <div class="mb-0 text-center">
+                                        <button class="btn btn-primary" type="submit">Đăng nhập</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+
+
+                    </div> 
+                </div>
+                
+
+            </div> 
+        </div>
+        
+    </div>
+    
+</div>
+
+
+
+
+    
+    
+    
+
+
+
+
+
+</div>

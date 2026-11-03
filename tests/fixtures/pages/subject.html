@@ -1,0 +1,263 @@
+<div class="content-page">
+            <div class="content">
+
+                
+                <div class="container-fluid">
+                    
+
+                    
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box fap-page-title  justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+            <div class="fap-page-title__main min-w-0">
+                <nav class="fap-page-title__crumb" aria-label="breadcrumb">
+                    <ol class="fap-page-title__crumb-list">
+                            <li class="fap-page-title__crumb-item">
+                                <a class="fap-page-title__crumb-link" href="https://fap.fpt.edu.vn/">
+                                    <i class="ri-home-5-line" aria-hidden="true"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="fap-page-title__crumb-sep" aria-hidden="true">/</li>
+                        <li class="fap-page-title__crumb-item">
+                            <span class="fap-page-title__crumb-current">Quản lý môn học</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card fap-filter-card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end" action="https://fap.fpt.edu.vn/Subject">
+            <div class="col-md-3">
+                <label for="keyword" class="form-label">Từ khóa</label>
+                <input id="keyword" name="keyword" class="form-control" placeholder="Từ khóa"/>
+            </div>
+            <div class="col-md-2">
+                <label for="TakeAttendance" class="form-label">Có điểm danh</label>
+                <select id="TakeAttendance" name="TakeAttendance" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="IsGraded" class="form-label">Có chấm điểm</label>
+                <select id="IsGraded" name="IsGraded" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="IsGraduate" class="form-label">Là môn tốt nghiệp</label>
+                <select id="IsGraduate" name="IsGraduate" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <a class="btn btn-secondary" href="https://fap.fpt.edu.vn/Subject">Đặt lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card fap-result-card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle fap-sheet fap-table--stack" data-fap-table-cards="1">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã môn học</th>
+                        <th>
+                            Tên môn học<br/>
+                            Tên môn tiếng việt
+                        </th>
+                        <th>Là môn tốt nghiệp</th>
+                        <th>Có chấm điểm</th>
+                        <th>Có điểm danh</th>
+                        <th>Phí</th>
+                        <th>Phí nước ngoài</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                            <tr>
+                                <td data-label="STT">0</td>
+                                <td data-label="Mã môn học"><strong>0AA000</strong></td>
+                                <td data-label="Tên môn học Tên môn tiếng việt">
+                                    Aaaaaaa aaaaaaa 0A<br/>
+                                    Aa aa aa aaaaa aa 0A
+                                </td>
+                                <td class="text-center" data-label="Là môn tốt nghiệp"></td>
+                                <td class="text-center" data-label="Có chấm điểm">✓</td>
+                                <td class="text-center" data-label="Có điểm danh">✓</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí">0.000.000</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí nước ngoài">0.000.000</td>
+                                <td data-label="Thao tác" class="fap-table-card__actions">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Subject/Detail">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="STT">0</td>
+                                <td data-label="Mã môn học"><strong>0AA000</strong></td>
+                                <td data-label="Tên môn học Tên môn tiếng việt">
+                                    Aaaaaaa aaaaaaa 0A<br/>
+                                    Aa aa aa aaaaa aa 0A
+                                </td>
+                                <td class="text-center" data-label="Là môn tốt nghiệp"></td>
+                                <td class="text-center" data-label="Có chấm điểm">✓</td>
+                                <td class="text-center" data-label="Có điểm danh">✓</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí">0.000.000</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí nước ngoài">0.000.000</td>
+                                <td data-label="Thao tác" class="fap-table-card__actions">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Subject/Detail">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="STT">0</td>
+                                <td data-label="Mã môn học"><strong>AAA000a</strong></td>
+                                <td data-label="Tên môn học Tên môn tiếng việt">
+                                    Aaaaa Aaaaaaa - Aaaaaaaaaa Aaaaaaaaaaa Aaaaaaaaaaa<br/>
+                                    Aa aa aaaa aaaa - Aaa aaaaa aaa aaaa A aa
+                                </td>
+                                <td class="text-center" data-label="Là môn tốt nghiệp"></td>
+                                <td class="text-center" data-label="Có chấm điểm">✓</td>
+                                <td class="text-center" data-label="Có điểm danh">✓</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí">0.000.000</td>
+                                <td class="text-end fap-table-card__actions" data-label="Phí nước ngoài">0.000.000</td>
+                                <td data-label="Thao tác" class="fap-table-card__actions">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Subject/Detail">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                </tbody>
+            </table>
+        </div>
+
+        
+    <div class="dataTables_wrapper dt-bootstrap5 no-footer">
+        <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+            <ul class="pagination p-3">
+
+
+                        <li class="paginate_button page-item  active">
+                            <a class="page-link" href="https://fap.fpt.edu.vn/Subject">0</a>
+                        </li>
+                        <li class="paginate_button page-item ">
+                            <a class="page-link" href="https://fap.fpt.edu.vn/Subject">0</a>
+                        </li>
+                        <li class="paginate_button page-item ">
+                            <a class="page-link" href="https://fap.fpt.edu.vn/Subject">0</a>
+                        </li>
+
+                        <li class="paginate_button page-item  disabled"><a class="page-link">...</a></li>
+                    <li class="paginate_button page-item ">
+                        <a class="page-link" href="https://fap.fpt.edu.vn/Subject">00</a>
+                    </li>
+
+                    <li class="paginate_button page-item ">
+                        <a class="page-link" href="https://fap.fpt.edu.vn/Subject"> &gt; </a>
+                    </li>
+                    <li class="paginate_button page-item ">
+                        <a class="page-link" href="https://fap.fpt.edu.vn/Subject">Aaaa</a>
+                    </li>
+
+                <li class="paginate_button page-item"><a class="page-link">Aaaa aaa aaa: 0000</a></li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+                </div>
+                
+
+            </div>
+            
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="list-inline-item">
+                                Aaa aaaaa © 0000
+                                <a href="https://fap.fpt.edu.vn/" class="link-secondary">AAA - Aaaaaa aaa aaa AAA</a>. Aa aaaa aa aaa aaaaa.
+                            </span>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <span class="list-inline-item">
+                                <span class="text-secondary">Aaaaa aaa: 0.0.0.0</span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+
+        </div>

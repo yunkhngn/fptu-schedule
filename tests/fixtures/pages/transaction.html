@@ -1,0 +1,224 @@
+<div class="content-page">
+            <div class="content">
+
+                
+                <div class="container-fluid">
+                    
+
+                    
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box fap-page-title  justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+            <div class="fap-page-title__main min-w-0">
+                <nav class="fap-page-title__crumb" aria-label="breadcrumb">
+                    <ol class="fap-page-title__crumb-list">
+                            <li class="fap-page-title__crumb-item">
+                                <a class="fap-page-title__crumb-link" href="https://fap.fpt.edu.vn/">
+                                    <i class="ri-home-5-line" aria-hidden="true"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="fap-page-title__crumb-sep" aria-hidden="true">/</li>
+                        <li class="fap-page-title__crumb-item">
+                            <span class="fap-page-title__crumb-current">Giao dịch</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="card fap-filter-card mb-3">
+        <div class="card-body">
+            <form id="transaction-filter-form" method="get" class="row g-2 align-items-end" action="https://fap.fpt.edu.vn/Transaction">
+                
+                
+                
+                <div class="col-md-3">
+                    <label for="keyword" class="form-label">Từ khóa</label>
+                    <input id="keyword" name="keyword" class="form-control" placeholder="Từ khóa"/>
+                </div>
+                <div class="col-md-2">
+                    <label for="FromReceiptDate" class="form-label">Từ ngày</label>
+                    <input class="form-control js-date-picker form-control input" placeholder="" tabindex="0" type="text"/>
+                </div>
+                <div class="col-md-2">
+                    <label for="ToReceiptDate" class="form-label">Đến ngày</label>
+                    <input class="form-control js-date-picker form-control input" placeholder="" tabindex="0" type="text"/>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-1">Tìm kiếm</button>
+                    <a class="btn btn-secondary" href="https://fap.fpt.edu.vn/Transaction">Đặt lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card fap-result-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 mb-2">
+                <label class="form-label mb-0 text-nowrap" for="transaction-page-size">Kích thước trang</label>
+                <select id="transaction-page-size" form="transaction-filter-form" name="pageSize" class="form-select form-select-sm js-fap-auto-submit fap-page-size-select" data-fap-auto-submit-bound="1">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50" selected="selected">50</option>
+                        <option value="100">100</option>
+                </select>
+            </div>
+
+                <div id="transaction-datatable_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12"><table id="transaction-datatable" class="table table-striped table-hover align-middle dt-responsive nowrap w-100 mb-0 fap-sheet dataTable no-footer dtr-inline">
+                    <thead>
+                        <tr><th scope="col" class="all sorting_disabled" rowspan="1" colspan="1" aria-label="STT">STT</th><th scope="col" class="all sorting" tabindex="0" aria-controls="transaction-datatable" rowspan="1" colspan="1" aria-label="Số biên lai: activate to sort column ascending">Số biên lai</th><th scope="col" class="sorting sorting_desc" tabindex="0" aria-controls="transaction-datatable" rowspan="1" colspan="1" aria-sort="descending" aria-label="Ngày biên lai: activate to sort column ascending">Ngày biên lai</th><th scope="col" class="sorting" tabindex="0" aria-controls="transaction-datatable" rowspan="1" colspan="1" aria-label="Số tiền: activate to sort column ascending">Số tiền</th><th scope="col" class="sorting_disabled" rowspan="1" colspan="1" aria-label="MSSV">MSSV</th><th scope="col" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Diễn giải">Diễn giải</th><th scope="col" class="text-center text-nowrap sorting_disabled" rowspan="1" colspan="1" aria-label="Chi tiết">Chi tiết</th></tr>
+                    </thead>
+                    <tbody>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                    <tr class="odd">
+                                <td class="all dtr-control" tabindex="0">0</td>
+                                <td class=" all"><strong>AAA-AAA-00a000aaa00a0aa00aa000a00a0000a0</strong></td>
+                                <td class="sorting_1">00/00/0000 00:00</td>
+                                <td class="text-end">-00.000</td>
+                                <td>AA 000000</td>
+                                <td>Aaa aaa aaa | Aaaa aaa: Aaa aaaa aaaa aaaa aa Aaaa aaaaa aa aaaa aa</td>
+                                <td class="text-center text-center text-nowrap">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Transaction/Detail">Chi tiết</a>
+                                </td>
+                            </tr><tr class="even">
+                                <td class="all dtr-control" tabindex="0">0</td>
+                                <td class=" all"><strong>AAA-AAA-00a000aaa00a0aa00aa000a00a0000a0</strong></td>
+                                <td class="sorting_1">00/00/0000 00:00</td>
+                                <td class="text-end">00.000</td>
+                                <td>AA 000000</td>
+                                <td>Aaa aaaa aa AAA (aaaaa aaaa aaa aaa)</td>
+                                <td class="text-center text-center text-nowrap">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Transaction/Detail">Chi tiết</a>
+                                </td>
+                            </tr><tr class="odd">
+                                <td class="all dtr-control" tabindex="0">0</td>
+                                <td class=" all"><strong>AA 000000-AA-000000-0</strong></td>
+                                <td class="sorting_1">00/00/0000 00:00</td>
+                                <td class="text-end">-00.000.000</td>
+                                <td>AA 000000</td>
+                                <td>Aaaa aaaa aa_AA00A0_Aa: 0</td>
+                                <td class="text-center text-center text-nowrap">
+                                    <a class="btn btn-sm btn-outline-primary" href="https://fap.fpt.edu.vn/Transaction/Detail">Chi tiết</a>
+                                </td>
+                            </tr></tbody>
+                </table></div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
+
+                <div class="d-flex justify-content-end mt-2 mb-1">
+                    <span class="text-muted small text-end">
+                        Aaaa aaa aaa: <strong>00</strong>
+                        — Aaaaa 0 / 0 - 00 aaaa
+                    </span>
+                </div>
+
+    <div class="dataTables_wrapper dt-bootstrap5 no-footer">
+        <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+            <ul class="pagination p-3">
+
+
+                        <li class="paginate_button page-item  active">
+                            <a class="page-link" href="https://fap.fpt.edu.vn/Transaction">0</a>
+                        </li>
+                        <li class="paginate_button page-item ">
+                            <a class="page-link" href="https://fap.fpt.edu.vn/Transaction">0</a>
+                        </li>
+
+
+                    <li class="paginate_button page-item ">
+                        <a class="page-link" href="https://fap.fpt.edu.vn/Transaction"> &gt; </a>
+                    </li>
+                    <li class="paginate_button page-item ">
+                        <a class="page-link" href="https://fap.fpt.edu.vn/Transaction">Aaaa</a>
+                    </li>
+
+                <li class="paginate_button page-item"><a class="page-link">Aaaa aaa aaa: 00</a></li>
+            </ul>
+        </div>
+    </div>
+        </div>
+    </div>
+
+<div id="fap-transaction-list-config" class="d-none" data-bind-auto-submit="true" data-init-datatable="true" data-sort-col="2" data-sort-dir="desc" aria-hidden="true"></div>
+
+
+                </div>
+                
+
+            </div>
+            
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="list-inline-item">
+                                Aaa aaaaa © 0000
+                                <a href="https://fap.fpt.edu.vn/" class="link-secondary">AAA - Aaaaaa aaa aaa AAA</a>. Aa aaaa aa aaa aaaaa.
+                            </span>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <span class="list-inline-item">
+                                <span class="text-secondary">Aaaaa aaa: 0.0.0.0</span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+
+        </div>

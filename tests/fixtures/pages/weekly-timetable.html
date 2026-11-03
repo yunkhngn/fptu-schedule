@@ -1,0 +1,723 @@
+<div class="content-page">
+            <div class="content">
+
+                
+                <div class="container-fluid">
+                    
+
+                    
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box fap-page-title  justify-content-between d-flex align-items-center flex-lg-row flex-column gap-2">
+            <div class="fap-page-title__main min-w-0">
+                <nav class="fap-page-title__crumb" aria-label="breadcrumb">
+                    <ol class="fap-page-title__crumb-list">
+                            <li class="fap-page-title__crumb-item">
+                                <a class="fap-page-title__crumb-link" href="https://fap.fpt.edu.vn/">
+                                    <i class="ri-home-5-line" aria-hidden="true"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="fap-page-title__crumb-sep" aria-hidden="true">/</li>
+                        <li class="fap-page-title__crumb-item">
+                            <span class="fap-page-title__crumb-current">Thời khóa biểu tuần</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card fap-filter-card mb-3">
+    <div class="card-body">
+        <div id="weekly-timetable-week-actions" class="weekly-timetable-week-actions row g-3 align-items-start">
+            <div class="col-12 col-md-6 col-lg-4 weekly-timetable-week-actions__picker">
+                <label class="form-label" for="weekly-timetable-week">
+                    Chọn tuần
+                </label>
+                <input class="form-control" id="weekly-timetable-week" type="week" name="week" title="Chọn tuần"/>
+
+                <div class="fap-filter-actions mt-2">
+                    <button type="button" id="weekly-timetable-prev" class="btn btn-outline-secondary weekly-timetable-week-actions__button">
+                        <i class="ri-arrow-left-line me-1" aria-hidden="true"></i>
+                        Tuần trước
+                    </button>
+                    <button type="button" id="weekly-timetable-current" class="btn btn-primary weekly-timetable-week-actions__button weekly-timetable-week-actions__button--current">
+                        <i class="ri-calendar-check-line me-1" aria-hidden="true"></i>
+                        Tuần hiện tại
+                    </button>
+                    <button type="button" id="weekly-timetable-next" class="btn btn-outline-secondary weekly-timetable-week-actions__button">
+                        Tuần sau
+                        <i class="ri-arrow-right-line ms-1" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+                <div class="col-12 col-md-6 col-lg-8">
+                    <div class="weekly-timetable-location-notes small text-muted">
+                        <p class="mb-1"><u><strong>Aaaa:</strong></u> Aaaaa aaaaaaaaaa aa aaa aaaaaaa aaaaa-aaaaaaaaaa aaaaaaaaaa, aaaa aa aaaa aaaaaaaaaa ...</p>
+                        <p class="mb-2"><u><strong>Aaa aaaaa:</strong></u> Aaa aaaa aaaa aaaaa aaaa aaaa aaaaa aaa aaa aaaa aaaa aaaaa aaaa, aa aa aaa aaaa aaaa aaa aaa aa ...</p>
+                        <div class="row g-2">
+                            <div class="col-12 col-xxl-6">
+                                <ul class="mb-0 ps-3">
+                                    <li class="mb-1">
+                                        Aaa aaaaa aaa aaa aaaa <strong>AA</strong> aaaaa aaa aaa Aaaaa. AA: <strong>AA...</strong>
+                                    </li>
+                                    <li class="mb-1">
+                                        Aaa aaaaa aaa aaa aaaa <strong>AA</strong> aaaaa aaa aaa Aaaa. AA: <strong>AA,...</strong>
+                                    </li>
+                                    <li class="mb-1">
+                                        Aaa aaaaa aaa aaa aaaa <strong>AA</strong> aaaaa aaa aaa Aaaaa. AA: <strong>A000,...</strong>
+                                    </li>
+                                    <li class="mb-1">
+                                        Aaa aaaaa aaa aaa aaa aaaa <strong>A</strong> aaaaa aaa aaa aaa aaa Aaaaaaa.
+                                    </li>
+                                    <li>
+                                        Aaa aaaaa aaa aaa aaaa <strong>AA</strong> aaaaa aaa aaa Aaaaa. AA: <strong>AA,...</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-xxl-6">
+                                <ul class="mb-0 ps-3">
+                                    <li class="mb-1">
+                                        Aaaaaa AA (<strong>AAA</strong>) aaaaa aaaa 0 aaa aaa Aaaaa.
+                                    </li>
+                                    <li class="mb-1">
+                                        Aaa aa aa 0 (aa aaaa <strong>AAA0</strong> - aaa aaaa aaa aaa Aaaaa) aaa 0 aaa aaa: <strong>A00-AAA0</strong> aaa <strong>A00-AAA0</strong>.
+                                    </li>
+                                    <li class="mb-1">
+                                        Aaa aa aa 0 (aa aaaa <strong>AAA0</strong> - aaaa aaaa aaaaaa) aaa 0 aaa aaa: <strong>A00-AAA0</strong> aaa <strong>A00-AAA0</strong>.
+                                    </li>
+                                    <li>
+                                        Aaa aa aa 0 (aa aaaa <strong>AAA0</strong> - aaaa aa Aaaaa) aaa 0 aaa aaa: <strong>A00-AAA0</strong> aaa <strong>A00-AAA0</strong>.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="card fap-result-card weekly-timetable-page">
+    <div class="card-header">
+        <h5 class="fap-result-card__title">Thời khóa biểu tuần</h5>
+    </div>
+    <div class="card-body">
+        
+        <div id="weekly-timetable-container" data-fetch-url="/WeeklyTimetable/WeekPartial" data-reference-date="2026-11-04" data-loading-text="Đang tải thời khóa biểu tuần..." data-load-error-text="Không tải được thời khóa biểu tuần của bạn.">
+    <div class="fw-semibold mb-3">
+        <i class="ri-calendar-week-line me-1" aria-hidden="true"></i>
+        Aaaa (00/00 - 00/00)
+    </div>
+    <div class="table-responsive d-none d-md-block weekly-timetable-grid">
+        <table class="table table-sm table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr class="align-middle">
+                    <th scope="col" class="text-center">Slot</th>
+                        <th scope="col" class="text-center ">
+                            Thứ 2 (02/11)
+                        </th>
+                        <th scope="col" class="text-center ">
+                            Thứ 3 (03/11)
+                        </th>
+                        <th scope="col" class="text-center weekly-timetable-today-header text-success-emphasis">
+                            Thứ 4 (04/11)
+                        </th>
+                        <th scope="col" class="text-center ">
+                            Thứ 5 (05/11)
+                        </th>
+                        <th scope="col" class="text-center ">
+                            Thứ 6 (06/11)
+                        </th>
+                        <th scope="col" class="text-center ">
+                            Thứ 7 (07/11)
+                        </th>
+                        <th scope="col" class="text-center ">
+                            Chủ nhật (08/11)
+                        </th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <th scope="row" class="text-center fw-semibold">2</th>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                        <div class="position-relative  ">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span class="text-success" title="Học online">
+                                                        <i class="ri-wifi-line"></i>
+                                                        Aaaaaa
+                                                    </span>
+                                                        <a class="btn btn-outline-success btn-sm py-0 px-1 ms-1" href="https://meet.google.com/aaz-nwiq-tbo" target="_blank" rel="noopener" title="Link Meet">
+                                                            <i class="ri-video-chat-line"></i>
+                                                            Link Meet
+                                                        </a>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                AaaaAA00
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-center fw-semibold">3</th>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                        <div class="position-relative  fw-bold">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                                    <span class="text-success small weekly-timetable-attendance-status" title="Điểm danh">
+                                                        <i class="ri-checkbox-circle-line"></i>
+                                                        Aa aaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                aaaaaaa
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                        <div class="position-relative  ">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                AaAA00
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                        <div class="position-relative  ">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                aaaaa
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-center fw-semibold">4</th>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                        <div class="position-relative  fw-bold">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                                    <span class="text-success small weekly-timetable-attendance-status" title="Điểm danh">
+                                                        <i class="ri-checkbox-circle-line"></i>
+                                                        Aa aaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                aaaa
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                        <div class="position-relative  ">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                aaaaa
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                        <div class="position-relative  ">
+
+                                            <div class="d-flex align-items-start justify-content-between gap-1 flex-wrap">
+                                                <div class="fw-semibold text-primary weekly-timetable-cell-title" title="Lớp học">
+                                                    <i class="ri-book-open-line"></i>
+                                                    AAA000 - AA0000-AA
+                                                </div>
+                                            </div>
+                                            <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                                <i class="ri-time-line"></i>
+                                                <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                    <span title="Học online">
+                                                        <i class="ri-wifi-off-line"></i>
+                                                        Aaaaaaa
+                                                    </span>
+                                            </div>
+                                            <div class="small text-muted" title="Phòng">
+                                                <i class="ri-map-pin-line"></i>
+                                                AA-000
+                                            </div>
+                                            <div class="small text-muted" title="Giảng viên">
+                                                <i class="ri-user-line"></i>
+                                                aaaaaaa
+                                            </div>
+                                        </div>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                            <td>
+                                    <span class="text-muted">-</span>
+                            </td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="d-md-none weekly-timetable-grid">
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">0</span>
+                </div>
+
+                    <div class="text-muted small px-1">-</div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">2</span>
+                </div>
+
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">3</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  fw-bold">
+                                            <span class="text-success position-absolute top-0 end-0 small" title="Điểm danh">
+                                                <i class="ri-checkbox-circle-line"></i>
+                                                Aa aaa
+                                            </span>
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            aaaaaaa
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">4</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  fw-bold">
+                                            <span class="text-success position-absolute top-0 end-0 small" title="Điểm danh">
+                                                <i class="ri-checkbox-circle-line"></i>
+                                                Aa aaa
+                                            </span>
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            aaaa
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="true">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-success-subtle text-success-emphasis">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">1</span>
+                </div>
+
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">4</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  ">
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            aaaaa
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">1</span>
+                </div>
+
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">3</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  ">
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            AaAA00
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">3</span>
+                </div>
+
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">2</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  ">
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span class="text-success" title="Học online">
+                                                    <i class="ri-wifi-line"></i>
+                                                    Aaaaaa
+                                                </span>
+                                                    <a class="btn btn-outline-success btn-sm py-0 px-1 ms-1" href="https://meet.google.com/aaz-nwiq-tbo" target="_blank" rel="noopener" title="Link Meet">
+                                                        <i class="ri-video-chat-line"></i>
+                                                        Link Meet
+                                                    </a>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            AaaaAA00
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">3</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  ">
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            aaaaa
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 weekly-timetable-mobile-card">
+                            <div class="card-body p-2">
+                                <div class="d-flex gap-2">
+                                    <div class="weekly-timetable-mobile-card__slot">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis fw-semibold" title="Slot">4</span>
+                                    </div>
+                                    <div class="weekly-timetable-mobile-card__content position-relative pe-4  ">
+
+                                        <div class="fw-semibold text-primary" title="Lớp học">
+                                            <i class="ri-book-open-line"></i>
+                                            AAA000 - AA0000-AA
+                                        </div>
+                                        <div class="small text-muted" title="Giờ bắt đầu - Giờ kết thúc">
+                                            <i class="ri-time-line"></i>
+                                            <span class="fw-bold text-warning-emphasis">00a00-00a00</span> -
+                                                <span title="Học online">
+                                                    <i class="ri-wifi-off-line"></i>
+                                                    Aaaaaaa
+                                                </span>
+                                        </div>
+                                        <div class="small text-muted" title="Phòng">
+                                            <i class="ri-map-pin-line"></i>
+                                            AA-000
+                                        </div>
+                                        <div class="small text-muted" title="Giảng viên">
+                                            <i class="ri-user-line"></i>
+                                            aaaaaaa
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa 0 (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">0</span>
+                </div>
+
+                    <div class="text-muted small px-1">-</div>
+            </section>
+            <section class="weekly-timetable-mobile-anchor mb-3 rounded" data-today-section="">
+                <div class="d-flex align-items-center justify-content-between rounded px-2 py-2 mb-2 bg-light">
+                    <span class="fw-semibold">Aaa aaaa (00/00)</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">0</span>
+                </div>
+
+                    <div class="text-muted small px-1">-</div>
+            </section>
+    </div>
+
+</div>
+    </div>
+</div>
+
+
+                </div>
+                
+
+            </div>
+            
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="list-inline-item">
+                                Aaa aaaaa © 0000
+                                <a href="https://fap.fpt.edu.vn/" class="link-secondary">AAA - Aaaaaa aaa aaa AAA</a>. Aa aaaa aa aaa aaaaa.
+                            </span>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <span class="list-inline-item">
+                                <span class="text-secondary">Aaaaa aaa: 0.0.0.0</span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            
+
+        </div>

@@ -1,0 +1,162 @@
+[
+  {
+    "slug": "report-transcript",
+    "route": "/Report/Transcript",
+    "pattern": "report"
+  },
+  {
+    "slug": "report-grade",
+    "route": "/Report/Grade",
+    "pattern": "report"
+  },
+  {
+    "slug": "report-attendance",
+    "route": "/Report/Attendance",
+    "pattern": "report"
+  },
+  {
+    "slug": "application-create",
+    "route": "/Application/Create",
+    "pattern": "form"
+  },
+  {
+    "slug": "student-profile",
+    "route": "/StudentProfile",
+    "pattern": "form"
+  },
+  {
+    "slug": "document-detail",
+    "route": "/Document/Detail",
+    "pattern": "detail"
+  },
+  {
+    "slug": "news-detail",
+    "route": "/News/Detail",
+    "pattern": "detail"
+  },
+  {
+    "slug": "my-certificates",
+    "route": "/MyCertificates",
+    "pattern": "list"
+  },
+  {
+    "slug": "wishlist",
+    "route": "/Wishlist",
+    "pattern": "list"
+  },
+  {
+    "slug": "fye-check-in-log",
+    "route": "/FyeCheckInLog",
+    "pattern": "list"
+  },
+  {
+    "slug": "fye-mentor-feedback",
+    "route": "/FyeMentorFeedback",
+    "pattern": "list"
+  },
+  {
+    "slug": "transaction",
+    "route": "/Transaction",
+    "pattern": "list"
+  },
+  {
+    "slug": "application-catalog",
+    "route": "/Application/Catalog",
+    "pattern": "list"
+  },
+  {
+    "slug": "startup-group-add",
+    "route": "/StartupGroup/Add",
+    "pattern": "form"
+  },
+  {
+    "slug": "curriculum",
+    "route": "/Curriculum",
+    "pattern": "list"
+  },
+  {
+    "slug": "exam-schedule",
+    "route": "/ExamSchedule",
+    "pattern": "report"
+  },
+  {
+    "slug": "auth-login",
+    "route": "/Auth/Login",
+    "pattern": "form"
+  },
+  {
+    "slug": "course-pending-payment",
+    "route": "/CoursePendingPayment",
+    "pattern": "cart"
+  },
+  {
+    "slug": "subject",
+    "route": "/Subject",
+    "pattern": "list"
+  },
+  {
+    "slug": "document",
+    "route": "/Document",
+    "pattern": "list"
+  },
+  {
+    "slug": "cross-class-change-create",
+    "route": "/CrossClassChange/Create",
+    "pattern": "form"
+  },
+  {
+    "slug": "shopping-cart",
+    "route": "/ShoppingCart",
+    "pattern": "cart"
+  },
+  {
+    "slug": "report-ojt-conditions",
+    "route": "/Report/OjtConditions",
+    "pattern": "report"
+  },
+  {
+    "slug": "report-thesis-conditions",
+    "route": "/Report/ThesisConditions",
+    "pattern": "report"
+  },
+  {
+    "slug": "account",
+    "route": "/Account",
+    "pattern": "profile"
+  },
+  {
+    "slug": "weekly-timetable",
+    "route": "/WeeklyTimetable",
+    "pattern": "report"
+  },
+  {
+    "slug": "news",
+    "route": "/News",
+    "pattern": "list"
+  },
+  {
+    "slug": "home",
+    "route": "/",
+    "pattern": "list"
+  },
+  {
+    "slug": "application",
+    "route": "/Application",
+    "pattern": "list"
+  },
+  {
+    "slug": "wishlist-register",
+    "route": "/Wishlist/Register",
+    "pattern": "form"
+  },
+  {
+    "slug": "startup-group",
+    "route": "/StartupGroup",
+    "pattern": "empty"
+  },
+  {
+    "slug": "cross-class-change",
+    "route": "/CrossClassChange",
+    "pattern": "empty"
+  }
+]
