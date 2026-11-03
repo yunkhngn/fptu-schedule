@@ -344,4 +344,70 @@ test("news and document detail pages are styled and safe content rules are prese
   });
 });
 
+test("account and profile pages are styled with hero gradient, glass cards, and pill tabs", () => {
+  const targetClasses = [
+    "student-profile",
+    "student-profile-hero",
+    "student-profile-hero__main",
+    "student-profile-hero__identity",
+    "student-profile-hero__content",
+    "student-profile-avatar",
+    "student-profile-name",
+    "student-profile-badges",
+    "student-profile-meta",
+    "student-profile-contact",
+    "student-profile-contact__item",
+    "student-profile-grid",
+    "student-profile-grid--single-lg",
+    "student-profile-field",
+    "student-profile-field__label",
+    "student-profile-field__value",
+    "student-profile-stack",
+    "student-parent-card",
+    "account-page",
+    "account-tabs"
+  ];
+  targetClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
+
+  const profileRules = rules.filter((r) =>
+    /(student-profile|student-parent-card|account-page|account-tabs)/.test(r.selector)
+  );
+  assert.ok(profileRules.length > 0, "must have profile and account rules");
+
+  profileRules.forEach((r) => {
+    r.selector.split(",").forEach((s) => {
+      assert.match(
+        s.trim(),
+        /^html:not\(\[data-fptu-skin="off"\]\)/,
+        `selector must be gated: ${s.trim()}`
+      );
+    });
+    // No backdrop-filter on profile cards or fields
+    assert.doesNotMatch(
+      r.body,
+      /backdrop-filter/,
+      `profile rule must not use backdrop-filter: ${r.selector}`
+    );
+  });
+
+  // Hero card has accent gradient and white text
+  const heroRule = rules.find((r) => /\.student-profile-hero\b/.test(r.selector) && !r.selector.includes("[data-bs-theme"));
+  assert.ok(heroRule, "must have base .student-profile-hero rule");
+  assert.match(heroRule.body, /linear-gradient\(135deg,\s*var\(--fptu-accent\),\s*var\(--fptu-accent-hover\)\)/);
+  assert.match(heroRule.body, /color:\s*#fff(fff)?\b/i);
+
+  // Tabs are pill-shaped
+  const tabRule = rules.find((r) => /\.account-tabs\b/.test(r.selector) && !r.selector.includes(".nav-link") && !r.selector.includes("[data-bs-theme"));
+  assert.ok(tabRule, "must have base .account-tabs rule");
+  assert.match(tabRule.body, /border-radius:\s*9999px/);
+
+  // Tabs active link uses accent
+  const tabActiveRule = rules.find((r) => /\.account-tabs\s+\.nav-link\.active/.test(r.selector));
+  assert.ok(tabActiveRule, "must have .account-tabs .nav-link.active rule");
+  assert.match(tabActiveRule.body, /var\(--fptu-accent\)/);
+  assert.match(tabActiveRule.body, /color:\s*#fff(fff)?\b/i);
+});
+
 module.exports = { parseRules, stripComments, css, rules };

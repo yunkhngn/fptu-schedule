@@ -4226,6 +4226,371 @@ html:not([data-fptu-skin="off"]) .fap-document-file-btn {
 }
 
 /* --------------------------------------------------------------------------
+   Account and Student Profile Pages (/Account, /StudentProfile)
+   - Profile hero card with accent gradient and crisp white text
+   - Circular/squircle avatar with border and crisp contrast
+   - Translucent pill badges and readable metadata
+   - Contact links with clean hover states
+   - Pill-shaped account navigation tabs (.account-tabs)
+   - Parent access glass card (.student-parent-card)
+   - Clean profile field grid and key-value cards (.student-profile-field)
+   - Two columns on desktop, single column responsive on mobile screens
+   - Strictly zero backdrop-filter on profile cards and fields for crisp rendering
+   -------------------------------------------------------------------------- */
+
+html:not([data-fptu-skin="off"]) .account-page {
+  position: relative;
+}
+
+/* Account Tabs */
+html:not([data-fptu-skin="off"]) .account-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  background: color-mix(in srgb, var(--fptu-accent) 8%, #f1f5f9);
+  border: 1px solid var(--fptu-glass-border);
+  border-radius: 9999px;
+  padding: 0.35rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .account-tabs {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+html:not([data-fptu-skin="off"]) .account-tabs .nav-link {
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.15rem;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .account-tabs .nav-link {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .account-tabs .nav-link:hover:not(.active) {
+  color: var(--fptu-accent);
+  background: color-mix(in srgb, var(--fptu-accent) 10%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .account-tabs .nav-link.active {
+  background: var(--fptu-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--fptu-accent) 35%, transparent);
+}
+
+/* Student Profile Wrapper */
+html:not([data-fptu-skin="off"]) .student-profile {
+  display: block;
+}
+
+/* Student Profile Hero Card */
+html:not([data-fptu-skin="off"]) .student-profile-hero {
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, var(--fptu-accent), var(--fptu-accent-hover));
+  color: #ffffff;
+  box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--fptu-accent) 45%, transparent), var(--fptu-glass-highlight);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-hero {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.55), var(--fptu-glass-highlight);
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-hero .card-body {
+  padding: 1.5rem;
+  background: transparent;
+  color: #ffffff;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-hero .text-muted {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-hero__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, auto);
+  gap: 1.25rem;
+  align-items: center;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-hero__main {
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-hero__identity {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-avatar {
+  flex: 0 0 auto;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 18px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-name {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.15rem 0 0.45rem;
+  overflow-wrap: anywhere;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.88rem;
+  margin-bottom: 0.65rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-meta i {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.65rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-badges .badge {
+  border-radius: 9999px;
+  padding: 0.35rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Hero Contact Items */
+html:not([data-fptu-skin="off"]) .student-profile-contact {
+  display: grid;
+  gap: 0.6rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-contact__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-contact__item:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-contact__item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-contact__item i {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  flex: 0 0 auto;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-contact__item.is-disabled {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Parent Card */
+html:not([data-fptu-skin="off"]) .student-parent-card {
+  border-radius: 20px;
+  border: 1px solid var(--fptu-glass-border);
+  background: var(--fptu-glass-bg);
+  box-shadow: var(--fptu-glass-shadow), var(--fptu-glass-highlight);
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"]) .student-parent-card > .card-header {
+  background: color-mix(in srgb, var(--fptu-accent) 6%, transparent);
+  border-bottom: 1px solid var(--fptu-glass-border);
+  padding: 1rem 1.25rem;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-parent-card > .card-header {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+}
+
+/* Profile Field Grid & Stack */
+html:not([data-fptu-skin="off"]) .student-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-grid--single-lg {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.8rem 0.95rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--fptu-glass-border);
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-field > i {
+  color: var(--fptu-accent);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-field__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #64748b;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field__label {
+  color: #94a3b8;
+}
+
+html:not([data-fptu-skin="off"]) .student-profile-field__value {
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field__value {
+  color: #f1f5f9;
+}
+
+/* Profile Responsive Adjustments */
+@media (max-width: 991.98px) {
+  html:not([data-fptu-skin="off"]) .student-profile-hero__content {
+    grid-template-columns: 1fr;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-contact {
+    grid-column: 1 / -1;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-grid--single-lg {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575.98px) {
+  html:not([data-fptu-skin="off"]) .account-tabs {
+    width: 100%;
+  }
+
+  html:not([data-fptu-skin="off"]) .account-tabs .nav-item {
+    flex: 1 1 auto;
+  }
+
+  html:not([data-fptu-skin="off"]) .account-tabs .nav-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-hero__identity {
+    align-items: flex-start;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-avatar {
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.15rem;
+  }
+
+  html:not([data-fptu-skin="off"]) .student-profile-name {
+    font-size: 1.2rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -4258,6 +4623,8 @@ html:not([data-fptu-skin="off"]) .fap-document-file-btn {
   html:not([data-fptu-skin="off"]) .fap-news-detail-card,
   html:not([data-fptu-skin="off"]) .fap-document-detail,
   html:not([data-fptu-skin="off"]) .fap-detail-field,
+  html:not([data-fptu-skin="off"]) .student-parent-card,
+  html:not([data-fptu-skin="off"]) .student-profile-field,
   html:not([data-fptu-skin="off"]) .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"]) .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"]) table.fap-table--stack tbody tr,
@@ -4266,6 +4633,10 @@ html:not([data-fptu-skin="off"]) .fap-document-file-btn {
   html:not([data-fptu-skin="off"]) .dropdown-menu,
   html:not([data-fptu-skin="off"]) .select2-dropdown {
     background: #ffffff;
+  }
+
+  html:not([data-fptu-skin="off"]) .account-tabs {
+    background: #f1f5f9;
   }
 
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .navbar-custom,
@@ -4279,6 +4650,8 @@ html:not([data-fptu-skin="off"]) .fap-document-file-btn {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-news-detail-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-document-detail,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-detail-field,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-parent-card,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-mobile-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .weekly-timetable-grid table,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] table.fap-table--stack tbody tr,
@@ -4286,6 +4659,10 @@ html:not([data-fptu-skin="off"]) .fap-document-file-btn {
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .modal-content,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .dropdown-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .select2-dropdown {
+    background: #1e293b;
+  }
+
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .account-tabs {
     background: #1e293b;
   }
 }
