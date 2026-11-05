@@ -1,4 +1,4 @@
-# FAP UI: thanh trên hoạt động được Implementation Plan
+# FAP UI: thanh trên hoạt động được và hai ngôn ngữ Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -16,6 +16,7 @@
 
 - Không gọi trực tiếp điểm cuối ghi của FAP (`/Language/SetLanguage`, `/Auth/Logout`, `/Notification/MarkRead*`); chỉ kích hoạt điều khiển gốc, và chỉ sau khi người dùng bấm.
 - Chữ lấy từ FAP luôn hiển thị như văn bản thuần (không `dangerouslySetInnerHTML`).
+- Mọi chuỗi chữ của giao diện đi qua `t(khóa)` (sau Task 4B); không để chuỗi tiếng Việt hoặc tiếng Anh nằm cứng trong component. Ngôn ngữ của giao diện luôn bằng ngôn ngữ FAP đang dùng.
 - Không dùng thư viện gắn vào `document.body` (Radix Popover, Dialog, DropdownMenu, cmdk): mọi bảng nằm trong Shadow DOM.
 - Chế độ sáng không đổi khi mọi menu đóng: `npm run parity` mỗi trang không xấu đi quá 0.5 điểm phần trăm so với 1.55% (Tổng quan), 3.02% (Thời khóa biểu), 0.99% (Lịch thi), 1.06% (Tin tức).
 - Đọc DOM thanh trên là vanilla UMD trong `lib/`, test bằng `node --test`; giao diện trong `ui/`.
@@ -31,6 +32,8 @@
 5. Tìm kiếm với tiếng Việt có dấu và không dấu ("thoi khoa bieu" tìm ra "Thời khóa biểu"); không có kết quả thì có thông báo (Task 3).
 6. Bàn phím: Tab vào nút mở menu, Enter mở, mũi tên di chuyển, Escape đóng và trả tiêu điểm về nút (Task 2, 3).
 7. Tiêu đề thông báo chứa HTML được hiển thị như chữ (Task 5).
+8. Chuỗi thiếu ở một ngôn ngữ, hoặc chữ tiếng Việt còn sót khi FAP ở tiếng Anh (và ngược lại) (Task 4B).
+9. Bộ đọc dữ liệu trả sai hoặc rỗng khi FAP ở tiếng Anh (nhãn cột, tên tháng, định dạng ngày) (Task 4A, 4B).
 
 ---
 
@@ -107,6 +110,53 @@ readTopbar(doc): {
 
 ---
 
+### Task 4A: Mẫu trang tiếng Anh (người dùng cung cấp, rồi người xây xử lý)
+
+**Files:**
+- Create (người xây): `tests/fixtures/pages/en-home.html`, `en-weekly-timetable.html`, `en-exam-schedule.html`, `en-news.html` (đã lọc bằng `scripts/sanitize-fap-page.py`)
+- Test: `tests/fap-page-data-en.test.js`
+
+- [ ] **Step 1 (người dùng):** chuyển FAP sang English, lưu 4 trang (Tổng quan, Thời khóa biểu, Lịch thi, Tin tức) dạng MHTML vào `page-fap/` (thư mục đã bị `.gitignore`, không bao giờ commit). Nếu chưa có mẫu thì bỏ qua task này và ghi vào mô tả commit "English fixtures pending"; Task 4B vẫn làm, và Task 7 kiểm chứng bằng tay.
+- [ ] **Step 2: Viết test thất bại:** với mỗi fixture tiếng Anh, bộ đọc tương ứng (`readHome`, `readNews`, `toTimetable` qua `extractWeeklyScheduleFromTable`, `toExams` qua `extractExamScheduleFromPage`) trả **cùng số mục** với fixture tiếng Việt cùng trang (10 tin, 7 buổi học...), ngày đúng định dạng `yyyy-MM-dd`, và không có trường nào bị rỗng ở nơi bản tiếng Việt có dữ liệu.
+- [ ] **Step 3:** `node --test tests/fap-page-data-en.test.js`; sửa bộ đọc ở `lib/fap-page-data.js` (và `content.js` nếu hàm lấy tuần/lịch thi dùng nhãn tiếng Việt) cho tới khi PASS, không làm hỏng test tiếng Việt.
+- [ ] **Step 4:** `node --test tests/*.test.js`; PASS. **Step 5: Commit** `test: read the FAP pages when the site language is English`
+
+---
+
+### Task 4B: Giao diện hai ngôn ngữ (vi, en)
+
+**Files:**
+- Create: `ui/src/i18n/index.tsx`, `ui/src/i18n/vi.ts`, `ui/src/i18n/en.ts`
+- Modify: mọi component và trang có chữ cứng (`ui/src/data/nav.ts`, `pages/*.tsx`, `components/**/*.tsx`), `ui/src/boot.tsx`, `ui/src/data/types.ts`
+- Test: `ui/src/i18n/i18n.test.ts`, cập nhật các test hiện có (chúng đang tìm chữ tiếng Việt; vẫn chạy với `lang="vi"`)
+
+**Interfaces:**
+- Produces:
+```ts
+export type Lang = "vi" | "en";
+export function normalizeLang(value: unknown): Lang; // lạ thì "vi"
+export const dictionaries: Record<Lang, Record<string, string>>; // cùng một tập khóa
+export function I18nProvider(props: { lang: Lang; children: ReactNode }): JSX.Element;
+export function useT(): (key: string, params?: Record<string, string | number>) => string; // {name} thay bằng params.name; khóa thiếu trả chính khóa
+export function useLang(): Lang;
+export function dateLocale(lang: Lang): Locale; // date-fns vi hoặc enUS
+```
+`boot` đọc `readTopbar(doc).language.current` (qua `normalizeLang`) và bọc cây giao diện bằng `I18nProvider`; `PageData` giữ nguyên.
+
+- [ ] **Step 1: Viết test thất bại** (`i18n.test.ts`):
+  - `Object.keys(dictionaries.vi)` bằng `Object.keys(dictionaries.en)` (sắp xếp); không giá trị rỗng.
+  - Không giá trị nào của `en` chứa chữ cái tiếng Việt có dấu (`/[À-ỹ]/`), ngoại trừ danh sách ngoại lệ ghi tên riêng (nếu có).
+  - Mọi `{tham_số}` ở `vi` có mặt ở `en` cùng tên.
+  - Quét mã nguồn: không tệp `.tsx` hoặc `.ts` (trừ `i18n/vi.ts`, `data/mock.ts` và test) chứa chuỗi chữ có dấu tiếng Việt (`/[À-ỹ]/`) trong chuỗi hay văn bản JSX.
+  - `normalizeLang("en") === "en"`; `("fr")`, `(undefined)`, `(null)` bằng `"vi"`; `useT` trả chính khóa khi thiếu và thay tham số.
+  - Hiển thị: `AppShell` với `lang="en"` có "Overview" (không có "Tổng quan"), `TimetablePage` có tiêu đề tiếng Anh, tên thứ và ngày theo `enUS`; `lang="vi"` giữ nguyên chữ hiện tại (các test cũ pass).
+  - `boot`: DOM có biểu mẫu ngôn ngữ với `active` ở `en` thì giao diện hiển thị tiếng Anh; không có biểu mẫu thì tiếng Việt.
+- [ ] **Step 2:** `cd ui && npx vitest run src/i18n`; FAIL. **Step 3:** Cài đặt: gom chuỗi hiện có (khoảng 150, từ `nav.ts`, các trang, lịch, sidebar, thanh trên) thành từ điển `vi`, viết bản `en` tương ứng (văn phong tự nhiên, không dịch máy móc tên riêng như FAP, FPT), thay chữ cứng bằng `t()`.
+- [ ] **Step 4:** `cd ui && npm test && npm run parity`; PASS và parity (tiếng Việt) trong ngưỡng Global Constraints. Chạy thêm `npm run parity -- --lang=en` nếu harness có tham số; nếu chưa, thêm `?lang=en` cho `harness.html` và chụp 4 trang vào `ui/parity/out/` (không so với ảnh chuẩn) để người dùng xem.
+- [ ] **Step 5: Commit** `feat(ui): interface in Vietnamese or English, following the FAP language`
+
+---
+
 ### Task 5: Thông báo
 
 **Files:**
@@ -155,7 +205,7 @@ export function markAllNotificationsRead(doc: Document): boolean; // bấm [data
 
 - [ ] Ctrl/Cmd+K và bấm ô tìm: gõ "diem danh" thấy "Báo cáo điểm danh", Enter đi tới trang đó trên FAP.
 - [ ] Bấm "Cơ sở": hiển thị đúng cơ sở của bạn (không có nút đổi).
-- [ ] Bấm "Ngôn ngữ", chọn English: FAP đổi sang tiếng Anh (chữ của giao diện mới vẫn tiếng Việt, xem spec mục 6); chọn lại Tiếng Việt.
+- [ ] Bấm "Ngôn ngữ", chọn English: FAP tải lại bằng tiếng Anh **và giao diện mới cũng hiển thị tiếng Anh** (menu, tiêu đề trang, nút, tên thứ, ngày tháng); dữ liệu bốn trang (lịch học, lịch thi, tin tức, thông tin sinh viên) vẫn đủ và đúng; chọn lại Tiếng Việt thì trở về như cũ. Không còn chữ tiếng Việt nào lẫn trong giao diện tiếng Anh.
 - [ ] Bấm chuông: thấy danh sách thông báo (hoặc khung chờ rồi danh sách); "Đã đọc tất cả" làm số chưa đọc về 0; bấm một thông báo mở nội dung của nó. **Nếu danh sách trống hoặc sai, chụp màn hình và gửi để bổ sung mẫu HTML thông báo vào fixture.**
 - [ ] Bấm hồ sơ: thấy tên, mã; "Tài khoản của tôi" mở trang `/Account`; "Đăng xuất" đăng xuất khỏi FAP.
 - [ ] Menu đóng bằng Escape và bấm ra ngoài; dùng bàn phím được; ở chế độ tối vẫn đúng.

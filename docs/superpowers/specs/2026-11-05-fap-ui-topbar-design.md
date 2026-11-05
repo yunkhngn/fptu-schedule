@@ -11,14 +11,13 @@ Thanh trên của giao diện mới (theo thiết kế Lovable) hiện chỉ là
 **Mục tiêu**
 1. **Tìm chức năng, trang:** bấm vào ô hoặc nhấn Ctrl/Cmd+K mở hộp tìm; gõ để lọc các chức năng và trang (không phân biệt hoa thường và dấu tiếng Việt); chọn bằng chuột hoặc phím mũi tên và Enter để đi tới trang FAP đó.
 2. **Cơ sở:** bấm mở danh sách hiển thị cơ sở của sinh viên theo đúng dữ liệu FAP.
-3. **Ngôn ngữ:** bấm mở danh sách ngôn ngữ mà FAP cung cấp; chọn thì đổi ngôn ngữ của FAP bằng chính biểu mẫu của FAP.
+3. **Ngôn ngữ:** bấm mở danh sách ngôn ngữ mà FAP cung cấp; chọn thì đổi ngôn ngữ của FAP bằng chính biểu mẫu của FAP, và **giao diện mới hiển thị bằng đúng ngôn ngữ đó** (Tiếng Việt hoặc English): menu, tiêu đề trang, nút, thông báo trạng thái, tên thứ và ngày tháng.
 4. **Thông báo:** chuông có số chưa đọc; bấm mở danh sách thông báo của FAP; "Đã đọc tất cả" hoạt động; bấm một thông báo thì đi tới nội dung của nó.
 5. **Hồ sơ:** bấm mở menu có tên, mã sinh viên, liên kết tới trang tài khoản và "Đăng xuất" hoạt động.
 6. Mọi menu đóng được bằng Escape hoặc bấm ra ngoài, dùng được bằng bàn phím, và đúng ở chế độ sáng lẫn tối.
 
 **Không mục tiêu**
 - Chuyển cơ sở: FAP gốc **không** cho sinh viên chuyển cơ sở (menu cơ sở chỉ hiển thị thông tin), nên giao diện mới cũng chỉ hiển thị. Danh sách 5 cơ sở trong mockup Lovable là dữ liệu mẫu, không dùng.
-- Dịch giao diện sang tiếng Anh (xem mục 6).
 - Tìm kiếm nội dung (tin tức, môn học); chỉ tìm chức năng và trang.
 - Tự viết lại việc FAP làm bằng máy chủ (gửi đăng xuất, đổi ngôn ngữ, đánh dấu đã đọc).
 
@@ -43,6 +42,8 @@ Thanh trên của giao diện mới (theo thiết kế Lovable) hiện chỉ là
 | Hồ sơ | `.fap-topbar-user` (tên, mã), liên kết `/Account` | bấm nút gốc trong biểu mẫu `/Auth/Logout` |
 | Tìm kiếm | danh sách điều hướng của giao diện (`NAV_GROUPS`) và các liên kết "Menu nhanh" | đi tới `navHref` |
 
+**Ngôn ngữ của giao diện.** Nguồn duy nhất là ngôn ngữ mà FAP đang dùng (`language.current` từ `readTopbar`), nên giao diện luôn khớp với dữ liệu mà FAP trả về (tên môn, tiêu đề tin, nhãn bảng do FAP tự dịch). Mọi chuỗi chữ của giao diện đi qua một hàm dịch `t(khóa)` với hai từ điển `vi` và `en` (`ui/src/i18n/`). Chọn ngôn ngữ trong menu thì FAP gửi biểu mẫu và tải lại trang; lần dựng sau đọc ngôn ngữ mới. Khoảng 150 chuỗi cần dịch (điều hướng, các trang, lịch, nút, thông báo trạng thái). Ngày tháng và tên thứ dùng `date-fns` với `vi` hoặc `enUS`. Giá trị lạ hoặc thiếu coi là `vi`.
+
 **Menu nằm trong Shadow DOM.** Bảng menu và hộp tìm kiếm dựng bằng một thành phần tự viết (không dùng thư viện cổng nổi như Radix Popover/Dialog, vì chúng gắn vào `body` ngoài Shadow DOM làm mất kiểu dáng); đóng khi bấm ra ngoài (dựa vào `composedPath`), Escape, trả tiêu điểm về nút mở.
 
 **Giới hạn đã biết.** Danh sách thông báo được FAP nạp động nên mẫu HTML thật của từng thông báo chưa có trong fixture; người xây phân tích theo cách chịu lỗi (lấy chữ, liên kết, trạng thái chưa đọc), và nếu không đọc được thì hiển thị liên kết "Mở thông báo trên FAP". Nếu người dùng gửi được một mẫu đã làm mờ thì thêm vào fixture.
@@ -57,7 +58,7 @@ Thanh trên của giao diện mới (theo thiết kế Lovable) hiện chỉ là
 
 ## 6. Việc người dùng cần quyết
 
-1. **Ngôn ngữ:** chọn English sẽ đổi FAP sang tiếng Anh nhưng **chữ của giao diện mới vẫn là tiếng Việt** (chưa dịch). Đề xuất: vẫn cho chọn (FAP đổi, dữ liệu như tên môn hiển thị theo FAP). Nếu muốn giao diện cũng đổi sang tiếng Anh thì cần một việc riêng (dịch toàn bộ chuỗi).
+1. **Mẫu trang tiếng Anh (cần người dùng cung cấp):** bộ đọc dữ liệu (thời khóa biểu, lịch thi, tin tức, tổng quan) hiện chỉ được kiểm tra bằng trang tiếng Việt. Để chắc chúng đọc đúng khi FAP ở tiếng Anh, người dùng chuyển FAP sang English và lưu 4 trang (Tổng quan, Thời khóa biểu, Lịch thi, Tin tức) vào `page-fap/` như lần trước (thư mục này đã bị `.gitignore`); người xây lọc dữ liệu cá nhân thành fixture. Nếu không có mẫu, phần đọc tiếng Anh chỉ được kiểm tra trong phạm vi mã đã có (lịch thi đã hỗ trợ nhãn "Date/Course"), và Task 7 của người dùng là bước kiểm chứng.
 2. **Mở rộng nhỏ ngoài danh sách:** nút "Đăng xuất" và "Cài đặt tài khoản" ở chân sidebar cũng đang là nút chết; đề xuất làm luôn (dùng cùng cơ chế với hồ sơ).
 
 ## 7. Phụ thuộc
