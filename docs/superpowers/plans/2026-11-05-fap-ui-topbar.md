@@ -20,6 +20,7 @@
 - Không dùng thư viện gắn vào `document.body` (Radix Popover, Dialog, DropdownMenu, cmdk): mọi bảng nằm trong Shadow DOM.
 - Chế độ sáng không đổi khi mọi menu đóng: `npm run parity` mỗi trang không xấu đi quá 0.5 điểm phần trăm so với 1.55% (Tổng quan), 3.02% (Thời khóa biểu), 0.99% (Lịch thi), 1.06% (Tin tức).
 - Đọc DOM thanh trên là vanilla UMD trong `lib/`, test bằng `node --test`; giao diện trong `ui/`.
+- Avatar của hồ sơ trên thanh trên hiển thị con cóc FPTU (`Mascot`), không phải chữ viết tắt; `ProfileMenu` và mọi chỗ dựng lại avatar giữ nguyên điều này (test `TopNavigation.avatar.test.tsx`).
 - Không emoji; icon dùng lucide-react. Dùng token màu, không màu cứng (để chế độ tối đúng).
 - `node --test tests/*.test.js` và `cd ui && npm test` pass 100%. Không phát hành, không đổi phiên bản.
 

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
+import { Mascot } from "@/components/atoms/Brand";
 import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 import type { ThemePreference } from "@/theme/theme";
 import type { ShellData } from "@/data/types";
@@ -140,8 +141,8 @@ export function TopNavigation({
 
           {/* User Profile Pill */}
           <div className="ml-1 flex items-center gap-3 rounded-full py-1 pr-1 pl-1 transition-colors duration-200 outline-none hover:bg-surface-2 focus-visible:ring-3 focus-visible:ring-primary/30 sm:pr-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender text-[13px] font-semibold text-foreground">
-              {shell.student.initials || "SV"}
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender">
+              <Mascot className="size-7" />
             </span>
             <span className="hidden min-w-0 text-left leading-tight sm:block">
               <span className="block truncate text-[13px] font-semibold">
