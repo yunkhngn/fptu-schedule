@@ -35,6 +35,14 @@ function mirrorExamScheduleToStorage(events) {
   } catch (_) {}
 }
 
+function mirrorAccentToStorage(id) {
+  const loc = getChromeStorageLocal();
+  if (!loc) return;
+  try {
+    loc.set({ accentColor: id });
+  } catch (_) {}
+}
+
 // Immediate theme detection to prevent flash of light theme
 (function () {
   try {
@@ -129,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const notifStatus = document.getElementById("notifStatus");
   const saveNotificationBtn = document.getElementById("saveNotificationBtn");
   const fapKeepSessionToggle = document.getElementById("fapKeepSessionToggle");
+  const fapSkinToggle = document.getElementById("fapSkinToggle");
 
   const DEFAULT_SETTINGS = (typeof DEFAULT_NOTIFICATION_SETTINGS !== "undefined")
     ? DEFAULT_NOTIFICATION_SETTINGS
@@ -197,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("accentColor", preset.id);
         } catch (_) {}
         applyAccent(document, preset.id);
+        mirrorAccentToStorage(preset.id);
         accentPicker.querySelectorAll(".accent-swatch").forEach((el) => {
           el.setAttribute("aria-checked", el === btn ? "true" : "false");
         });
@@ -205,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   renderAccentPicker();
+  mirrorAccentToStorage(currentAccentId());
 
   // Theme management
   const themeToggleBtn = document.getElementById("themeToggleBtn");
@@ -303,10 +314,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (notificationBtn && notificationModal) {
     notificationBtn.addEventListener("click", () => {
       if (locStorage) {
-        locStorage.get(["notificationSettings", "fapKeepSessionEnabled"], (res) => {
+        locStorage.get(["notificationSettings", "fapKeepSessionEnabled", "fapSkinEnabled"], (res) => {
           syncNotificationForm(res && res.notificationSettings);
           if (fapKeepSessionToggle) {
             fapKeepSessionToggle.checked = res && res.fapKeepSessionEnabled !== false;
+          }
+          if (fapSkinToggle) {
+            fapSkinToggle.checked = res && res.fapSkinEnabled !== false;
           }
           notificationModal.style.display = "block";
           refreshNotificationStatus();
@@ -321,6 +335,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fapKeepSessionToggle.addEventListener("change", () => {
       if (locStorage) {
         locStorage.set({ fapKeepSessionEnabled: fapKeepSessionToggle.checked });
+      }
+    });
+  }
+
+  if (fapSkinToggle) {
+    fapSkinToggle.addEventListener("change", () => {
+      if (locStorage) {
+        locStorage.set({ fapSkinEnabled: fapSkinToggle.checked });
       }
     });
   }
@@ -374,9 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       const fapKeepSessionEnabled = fapKeepSessionToggle ? fapKeepSessionToggle.checked : true;
+      const fapSkinEnabled = fapSkinToggle ? fapSkinToggle.checked : true;
 
       if (locStorage) {
-        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled }, () => {
+        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled, fapSkinEnabled }, () => {
           if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
             chrome.runtime.sendMessage({ type: "RESCHEDULE_ALARMS" }).catch(() => {});
           }
