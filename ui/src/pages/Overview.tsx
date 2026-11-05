@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Mascot } from "@/components/atoms/Brand";
 import {
   CalendarDays,
   CalendarClock,
@@ -118,8 +119,8 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
               Thông tin sinh viên
             </span>
             <div className="flex items-center gap-4">
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-surface text-xl font-semibold text-primary-strong shadow-soft">
-                {shell.student.initials || "SV"}
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-surface shadow-soft">
+                <Mascot className="size-12" />
               </span>
               <div className="min-w-0">
                 <h2 className="truncate text-[22px] font-semibold tracking-tight sm:text-2xl">

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ChevronDown, GraduationCap, LayoutGrid, LayoutTemplate, Settings2, LogOut } from "lucide-react";
+import { ChevronDown, LayoutGrid, LayoutTemplate, Settings2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS, navHref, isParent, type NavItem as NavItemType } from "@/data/nav";
 import { NavItem } from "@/components/molecules/NavItem";
 import { Switch } from "@/components/atoms/Switch";
+import { BrandLogo, Mascot } from "@/components/atoms/Brand";
 import type { ShellData } from "@/data/types";
 
 export interface AppSidebarProps {
@@ -140,25 +141,27 @@ export function AppSidebar({
       )}
     >
       <div className="h-full overflow-hidden rounded-3xl border border-border bg-surface shadow-soft flex flex-col">
-        {/* Brand */}
+        {/* Brand: the logo on top, the name under it; collapsed, only the mascot fits. */}
         <div
           className={cn(
-            "flex h-[72px] shrink-0 items-center gap-3 px-5",
-            collapsed && "justify-center px-0"
+            "flex shrink-0 flex-col items-start gap-2.5 px-5 pt-5 pb-3",
+            collapsed && "h-[72px] items-center justify-center px-0 py-0"
           )}
         >
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-ink text-ink-foreground shadow-soft">
-            <GraduationCap className="size-5" strokeWidth={1.75} />
-          </span>
-          {!collapsed && (
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-[15px] font-semibold tracking-tight">
-                Trường Đại học FPT
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                FPT Education · FAP
-              </p>
-            </div>
+          {collapsed ? (
+            <Mascot className="size-10" />
+          ) : (
+            <>
+              <BrandLogo className="h-12" />
+              <div className="min-w-0 leading-tight">
+                <p className="truncate text-[15px] font-semibold tracking-tight">
+                  Trường Đại học FPT
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
+                  FPT Education · FAP
+                </p>
+              </div>
+            </>
           )}
         </div>
 

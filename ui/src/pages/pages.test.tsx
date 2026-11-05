@@ -126,3 +126,16 @@ describe("renderPage dispatcher", () => {
     expect(news).toBeTruthy();
   });
 });
+
+
+describe("Overview student card avatar", () => {
+  it("shows the FPTU mascot in the avatar tile instead of the initials", () => {
+    const { getByRole } = render(
+      <OverviewPage
+        shell={{ student: { name: "Nguyễn Văn A", initials: "NA", studentId: "SE000000" }, campus: "HN", unreadNotifications: 0 }}
+        home={mockPageData("overview").home as any}
+      />
+    );
+    expect(getByRole("img", { name: "Linh vật FPTU" })).not.toBeNull();
+  });
+});

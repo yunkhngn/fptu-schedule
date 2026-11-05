@@ -10,3 +10,4 @@ export * from "./Separator";
 export * from "./Tooltip";
 
 export * from "./Switch";
+export * from "./Brand";
