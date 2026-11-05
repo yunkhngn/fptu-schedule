@@ -34,4 +34,25 @@ describe("AppSidebar brand", () => {
     expect(screen.queryByRole("img", { name: /FPT Education/ })).toBeNull();
     expect(screen.queryByText("Trường Đại học FPT")).toBeNull();
   });
+
+  it("links the brand logo and collapsed mascot to homepage (/)", () => {
+    let navigated = false;
+    const { rerender } = render(
+      <AppSidebar shell={shell} activePath="/News" onNavigate={() => { navigated = true; }} />
+    );
+
+    const link = screen.getByRole("img", { name: /FPT/ }).closest("a");
+    expect(link).not.toBeNull();
+    expect(link!.getAttribute("href")).toBe("/");
+
+    fireEvent.click(link!);
+    expect(navigated).toBe(true);
+
+    rerender(
+      <AppSidebar shell={shell} activePath="/News" collapsed onNavigate={() => { navigated = true; }} />
+    );
+    const collapsedLink = screen.getByRole("img", { name: "Linh vật FPTU" }).closest("a");
+    expect(collapsedLink).not.toBeNull();
+    expect(collapsedLink!.getAttribute("href")).toBe("/");
+  });
 });

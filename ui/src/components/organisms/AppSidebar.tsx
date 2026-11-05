@@ -156,16 +156,24 @@ export function AppSidebar({
             collapsed && "h-[72px] px-0 py-0"
           )}
         >
-          {collapsed ? (
-            <Mascot className="size-10" />
-          ) : logoFailed ? (
-            <div className="min-w-0 text-center leading-tight">
-              <p className="truncate text-[15px] font-semibold tracking-tight">Trường Đại học FPT</p>
-              <p className="truncate text-xs text-muted-foreground">FPT Education · FAP</p>
-            </div>
-          ) : (
-            <BrandLogo className="h-14" onFail={() => setLogoFailed(true)} />
-          )}
+          <a
+            href="/"
+            onClick={onNavigate}
+            title={t("nav.overview")}
+            aria-label={t("nav.overview")}
+            className="flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
+          >
+            {collapsed ? (
+              <Mascot className="size-10" />
+            ) : logoFailed ? (
+              <div className="min-w-0 text-center leading-tight">
+                <p className="truncate text-[15px] font-semibold tracking-tight">Trường Đại học FPT</p>
+                <p className="truncate text-xs text-muted-foreground">FPT Education · FAP</p>
+              </div>
+            ) : (
+              <BrandLogo className="h-14" onFail={() => setLogoFailed(true)} />
+            )}
+          </a>
         </div>
 
         {/* Navigation Links */}
