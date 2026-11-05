@@ -63,6 +63,7 @@
         "lib/fap-table-reader.js",
         "lib/fap-page-data.js",
         "lib/fap-readers-reports.js",
+        "lib/fap-readers-conditions.js",
         "dist/fap-ui.js"
       ],
       "run_at": "document_idle"

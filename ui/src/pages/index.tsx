@@ -8,6 +8,8 @@ import { WrappedPage } from "./Wrapped";
 import { AttendanceReport } from "./AttendanceReport";
 import { GradeReport } from "./GradeReport";
 import { Transcript } from "./Transcript";
+import { OjtConditions } from "./OjtConditions";
+import { ThesisConditions } from "./ThesisConditions";
 import { registry, type PageDefinition } from "./registry";
 
 export {
@@ -19,6 +21,8 @@ export {
   AttendanceReport,
   GradeReport,
   Transcript,
+  OjtConditions,
+  ThesisConditions,
   registry,
   type PageDefinition,
 };
@@ -53,6 +57,10 @@ export function renderPage(
       return <GradeReport data={data.grade} shell={data.shell} />;
     case "report-transcript":
       return <Transcript data={data.transcript} shell={data.shell} />;
+    case "report-ojt-conditions":
+      return <OjtConditions data={data.conditions} shell={data.shell} />;
+    case "report-thesis-conditions":
+      return <ThesisConditions data={data.conditions} shell={data.shell} />;
     default:
       return null;
   }

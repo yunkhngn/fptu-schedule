@@ -10,6 +10,8 @@ describe("page registry", () => {
       "overview",
       "report-attendance",
       "report-grade",
+      "report-ojt-conditions",
+      "report-thesis-conditions",
       "report-transcript",
       "timetable",
     ]);

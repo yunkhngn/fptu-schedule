@@ -130,6 +130,19 @@ export type TranscriptData = {
   }>;
 };
 
+export type ConditionsData = {
+  summary: {
+    eligible: boolean | null;
+    message: string;
+  };
+  checks: Array<{
+    label: string;
+    required: string;
+    actual: string;
+    passed: boolean | null;
+  }>;
+};
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -141,5 +154,7 @@ export type PageData = {
   | { page: "report-attendance"; attendance: AttendanceReportData }
   | { page: "report-grade"; grade: GradeReportData }
   | { page: "report-transcript"; transcript: TranscriptData }
+  | { page: "report-ojt-conditions"; conditions: ConditionsData }
+  | { page: "report-thesis-conditions"; conditions: ConditionsData }
 );
 

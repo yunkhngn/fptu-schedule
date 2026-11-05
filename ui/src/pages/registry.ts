@@ -8,6 +8,8 @@ import { NewsPage } from "./News";
 import { AttendanceReport } from "./AttendanceReport";
 import { GradeReport } from "./GradeReport";
 import { Transcript } from "./Transcript";
+import { OjtConditions } from "./OjtConditions";
+import { ThesisConditions } from "./ThesisConditions";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -117,5 +119,29 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(Transcript, { data, shell, lang }),
+  },
+  "report-ojt-conditions": {
+    id: "report-ojt-conditions",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-empty-card, table, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersConditions || (win.FapPageData && win.FapPageData.conditions) || (typeof window !== "undefined" && ((window as any).FapReadersConditions || (window as any).FapPageData?.conditions));
+      if (!reader || typeof reader.readConditions !== "function") return null;
+      return reader.readConditions(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(OjtConditions, { data, shell, lang }),
+  },
+  "report-thesis-conditions": {
+    id: "report-thesis-conditions",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-empty-card, table, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersConditions || (win.FapPageData && win.FapPageData.conditions) || (typeof window !== "undefined" && ((window as any).FapReadersConditions || (window as any).FapPageData?.conditions));
+      if (!reader || typeof reader.readConditions !== "function") return null;
+      return reader.readConditions(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(ThesisConditions, { data, shell, lang }),
   },
 };

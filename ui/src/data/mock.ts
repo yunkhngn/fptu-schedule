@@ -8,6 +8,7 @@ import type {
   AttendanceReportData,
   GradeReportData,
   TranscriptData,
+  ConditionsData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -277,6 +278,27 @@ export const mockTranscript: TranscriptData = {
   ],
 };
 
+export const mockOjtConditions: ConditionsData = {
+  summary: {
+    eligible: true,
+    message: "Đủ điều kiện tham gia học kỳ thực tập doanh nghiệp (OJT)",
+  },
+  checks: [
+    { label: "Số tín chỉ tích lũy", required: ">= 90 tín chỉ", actual: "105 tín chỉ", passed: true },
+    { label: "Kỳ học theo tiến độ", required: ">= Kỳ 5", actual: "Kỳ 6", passed: true },
+    { label: "Môn chuyên ngành bắt buộc", required: "Hoàn thành", actual: "Hoàn thành", passed: true },
+    { label: "Tiếng Anh chuẩn đầu ra OJT", required: "Level 6 / IELTS 6.0", actual: "Đạt", passed: true },
+  ],
+};
+
+export const mockThesisConditions: ConditionsData = {
+  summary: {
+    eligible: null,
+    message: "Hiện tại chưa có thông báo điều kiện xét khóa luận tốt nghiệp.",
+  },
+  checks: [],
+};
+
 export function mockPageData(
   page:
     | "overview"
@@ -286,6 +308,8 @@ export function mockPageData(
     | "report-attendance"
     | "report-grade"
     | "report-transcript"
+    | "report-ojt-conditions"
+    | "report-thesis-conditions"
 ): PageData {
   switch (page) {
     case "overview":
@@ -331,6 +355,18 @@ export function mockPageData(
         shell: mockShell,
         page: "report-transcript",
         transcript: mockTranscript,
+      };
+    case "report-ojt-conditions":
+      return {
+        shell: mockShell,
+        page: "report-ojt-conditions",
+        conditions: mockOjtConditions,
+      };
+    case "report-thesis-conditions":
+      return {
+        shell: mockShell,
+        page: "report-thesis-conditions",
+        conditions: mockThesisConditions,
       };
   }
 }
