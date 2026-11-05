@@ -35,11 +35,14 @@
 
 ### Task 0: Đưa phần màu nhấn đã làm vào main
 
-Nhánh `fap-ui-accent-sync` đã có phần màu nhấn hoàn chỉnh và có test: preset lavender trong `lib/accent.js`, popup chép `accentColor` sang `chrome.storage`, `ui/src/accent/palette.ts` (`accentVarsFor`, `hexToOklch`, `oklchToRgb`, `contrastRatio`), `ui/src/accent/apply.ts` (`readAccent`, `applyAccent`, `watchAccent`), tài liệu và `?accent=` của harness.
+Phần màu nhấn đã được làm xong trước đó trên nhánh `fap-ui-accent-sync` (preset lavender trong `lib/accent.js`, popup chép `accentColor` sang `chrome.storage`, `ui/src/accent/palette.ts` với `accentVarsFor`, `hexToOklch`, `oklchToRgb`, `contrastRatio`, `ui/src/accent/apply.ts`, tài liệu và `?accent=` của harness; có test). **Nhánh này đã bị xóa khỏi repo theo yêu cầu**, phần đã làm được lưu trong file `/Volumes/Data/Code/extension/fptu-accent-sync-branch.bundle`.
 
-- [ ] **Step 1:** Trên `main`, chạy `git merge fap-ui-accent-sync` (commit tài liệu chế độ tối nằm ở cả hai nhánh với nội dung giống hệt nên không xung đột). Nếu có xung đột ngoài ý muốn, dừng và báo.
+- [ ] **Step 1 (cách mặc định, dùng lại phần đã làm):** trên `main`, chạy
+  `git fetch /Volumes/Data/Code/extension/fptu-accent-sync-branch.bundle fap-ui-accent-sync:fap-ui-accent-sync && git merge fap-ui-accent-sync`.
+  Commit tài liệu chế độ tối có ở cả hai phía với nội dung giống hệt nên không xung đột. Nếu có xung đột ngoài ý muốn, dừng và báo.
+- [ ] **Step 1b (chỉ khi file bundle không còn):** làm lại các Task 1 đến 5 của `docs/superpowers/plans/2026-11-05-fap-ui-accent-sync.md` (plan cũ, vẫn đúng nội dung cho phần này), rồi tiếp tục Task 1 của plan này.
 - [ ] **Step 2:** `node --test tests/*.test.js` và `cd ui && npm test && npm run parity`; mong đợi PASS và đối chiếu sáng như Global Constraints.
-- [ ] **Step 3:** Không cần commit thêm (merge đã tạo commit).
+- [ ] **Step 3:** Không cần commit thêm (merge đã tạo commit). Sau khi merge xong có thể xóa nhánh tạm `git branch -d fap-ui-accent-sync`.
 
 ---
 
