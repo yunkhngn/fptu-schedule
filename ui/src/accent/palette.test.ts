@@ -10,7 +10,7 @@ import {
 } from "./palette";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import accentModule from "@lib/accent.js";
+import * as accentModule from "@lib/accent.js";
 
 const mod = accentModule as unknown as {
   default?: { ACCENT_PRESETS?: Array<{ id: string; light: string; dark: string; label: string }> };

@@ -350,9 +350,16 @@ describe("boot lifecycle and fallback", () => {
           }),
           remove: vi.fn(async () => {}),
         },
-        onChanged: { addListener: (l: (typeof listeners)[number]) => listeners.push(l) },
+        onChanged: {
+          addListener: (l: (typeof listeners)[number]) => listeners.push(l),
+          removeListener: (l: (typeof listeners)[number]) => {
+            const idx = listeners.indexOf(l);
+            if (idx >= 0) listeners.splice(idx, 1);
+          },
+        },
       },
-    } as unknown as typeof chrome;
+      _listeners: listeners,
+    } as unknown as typeof chrome & { _listeners: typeof listeners };
   }
 
   const overviewHtml = `
@@ -440,6 +447,103 @@ describe("boot lifecycle and fallback", () => {
       expect(document.getElementById("fptu-ui-return")).toBe(null);
       expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
     });
+  });
+
+  it("applies stored accent colour (pink) to host on mount", async () => {
+    const store: Record<string, unknown> = { accentColor: "pink" };
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(host!.style.getPropertyValue("--primary")).not.toBe("");
+  });
+
+  it("proceeds with default lavender when accent storage read times out", async () => {
+    vi.useFakeTimers();
+    const mockChrome = {
+      storage: {
+        local: {
+          get: vi.fn(async (keys: string[]) => {
+            if (keys.includes("accentColor")) {
+              return new Promise(() => {});
+            }
+            return { fapUiEnabled: true };
+          }),
+          set: vi.fn(async () => {}),
+          remove: vi.fn(async () => {}),
+        },
+        onChanged: { addListener: vi.fn() },
+      },
+    } as unknown as typeof chrome;
+
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    const bootPromise = boot({ win: mockWin, chromeApi: mockChrome });
+    await vi.advanceTimersByTimeAsync(350);
+    await bootPromise;
+    vi.useRealTimers();
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(host!.style.getPropertyValue("--primary")).toBe("");
+  });
+
+  it("keeps exactly 1 active accent listener across fapUiEnabled toggles", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+
+    // Toggle off/on 3 times
+    for (let i = 0; i < 3; i++) {
+      await act(async () => {
+        await mockChrome.storage.local.set({ fapUiEnabled: false });
+      });
+      await waitFor(() => expect(document.getElementById("fptu-ui-host")).toBe(null));
+
+      await act(async () => {
+        await mockChrome.storage.local.set({ fapUiEnabled: true });
+      });
+      await waitFor(() => expect(document.getElementById("fptu-ui-host")).not.toBe(null));
+    }
+
+    // Emit accentColor change
+    await act(async () => {
+      await mockChrome.storage.local.set({ accentColor: "teal" });
+    });
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(host!.style.getPropertyValue("--primary")).not.toBe("");
+
+    // Active listeners: 1 for watchMasterSwitch + 1 for watchAccent = 2 total
+    expect(mockChrome._listeners.length).toBe(2);
+  });
+
+  it("handles accentColor changes gracefully when fapUiEnabled is false", async () => {
+    const store: Record<string, unknown> = { fapUiEnabled: false };
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome, timeoutMs: 30 });
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+
+    // Firing accentColor change when disabled should not throw or create host
+    await expect(
+      act(async () => {
+        await mockChrome.storage.local.set({ accentColor: "teal" });
+      })
+    ).resolves.not.toThrow();
+
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
   });
 });
 

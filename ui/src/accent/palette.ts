@@ -1,4 +1,4 @@
-import accentModule from "@lib/accent.js";
+import * as accentModule from "@lib/accent.js";
 
 export interface AccentPreset {
   id: string;
