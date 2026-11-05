@@ -11,3 +11,105 @@ html[data-fptu-ui="active"] footer {
   display: none !important;
 }
 
+
+/* ---------------------------------------------------------------------------------------------
+   Splash screen while the new interface waits for its data. Created by fap-ui-early.js and removed
+   when the page stops waiting. It fades in after a short delay, so a fast load shows no splash at all.
+   --------------------------------------------------------------------------------------------- */
+#fptu-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #f7f8fc;
+  color: #9695ee;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#fptu-splash[data-theme="dark"] {
+  background: #0e0f15;
+  color: #8f8af0;
+}
+
+html[data-fptu-ui="pending"] #fptu-splash {
+  visibility: visible;
+  pointer-events: auto;
+  animation: fptu-splash-in 0.25s ease 0.15s both;
+}
+
+#fptu-splash .fptu-splash__frog {
+  width: 88px;
+  height: 88px;
+  animation: fptu-splash-bounce 1.1s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+#fptu-splash .fptu-splash__frog svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#fptu-splash .fptu-splash__shadow {
+  width: 56px;
+  height: 8px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.18;
+  animation: fptu-splash-shadow 1.1s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+#fptu-splash .fptu-splash__dots {
+  display: flex;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+#fptu-splash .fptu-splash__dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: fptu-splash-dot 1.1s ease-in-out infinite;
+}
+
+#fptu-splash .fptu-splash__dot:nth-child(2) { animation-delay: 0.15s; }
+#fptu-splash .fptu-splash__dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fptu-splash-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fptu-splash-bounce {
+  0%, 100% { transform: translateY(0) scale(1.04, 0.96); }
+  45% { transform: translateY(-16px) scale(0.98, 1.03); }
+}
+
+@keyframes fptu-splash-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 0.18; }
+  45% { transform: scaleX(0.7); opacity: 0.1; }
+}
+
+@keyframes fptu-splash-dot {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #fptu-splash .fptu-splash__frog,
+  #fptu-splash .fptu-splash__shadow,
+  #fptu-splash .fptu-splash__dot {
+    animation: none;
+  }
+  html[data-fptu-ui="pending"] #fptu-splash {
+    animation: none;
+  }
+}

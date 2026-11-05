@@ -20,6 +20,7 @@
 - Mọi chuỗi chữ qua `t()`; chữ lấy từ FAP hiển thị như văn bản thuần (không `dangerouslySetInnerHTML` với dữ liệu từ FAP).
 - Thành phần mới đặt đúng tầng atoms, molecules, organisms, templates và có test; cập nhật `DESIGN.md` bằng script sinh.
 - Chỉ dùng token màu (sáng, tối, màu nhấn đều đúng); đối chiếu thiết kế 4 trang cũ (`npm run parity`) không xấu đi quá 0.5 điểm phần trăm.
+- Màn chờ (splash) trong `lib/fap-ui-early.js` và `lib/fap-ui-early.css` giữ nguyên khi sửa các tệp này ở Task 3 và Task 15 (các test `splash:` trong `tests/fap-ui-early.test.js` phải còn pass); route `auth` cũng hiển thị màn chờ.
 - Fixture mới qua `scripts/sanitize-fap-page.py`; `tests/fixtures-secrets.test.js` phải pass.
 - `node --test tests/*.test.js` và `cd ui && npm test` pass 100%. Không phát hành, không đổi phiên bản.
 
