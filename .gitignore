@@ -6,3 +6,5 @@ dist/
 /exam.html
 /page-fap/
 ui/parity/*.png
+.superpowers/
+*.bundle
