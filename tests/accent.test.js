@@ -117,3 +117,21 @@ test("orange is available as a preset and blue stays the default", () => {
   assert.ok(contrastRatio("#ffffff", orange.light) >= 3.5 && contrastRatio("#ffffff", orange.dark) >= 3.5);
 });
 
+test("lavender is available as a preset placed after violet and blue stays the default", () => {
+  const lavender = ACCENT_PRESETS.find((p) => p.id === "lavender");
+  assert.ok(lavender, "lavender preset exists");
+  assert.strictEqual(lavender.label, "Tím lavender");
+  assert.strictEqual(lavender.light, "#6d5fd6");
+  assert.strictEqual(lavender.dark, "#7c6fe0");
+  assert.strictEqual(DEFAULT_ACCENT_ID, "blue");
+  assert.strictEqual(ACCENT_PRESETS[0].id, "blue");
+  assert.strictEqual(normalizeAccentId("lavender"), "lavender");
+  assert.strictEqual(
+    ACCENT_PRESETS.findIndex((p) => p.id === "lavender"),
+    ACCENT_PRESETS.findIndex((p) => p.id === "violet") + 1,
+    "lavender is placed immediately after violet"
+  );
+  assert.ok(contrastRatio("#ffffff", "#6d5fd6") >= 4.5, "light contrast >= 4.5");
+  assert.ok(contrastRatio("#ffffff", "#7c6fe0") >= 3.5, "dark contrast >= 3.5");
+});
+
