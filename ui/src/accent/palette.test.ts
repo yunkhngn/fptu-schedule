@@ -63,6 +63,15 @@ describe("OKLCH palette derivation", () => {
       expect(accentVarsFor(42 as any)).toEqual({});
       expect(accentVarsFor("lavender")).toEqual({});
     });
+
+    it("returns {} for undefined, null, empty string, unknown id, wrong type, and lavender in dark mode", () => {
+      expect(accentVarsFor(undefined, "dark")).toEqual({});
+      expect(accentVarsFor(null, "dark")).toEqual({});
+      expect(accentVarsFor("", "dark")).toEqual({});
+      expect(accentVarsFor("nope", "dark")).toEqual({});
+      expect(accentVarsFor(42 as any, "dark")).toEqual({});
+      expect(accentVarsFor("lavender", "dark")).toEqual({});
+    });
   });
 
   describe("accentVarsFor for non-lavender presets", () => {
@@ -139,6 +148,55 @@ describe("OKLCH palette derivation", () => {
         expect(
           contrastOnSoft,
           `Preset ${preset.id} failed contrast on primary-soft: ${contrastOnSoft.toFixed(2)}`
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    });
+  });
+
+  describe("accentVarsFor in dark theme", () => {
+    const nonLavenderPresets = ACCENT_PRESETS.filter((p) => p.id !== "lavender");
+
+    it("matches existing light mode result when theme argument is omitted", () => {
+      expect(accentVarsFor("orange")).toEqual(accentVarsFor("orange", "light"));
+    });
+
+    it("preserves L=0.72 for --primary and places orange hue within ±3 deg of preset.dark", () => {
+      const orangePreset = ACCENT_PRESETS.find((p) => p.id === "orange")!;
+      const orangeDarkOklch = hexToOklch(orangePreset.dark);
+      const orangeVars = accentVarsFor("orange", "dark");
+      const primaryOklch = parseOklchString(orangeVars["--primary"]);
+
+      expect(primaryOklch.l).toBeCloseTo(0.72, 2);
+      expect(Math.abs(primaryOklch.h - orangeDarkOklch.h)).toBeLessThanOrEqual(3);
+    });
+
+    it("guarantees WCAG contrast >= 4.5:1 for --primary-strong against dark surface and --primary-soft across all presets", () => {
+      // Dark surface is oklch(0.2 0.014 277)
+      const darkSurfaceRgb = oklchToRgb({ l: 0.2, c: 0.014, h: 277 });
+      const darkSurfaceLum = relativeLuminance(darkSurfaceRgb[0], darkSurfaceRgb[1], darkSurfaceRgb[2]);
+
+      for (const preset of nonLavenderPresets) {
+        const vars = accentVarsFor(preset.id, "dark");
+        const strongOklch = parseOklchString(vars["--primary-strong"]);
+        const softOklch = parseOklchString(vars["--primary-soft"]);
+
+        const strongRgb = oklchToRgb(strongOklch);
+        const softRgb = oklchToRgb(softOklch);
+
+        const strongLum = relativeLuminance(strongRgb[0], strongRgb[1], strongRgb[2]);
+        const softLum = relativeLuminance(softRgb[0], softRgb[1], softRgb[2]);
+
+        const contrastOnSurface = contrastRatio(strongLum, darkSurfaceLum);
+        const contrastOnSoft = contrastRatio(strongLum, softLum);
+
+        expect(
+          contrastOnSurface,
+          `Preset ${preset.id} failed contrast on dark surface: ${contrastOnSurface.toFixed(2)}`
+        ).toBeGreaterThanOrEqual(4.5);
+
+        expect(
+          contrastOnSoft,
+          `Preset ${preset.id} failed contrast on dark primary-soft: ${contrastOnSoft.toFixed(2)}`
         ).toBeGreaterThanOrEqual(4.5);
       }
     });

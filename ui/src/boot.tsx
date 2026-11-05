@@ -8,7 +8,11 @@ import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
 import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage } from "./pages";
-import { readAccent, applyAccent, watchAccent } from "./accent/apply";
+import {
+  readAppearance,
+  applyAppearance,
+  watchAppearance,
+} from "./appearance/appearance";
 import type { ShellData, PageData } from "./data/types";
 
 export interface BootOptions {
@@ -218,7 +222,7 @@ async function bootInner(options?: BootOptions): Promise<void> {
   // @property and @font-face rules only work in the main document, everything else goes into the shadow root.
   const { shadowCss, documentCss } = splitDocumentCss(options?.css ?? appCss);
 
-  const accentId = await readAccent(chromeApi);
+  const appearance = await readAppearance(chromeApi);
 
   const { host, root, unmount: unmountShadow } = mountShadow({
     css: shadowCss,
@@ -226,8 +230,8 @@ async function bootInner(options?: BootOptions): Promise<void> {
     fontBaseUrl,
   });
 
-  applyAccent(host, accentId);
-  const accentWatcher = watchAccent(host, chromeApi);
+  applyAppearance(host, appearance, win);
+  const appearanceWatcher = watchAppearance(host, chromeApi, win, appearance);
 
   const reactRoot = createRoot(root as unknown as HTMLElement);
 
@@ -237,7 +241,7 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const giveBack = (reason: string) => {
     if (givenBack) return;
     givenBack = true;
-    accentWatcher.stop();
+    appearanceWatcher.stop();
     try {
       reactRoot.unmount();
     } catch (_) {}
