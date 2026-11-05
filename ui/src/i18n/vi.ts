@@ -151,4 +151,7 @@ export const vi: Record<string, string> = {
   // Common
   "common.loading": "Đang tải…",
   "common.error": "Đã có lỗi xảy ra",
+  "forms.required": "(bắt buộc)",
+  "forms.fill_required": "Điền các ô bắt buộc để lưu.",
+  "forms.submitting": "Đang gửi…",
 };

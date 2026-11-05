@@ -62,6 +62,7 @@
       "js": [
         "lib/fap-table-reader.js",
         "lib/fap-page-data.js",
+        "lib/fap-form-reader.js",
         "lib/fap-readers-reports.js",
         "lib/fap-readers-conditions.js",
         "lib/fap-readers-academic.js",

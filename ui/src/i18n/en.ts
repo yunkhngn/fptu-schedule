@@ -151,4 +151,7 @@ export const en: Record<string, string> = {
   // Common
   "common.loading": "Loading…",
   "common.error": "An error occurred",
+  "forms.required": "(required)",
+  "forms.fill_required": "Fill in the required fields to save.",
+  "forms.submitting": "Submitting…",
 };
