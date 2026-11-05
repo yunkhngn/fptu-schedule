@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Bell,
   Check,
   ChevronDown,
   Languages,
@@ -16,6 +15,7 @@ import { Mascot } from "@/components/atoms/Brand";
 import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 import { CampusMenu } from "@/components/molecules/CampusMenu";
 import { LanguageMenu } from "@/components/molecules/LanguageMenu";
+import { NotificationMenu } from "./NotificationMenu";
 import { SearchDialog } from "./SearchDialog";
 import type { ThemePreference } from "@/theme/theme";
 import type { ShellData, TopbarData } from "@/data/types";
@@ -144,19 +144,7 @@ export function TopNavigation({
           )}
 
           {/* Notifications */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="relative"
-            aria-label="Thông báo"
-          >
-            <Bell className="size-4" strokeWidth={1.75} />
-            {shell.unreadNotifications > 0 && (
-              <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-danger ring-2 ring-surface">
-                <span className="sr-only">{shell.unreadNotifications}</span>
-              </span>
-            )}
-          </Button>
+          <NotificationMenu unread={shell.unreadNotifications} />
 
           {/* Fullscreen Toggle */}
           <Button
