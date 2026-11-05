@@ -28,7 +28,7 @@ describe("boot after the extension was reloaded under an open tab", () => {
     } as unknown as typeof chrome;
     const win = { location: { pathname: "/Subject" }, document: window.document } as unknown as Window;
 
-    await boot({ win, chromeApi });
+    await boot({ win, chromeApi, timeoutMs: 50 });
 
     expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
     expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toBe("extension-reloaded");
@@ -45,7 +45,7 @@ describe("boot after the extension was reloaded under an open tab", () => {
     } as unknown as typeof chrome;
     const win = { location: { pathname: "/Subject" }, document: window.document } as unknown as Window;
 
-    await boot({ win, chromeApi });
+    await boot({ win, chromeApi, timeoutMs: 50 });
 
     expect(error).toHaveBeenCalled();
     expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toMatch(/^error: boom/);
