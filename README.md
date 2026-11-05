@@ -96,6 +96,22 @@ Covers `.ics` output (escaping, folding, timestamps), class-schedule dedupe/merg
 weekly-table scraper (both header shapes, month boundaries, unparseable cells) and popup
 start-up. The extension itself ships as plain files — npm is not part of the build.
 
+## React UI for FAP (`ui/`)
+
+The extension includes a rebuilt, modern interface for 4 core FAP pages (Overview, Weekly Timetable, Exam Schedule, and News) running inside an isolated Shadow DOM.
+
+### Development & Build
+
+```bash
+cd ui
+npm install
+npm test          # Runs Vitest component and pipeline tests
+npm run build     # Builds unminified IIFE dist/fap-ui.js and local font assets
+npm run parity    # Runs headless Chrome screenshot parity test against design
+```
+
+When building or packaging the extension, build `ui/` first to generate `dist/fap-ui.js` and fonts.
+
 ## Contributing
 
 1. Fork the repo  

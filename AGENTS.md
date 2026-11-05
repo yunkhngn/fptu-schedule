@@ -68,7 +68,7 @@ This file defines the project-specific rules, architectural constraints, and eng
   - Structure all changes thoroughly by feature categories (e.g., `Added`, `Changed`, `Fixed`, `Security & Compliance`).
 - **Packaging Command:**
   ```bash
-  zip -FS -r fptu-schedule.zip manifest.json *.png popup.html popup.js popup.css background.js content.js lib/
+  cd ui && npm ci && npm run build && cd .. && zip -FS -r fptu-schedule.zip manifest.json *.png popup.html popup.js popup.css background.js content.js lib/ dist/
   ```
 - **Version Synchronization & Web Documentation:**
   - When the user confirms a release version, synchronize consistency across `manifest.json`, `package.json`, `lib/` badges, `CHANGELOG.md`, and the documentation site under `docs/` (`docs/index.html` meta tags, version badges, hero banner, feature cards, download URLs, and changelog cards).
