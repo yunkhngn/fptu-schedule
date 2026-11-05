@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import React from "react";
 import { Calendar } from "lucide-react";
 import {
@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
+  Switch,
 } from "./index";
 
 describe("atoms component suite", () => {
@@ -119,5 +120,24 @@ describe("atoms component suite", () => {
       </TooltipProvider>
     );
     expect(getByText("Hover me")).not.toBeNull();
+  });
+});
+
+
+describe("Switch atom", () => {
+  it("exposes its state and name to assistive tech and toggles through onCheckedChange", () => {
+    const onChange = vi.fn();
+    const { getByRole, rerender } = render(<Switch checked label="Bật giao diện" onCheckedChange={onChange} />);
+
+    const sw = getByRole("switch", { name: "Bật giao diện" });
+    expect(sw.getAttribute("aria-checked")).toBe("true");
+    expect(sw.className).toContain("bg-primary-strong");
+    fireEvent.click(sw);
+    expect(onChange).toHaveBeenCalledWith(false);
+
+    rerender(<Switch checked={false} label="Bật giao diện" onCheckedChange={onChange} />);
+    expect(getByRole("switch").getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(getByRole("switch"));
+    expect(onChange).toHaveBeenLastCalledWith(true);
   });
 });

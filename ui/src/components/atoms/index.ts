@@ -9,3 +9,4 @@ export * from "./Skeleton";
 export * from "./Separator";
 export * from "./Tooltip";
 
+export * from "./Switch";

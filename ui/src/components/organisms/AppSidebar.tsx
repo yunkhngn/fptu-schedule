@@ -3,6 +3,7 @@ import { ChevronDown, GraduationCap, LayoutGrid, Sparkles, Settings2, LogOut } f
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS, navHref, isParent, type NavItem as NavItemType } from "@/data/nav";
 import { NavItem } from "@/components/molecules/NavItem";
+import { Switch } from "@/components/atoms/Switch";
 import type { ShellData } from "@/data/types";
 
 export interface AppSidebarProps {
@@ -11,6 +12,8 @@ export interface AppSidebarProps {
   collapsed?: boolean;
   className?: string;
   onNavigate?: () => void;
+  /** Turns the new interface off for every page. When omitted the card shows no switch. */
+  onShowOriginal?: () => void;
 }
 
 function SidebarGroup({
@@ -124,6 +127,7 @@ export function AppSidebar({
   collapsed = false,
   className,
   onNavigate,
+  onShowOriginal,
 }: AppSidebarProps) {
   const isDashboardActive = activePath === "/" || activePath === "";
 
@@ -216,7 +220,7 @@ export function AppSidebar({
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-surface/80 text-primary-strong">
                 <Sparkles className="size-4" strokeWidth={1.75} />
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <span className="block truncate text-[13px] font-semibold">
                   Giao diện FAP mới
                 </span>
@@ -224,6 +228,13 @@ export function AppSidebar({
                   Đang được sử dụng
                 </span>
               </div>
+              {onShowOriginal && (
+                <Switch checked label="Tắt giao diện FAP mới" onCheckedChange={() => onShowOriginal()} />
+              )}
+            </div>
+          ) : onShowOriginal ? (
+            <div className="flex justify-center">
+              <Switch checked label="Tắt giao diện FAP mới" onCheckedChange={() => onShowOriginal()} />
             </div>
           ) : (
             <div className="flex justify-center p-2">

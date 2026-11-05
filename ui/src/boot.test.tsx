@@ -386,7 +386,7 @@ describe("boot lifecycle and fallback", () => {
     await waitFor(() => expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toBe("data-timeout"));
   });
 
-  it("'Xem bản FAP gốc' turns the interface off for every page with one master switch", async () => {
+  it("the sidebar switch turns the interface off for every page with one master switch", async () => {
     const store: Record<string, unknown> = {};
     const mockChrome = makeChrome(store);
     document.body.innerHTML = overviewHtml;
@@ -398,9 +398,7 @@ describe("boot lifecycle and fallback", () => {
     const shadowRoot = document.getElementById("fptu-ui-host")!.shadowRoot!;
     let button: HTMLButtonElement | undefined;
     await waitFor(() => {
-      button = Array.from(shadowRoot.querySelectorAll("button")).find((b) =>
-        b.textContent?.includes("Xem bản FAP gốc")
-      ) as HTMLButtonElement | undefined;
+      button = shadowRoot.querySelector('button[role="switch"]') as HTMLButtonElement | null ?? undefined;
       expect(button).toBeTruthy();
     });
     await act(async () => {

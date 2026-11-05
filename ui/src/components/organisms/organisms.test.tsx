@@ -40,15 +40,32 @@ describe("organisms and templates suite", () => {
     expect(activeLink).not.toBeNull();
     expect(activeLink?.getAttribute("href")).toBe("/WeeklyTimetable");
 
-    const originalBtn = getByRole("button", { name: /Xem bản FAP gốc/i });
-    expect(originalBtn).not.toBeNull();
-    fireEvent.click(originalBtn);
-    expect(onShowOriginal).toHaveBeenCalled();
+    // The on/off switch lives in the "Giao diện FAP mới" card of the sidebar.
+    const modernUiSwitch = getByRole("switch", { name: /giao diện FAP mới/i });
+    expect(modernUiSwitch.getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(modernUiSwitch);
+    expect(onShowOriginal).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not repeat the switch as a button in the top bar, and shows no switch without a handler", () => {
+    const { queryByRole, rerender } = render(
+      <AppShell shell={mockShell} activePath="/" onShowOriginal={() => {}}>
+        <div>Content</div>
+      </AppShell>
+    );
+    expect(queryByRole("button", { name: /Xem bản FAP gốc/i })).toBeNull();
+
+    rerender(
+      <AppShell shell={mockShell} activePath="/">
+        <div>Content</div>
+      </AppShell>
+    );
+    expect(queryByRole("switch")).toBeNull();
   });
 
   it("renders TopNavigation with campus info and unread badge, with static campus/language selector", () => {
     const { getByText } = render(
-      <TopNavigation shell={mockShell} onShowOriginal={() => {}} />
+      <TopNavigation shell={mockShell} />
     );
 
     expect(getByText("Cơ sở Hà Nội (HN)")).not.toBeNull();

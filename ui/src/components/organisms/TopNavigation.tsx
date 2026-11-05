@@ -3,7 +3,6 @@ import {
   Bell,
   Check,
   ChevronDown,
-  ExternalLink,
   Languages,
   MapPin,
   Maximize2,
@@ -17,7 +16,6 @@ import type { ShellData } from "@/data/types";
 
 export interface TopNavigationProps {
   shell: ShellData;
-  onShowOriginal?: () => void;
   onToggleSidebar?: () => void;
   className?: string;
 }
@@ -27,7 +25,6 @@ const pill =
 
 export function TopNavigation({
   shell,
-  onShowOriginal,
   onToggleSidebar,
   className,
 }: TopNavigationProps) {
@@ -77,19 +74,6 @@ export function TopNavigation({
 
         {/* Actions & Profile */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Switch back to original FAP */}
-          {onShowOriginal && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onShowOriginal}
-              className="text-xs font-semibold gap-1.5"
-            >
-              <ExternalLink className="size-3.5" />
-              <span>Xem bản FAP gốc</span>
-            </Button>
-          )}
-
           {/* Campus Selector */}
           <div className={cn(pill, "hidden xl:inline-flex")}>
             <MapPin className="size-3.5 text-muted-foreground" strokeWidth={1.75} />

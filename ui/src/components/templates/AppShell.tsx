@@ -29,13 +29,13 @@ export function AppShell({
         shell={shell}
         activePath={activePath}
         collapsed={collapsed}
+        onShowOriginal={onShowOriginal}
       />
 
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col">
         <TopNavigation
           shell={shell}
-          onShowOriginal={onShowOriginal}
           onToggleSidebar={toggleSidebar}
         />
         <main className="page-enter flex-1 px-4 pt-2 pb-10 sm:px-6 lg:px-8">
