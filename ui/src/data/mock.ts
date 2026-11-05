@@ -19,6 +19,7 @@ import type {
   ApplicationsData,
   ApplicationCatalogData,
   ListOrEmptyData,
+  ArticleData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -449,6 +450,33 @@ export const mockCrossClassChange: ListOrEmptyData = {
   createHref: "/CrossClassChange/Create",
 };
 
+export const mockNewsDetail: ArticleData = {
+  title: "Thông báo lịch thi kết thúc học phần lần 1, lần 2 các môn học Block 1-4 học kỳ Fall 2026",
+  meta: [
+    { label: "Chuyên mục", value: "Thông tin Khảo Thí" },
+    { label: "Người đăng", value: "Phòng Khảo thí" },
+    { label: "Ngày đăng", value: "02/11/2026 23:27" },
+  ],
+  attachments: [
+    { name: "LichThi_Block1_4_Fall2026.pdf", href: "https://fap.fpt.edu.vn/download/lich-thi.pdf" },
+  ],
+  bodySelector: ".fap-news-content",
+  backHref: "/News",
+};
+
+export const mockDocumentDetail: ArticleData = {
+  title: "View syllabus",
+  meta: [
+    { label: "Thời gian", value: "28/09/2026 16:58" },
+    { label: "Loại tài liệu", value: "Đề cương môn học" },
+  ],
+  attachments: [
+    { name: "Mở tệp", href: "https://flm.fpt.edu.vn/" },
+  ],
+  bodySelector: ".fap-document-body",
+  backHref: "/Document",
+};
+
 export function mockPageData(
   page:
     | "overview"
@@ -472,6 +500,8 @@ export function mockPageData(
     | "application-catalog"
     | "startup-group"
     | "cross-class-change"
+    | "news-detail"
+    | "document-detail"
 ): PageData {
   switch (page) {
     case "overview":
@@ -601,6 +631,18 @@ export function mockPageData(
         shell: mockShell,
         page: "cross-class-change",
         crossClass: mockCrossClassChange,
+      };
+    case "news-detail":
+      return {
+        shell: mockShell,
+        page: "news-detail",
+        article: mockNewsDetail,
+      };
+    case "document-detail":
+      return {
+        shell: mockShell,
+        page: "document-detail",
+        article: mockDocumentDetail,
       };
   }
 }

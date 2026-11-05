@@ -49,3 +49,37 @@ export function resolveWrappedTitle(doc: Document): string {
   const title = doc.title || "";
   return title.replace(/\s*-\s*FAP\s*-\s*FPT Education$/i, "").trim();
 }
+
+/**
+ * Adopts an article body element into host with slot="fap-article-body".
+ * Returns a handle with restore() to move it back to original parent.
+ */
+export function adoptArticleBody(
+  doc: Document,
+  host: HTMLElement,
+  selector: string
+): AdoptResult | null {
+  const content = doc.querySelector(selector);
+  if (!content) return null;
+  const parent = content.parentNode;
+  if (!parent) return null;
+  const nextSibling = content.nextSibling;
+
+  content.setAttribute("slot", "fap-article-body");
+  host.appendChild(content);
+
+  let restored = false;
+  return {
+    restore() {
+      if (restored) return;
+      restored = true;
+      content.removeAttribute("slot");
+      if (nextSibling && parent.contains(nextSibling)) {
+        parent.insertBefore(content, nextSibling);
+      } else {
+        parent.appendChild(content);
+      }
+    },
+  };
+}
+

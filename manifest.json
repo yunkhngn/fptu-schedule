@@ -66,6 +66,7 @@
         "lib/fap-readers-conditions.js",
         "lib/fap-readers-academic.js",
         "lib/fap-readers-records.js",
+        "lib/fap-readers-article.js",
         "dist/fap-ui.js"
       ],
       "run_at": "document_idle"

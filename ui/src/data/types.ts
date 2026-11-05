@@ -233,6 +233,14 @@ export type ListOrEmptyData =
   | { empty: true; createHref: string | null }
   | { empty: false; createHref?: string | null };
 
+export type ArticleData = {
+  title: string;
+  meta: Array<{ label: string; value: string }>;
+  attachments: Array<{ name: string; href: string }>;
+  bodySelector: string;
+  backHref?: string;
+};
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -258,5 +266,7 @@ export type PageData = {
   | { page: "application-catalog"; catalog: ApplicationCatalogData }
   | { page: "startup-group"; startup: ListOrEmptyData }
   | { page: "cross-class-change"; crossClass: ListOrEmptyData }
+  | { page: "news-detail"; article: ArticleData }
+  | { page: "document-detail"; article: ArticleData }
 );
 

@@ -22,6 +22,7 @@ import { Applications } from "./Applications";
 import { ApplicationCatalog } from "./ApplicationCatalog";
 import { StartupGroupEmpty } from "./StartupGroupEmpty";
 import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
+import { Article } from "./Article";
 import { registry, type PageDefinition } from "./registry";
 
 export {
@@ -47,6 +48,7 @@ export {
   ApplicationCatalog,
   StartupGroupEmpty,
   CrossClassChangeEmpty,
+  Article,
   registry,
   type PageDefinition,
 };
@@ -109,6 +111,10 @@ export function renderPage(
       return <StartupGroupEmpty data={data.startup} shell={data.shell} />;
     case "cross-class-change":
       return <CrossClassChangeEmpty data={data.crossClass} shell={data.shell} />;
+    case "news-detail":
+      return <Article data={data.article} shell={data.shell} />;
+    case "document-detail":
+      return <Article data={data.article} shell={data.shell} />;
     default:
       return null;
   }

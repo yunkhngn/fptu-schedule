@@ -22,6 +22,7 @@ import { Applications } from "./Applications";
 import { ApplicationCatalog } from "./ApplicationCatalog";
 import { StartupGroupEmpty } from "./StartupGroupEmpty";
 import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
+import { Article } from "./Article";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -299,5 +300,29 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(CrossClassChangeEmpty, { data, shell, lang }),
+  },
+  "news-detail": {
+    id: "news-detail",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-news-detail-card, .fap-news-content")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersArticle || (win.FapPageData && win.FapPageData.article) || (typeof window !== "undefined" && ((window as any).FapReadersArticle || (window as any).FapPageData?.article));
+      if (!reader || typeof reader.readArticle !== "function") return null;
+      return reader.readArticle(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Article, { data, shell, lang }),
+  },
+  "document-detail": {
+    id: "document-detail",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-document-detail, .fap-document-body, .fap-document-content")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersArticle || (win.FapPageData && win.FapPageData.article) || (typeof window !== "undefined" && ((window as any).FapReadersArticle || (window as any).FapPageData?.article));
+      if (!reader || typeof reader.readArticle !== "function") return null;
+      return reader.readArticle(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Article, { data, shell, lang }),
   },
 };
