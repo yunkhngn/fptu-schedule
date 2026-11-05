@@ -17,13 +17,19 @@ html:not([data-fptu-skin="off"]) {
   --ct-link-color: var(--fptu-accent);
   --ct-link-hover-color: var(--fptu-accent-hover);
   --ct-border-radius: 0.9rem;
-  --ct-body-bg: #eceef3;
+  --ct-body-bg: #e9ecf4;
+  /* FAP ships a pale grey body colour (#6c757d); the skin uses a deep ink so text reads clearly on glass. */
+  --ct-body-color: #1c2436;
+  --ct-heading-color: #0f1626;
+  --ct-emphasis-color: #0f1626;
+  --ct-secondary-color: #586178;
+  --ct-tertiary-color: #586178;
   --ct-font-sans-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --ct-topbar-bg: transparent;
   --ct-menu-bg: transparent;
-  --fptu-ambient-a: color-mix(in srgb, var(--fptu-accent) 30%, transparent);
-  --fptu-ambient-b: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 35%, #818cf8) 28%, transparent);
-  --fptu-ambient-c: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 40%, #2dd4bf) 22%, transparent);
+  --fptu-ambient-a: color-mix(in srgb, var(--fptu-accent) 42%, transparent);
+  --fptu-ambient-b: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 40%, #f472b6) 34%, transparent);
+  --fptu-ambient-c: color-mix(in srgb, color-mix(in oklab, var(--fptu-accent) 45%, #2dd4bf) 30%, transparent);
   --fptu-glass-bg: rgba(255, 255, 255, 0.62);
   --fptu-glass-border: rgba(255, 255, 255, 0.75);
   --fptu-glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -39,6 +45,11 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] {
   --ct-link-hover-color: var(--fptu-accent-hover);
   --ct-border-radius: 0.9rem;
   --ct-body-bg: #0b1020;
+  --ct-body-color: #dfe6f3;
+  --ct-heading-color: #f4f7fc;
+  --ct-emphasis-color: #f4f7fc;
+  --ct-secondary-color: #9ba7bf;
+  --ct-tertiary-color: #9ba7bf;
   --ct-topbar-bg: transparent;
   --ct-menu-bg: transparent;
   --fptu-ambient-a: color-mix(in srgb, var(--fptu-accent) 26%, transparent);
@@ -92,9 +103,13 @@ html:not([data-fptu-skin="off"]) .navbar-custom .topbar.fap-topbar {
 }
 
 /* Topbar Brand & Toggle Buttons */
+html:not([data-fptu-skin="off"]) .navbar-custom .button-toggle-menu {
+  display: inline-flex;
+}
+
+/* .navbar-toggle is FAP's mobile/topnav hamburger: keep its own display rule (hidden on desktop). */
 html:not([data-fptu-skin="off"]) .navbar-custom .button-toggle-menu,
 html:not([data-fptu-skin="off"]) .navbar-custom .navbar-toggle {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
@@ -344,7 +359,7 @@ html:not([data-fptu-skin="off"]) .leftside-menu .button-close-fullsidebar {
    -------------------------------------------------------------------------- */
 html:not([data-fptu-skin="off"]) .content-page {
   margin-left: calc(var(--ct-leftbar-width) + 12px);
-  padding: 16px 12px var(--ct-footer-height);
+  padding: 20px 24px var(--ct-footer-height) 20px;
   transition: margin-left 0.25s ease-in-out;
 }
 
@@ -976,9 +991,9 @@ html:not([data-fptu-skin="off"]) .spinner-border {
 /* Page Header, Filters & State Placeholders */
 html:not([data-fptu-skin="off"]) .content-page .page-title-box.fap-page-title,
 html:not([data-fptu-skin="off"]) .feedback-layout-content .page-title-box.fap-page-title {
-  border-bottom: 1px solid var(--fptu-glass-border);
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.85rem;
+  border-bottom: 0;
+  margin: 0.65rem 0 1.15rem;
+  padding-bottom: 0;
 }
 
 html:not([data-fptu-skin="off"]) .fap-page-title__main {
@@ -1027,9 +1042,12 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-page-title__crumb-se
   color: #64748b;
 }
 
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-page-title__crumb-current,
 html:not([data-fptu-skin="off"]) .fap-page-title__crumb-current {
+  font-size: 1.65rem;
   font-weight: 700;
-  color: inherit;
+  letter-spacing: -0.01em;
+  color: var(--ct-heading-color);
 }
 
 html:not([data-fptu-skin="off"]) .fap-filter-card {
@@ -1259,6 +1277,11 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filt
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--fptu-glass-border);
   color: #cbd5e1;
+}
+
+/* Bootstrap's .text-dark (!important) would otherwise keep these chips dim in dark mode. */
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn:not(.bg-primary):not(.active) {
+  color: #cbd5e1 !important;
 }
 
 html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-home-news-card__filter-btn:not(.bg-primary):hover {
@@ -4743,6 +4766,118 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field__v
 }
 
 /* --------------------------------------------------------------------------
+   Pattern: Feedback & Survey Layout (.feedback-layout-*)
+   -------------------------------------------------------------------------- */
+html:not([data-fptu-skin="off"]) .feedback-layout-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-topbar {
+  border-bottom: 1px solid var(--fptu-card-border, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .feedback-layout-topbar,
+html:not([data-fptu-skin="off"])[data-fptu-theme="dark"] .feedback-layout-topbar {
+  border-bottom-color: var(--fptu-card-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-shell {
+  flex: 1 0 auto;
+  max-width: 980px;
+  width: 100%;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-sheet {
+  background: var(--fptu-card-bg, rgba(255, 255, 255, 0.85));
+  border: 1px solid var(--fptu-card-border, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  position: relative;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .feedback-layout-sheet,
+html:not([data-fptu-skin="off"])[data-fptu-theme="dark"] .feedback-layout-sheet {
+  background: var(--fptu-card-bg, rgba(15, 23, 42, 0.85));
+  border-color: var(--fptu-card-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-sheet__accent {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--fptu-accent), var(--fptu-accent-hover));
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content {
+  padding: 1.5rem 1.75rem;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .fap-back-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.45rem 0.9rem;
+  transition: all 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .fap-back-btn:hover {
+  transform: translateX(-2px);
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .card {
+  border-radius: 12px;
+  border: 1px solid var(--fptu-card-border, rgba(0, 0, 0, 0.08));
+  background: var(--fptu-card-bg, rgba(255, 255, 255, 0.75));
+  overflow: hidden;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .border-bottom {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  transition: background 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .feedback-layout-content .border-bottom,
+html:not([data-fptu-skin="off"])[data-fptu-theme="dark"] .feedback-layout-content .border-bottom {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  margin-bottom: 0.35rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .form-check:hover {
+  background: color-mix(in srgb, var(--fptu-accent) 6%, transparent);
+  border-color: color-mix(in srgb, var(--fptu-accent) 24%, transparent);
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .form-check:has(.form-check-input:checked) {
+  background: color-mix(in srgb, var(--fptu-accent) 12%, transparent);
+  border-color: var(--fptu-accent);
+  font-weight: 500;
+}
+
+html:not([data-fptu-skin="off"]) .feedback-layout-content .form-check-input[type="radio"] {
+  accent-color: var(--fptu-accent);
+  cursor: pointer;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
    Reduced Transparency Fallback
    When the user or system requests reduced transparency, disable backdrop
    filters and restore solid backgrounds for bars, sidebars, and overlays.
@@ -4768,6 +4903,8 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field__v
   html:not([data-fptu-skin="off"]) .fap-topbar,
   html:not([data-fptu-skin="off"]) .leftside-menu,
   html:not([data-fptu-skin="off"]) .fap-sidebar,
+  html:not([data-fptu-skin="off"]) .feedback-layout-topbar,
+  html:not([data-fptu-skin="off"]) .feedback-layout-sheet,
   html:not([data-fptu-skin="off"]) .card,
   html:not([data-fptu-skin="off"]) .fap-filter-card,
   html:not([data-fptu-skin="off"]) .fap-empty-card,
@@ -4795,6 +4932,8 @@ html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .student-profile-field__v
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-topbar,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .leftside-menu,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-sidebar,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .feedback-layout-topbar,
+  html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .feedback-layout-sheet,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-filter-card,
   html:not([data-fptu-skin="off"])[data-bs-theme="dark"] .fap-empty-card,

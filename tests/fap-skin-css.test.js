@@ -437,4 +437,33 @@ test("remaining common page components (buttons, table modifiers, breadcrumbs, f
   });
 });
 
+test("feedback and survey layout classes (.feedback-layout-*) are styled and properly gated", () => {
+  const feedbackClasses = [
+    "feedback-layout-root",
+    "feedback-layout-topbar",
+    "feedback-layout-shell",
+    "feedback-layout-sheet",
+    "feedback-layout-sheet__accent",
+    "feedback-layout-content",
+    "fap-back-btn"
+  ];
+  feedbackClasses.forEach((cls) => {
+    assert.ok(css.includes(cls), `missing CSS target: ${cls}`);
+  });
+
+  const feedbackRules = rules.filter((r) =>
+    /\.feedback-layout|\.fap-back-btn/.test(r.selector)
+  );
+  assert.ok(feedbackRules.length >= 5, "must have feedback layout rules");
+  feedbackRules.forEach((r) => {
+    r.selector.split(",").forEach((s) => {
+      assert.match(
+        s.trim(),
+        /^html:not\(\[data-fptu-skin="off"\]\)/,
+        `selector must be gated: ${s.trim()}`
+      );
+    });
+  });
+});
+
 module.exports = { parseRules, stripComments, css, rules };
