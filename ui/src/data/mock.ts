@@ -9,6 +9,9 @@ import type {
   GradeReportData,
   TranscriptData,
   ConditionsData,
+  SubjectsData,
+  CurriculumData,
+  CertificatesData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -299,6 +302,56 @@ export const mockThesisConditions: ConditionsData = {
   checks: [],
 };
 
+export const mockSubjects: SubjectsData = {
+  rows: [
+    { code: "PRJ301", name: "Java Web Application", credit: "3", status: "Active" },
+    { code: "MAS291", name: "Statistics", credit: "3", status: "Active" },
+    { code: "SWE201c", name: "Introduction to Software Engineering", credit: "3", status: "Active" },
+    { code: "IOT102", name: "Internet of Things", credit: "3", status: "Active" },
+  ],
+};
+
+export const mockCurriculum: CurriculumData = {
+  groups: [
+    {
+      title: "Học kỳ 1",
+      rows: [
+        { code: "PRF192", name: "Programming Fundamentals", credit: "3", prerequisite: "None" },
+        { code: "MAE101", name: "Mathematics for Engineering", credit: "3", prerequisite: "None" },
+        { code: "CSI104", name: "Introduction to Computer Science", credit: "3", prerequisite: "None" },
+      ],
+    },
+    {
+      title: "Học kỳ 2",
+      rows: [
+        { code: "PRO192", name: "Object-Oriented Programming", credit: "3", prerequisite: "PRF192" },
+        { code: "MAD101", name: "Discrete Mathematics", credit: "3", prerequisite: "None" },
+        { code: "OSG202", name: "Operating Systems", credit: "3", prerequisite: "CSI104" },
+      ],
+    },
+  ],
+  totalCredits: "140",
+};
+
+export const mockCertificates: CertificatesData = {
+  items: [
+    {
+      name: "Chứng chỉ Giáo dục Quốc phòng & An ninh",
+      issuer: "123/QD-GDQP",
+      date: "15/08/2024",
+      status: "Valid",
+      href: "https://fap.fpt.edu.vn/download-gdqp",
+    },
+    {
+      name: "Chứng chỉ Giáo dục Thể chất - Vovinam",
+      issuer: "456/QD-GDTC",
+      date: "20/12/2024",
+      status: "Valid",
+      href: "https://fap.fpt.edu.vn/download-vovinam",
+    },
+  ],
+};
+
 export function mockPageData(
   page:
     | "overview"
@@ -310,6 +363,9 @@ export function mockPageData(
     | "report-transcript"
     | "report-ojt-conditions"
     | "report-thesis-conditions"
+    | "subject"
+    | "curriculum"
+    | "my-certificates"
 ): PageData {
   switch (page) {
     case "overview":
@@ -367,6 +423,24 @@ export function mockPageData(
         shell: mockShell,
         page: "report-thesis-conditions",
         conditions: mockThesisConditions,
+      };
+    case "subject":
+      return {
+        shell: mockShell,
+        page: "subject",
+        subjects: mockSubjects,
+      };
+    case "curriculum":
+      return {
+        shell: mockShell,
+        page: "curriculum",
+        curriculum: mockCurriculum,
+      };
+    case "my-certificates":
+      return {
+        shell: mockShell,
+        page: "my-certificates",
+        certificates: mockCertificates,
       };
   }
 }

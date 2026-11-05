@@ -143,6 +143,41 @@ export type ConditionsData = {
   }>;
 };
 
+export type SubjectsData = {
+  term?: { value: string; options: Array<{ value: string; label: string }> };
+  rows: Array<{
+    code: string;
+    name: string;
+    credit: string;
+    status: string;
+    semester?: string;
+  }>;
+};
+
+export type CurriculumData = {
+  groups: Array<{
+    title: string;
+    rows: Array<{
+      code: string;
+      name: string;
+      credit: string;
+      prerequisite?: string;
+      status?: string;
+    }>;
+  }>;
+  totalCredits?: string;
+};
+
+export type CertificatesData = {
+  items: Array<{
+    name: string;
+    issuer?: string;
+    date?: string;
+    status?: string;
+    href?: string | null;
+  }>;
+};
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -156,5 +191,8 @@ export type PageData = {
   | { page: "report-transcript"; transcript: TranscriptData }
   | { page: "report-ojt-conditions"; conditions: ConditionsData }
   | { page: "report-thesis-conditions"; conditions: ConditionsData }
+  | { page: "subject"; subjects: SubjectsData }
+  | { page: "curriculum"; curriculum: CurriculumData }
+  | { page: "my-certificates"; certificates: CertificatesData }
 );
 

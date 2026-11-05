@@ -10,6 +10,9 @@ import { GradeReport } from "./GradeReport";
 import { Transcript } from "./Transcript";
 import { OjtConditions } from "./OjtConditions";
 import { ThesisConditions } from "./ThesisConditions";
+import { Subjects } from "./Subjects";
+import { Curriculum } from "./Curriculum";
+import { Certificates } from "./Certificates";
 import { registry, type PageDefinition } from "./registry";
 
 export {
@@ -23,6 +26,9 @@ export {
   Transcript,
   OjtConditions,
   ThesisConditions,
+  Subjects,
+  Curriculum,
+  Certificates,
   registry,
   type PageDefinition,
 };
@@ -61,6 +67,12 @@ export function renderPage(
       return <OjtConditions data={data.conditions} shell={data.shell} />;
     case "report-thesis-conditions":
       return <ThesisConditions data={data.conditions} shell={data.shell} />;
+    case "subject":
+      return <Subjects data={data.subjects} shell={data.shell} />;
+    case "curriculum":
+      return <Curriculum data={data.curriculum} shell={data.shell} />;
+    case "my-certificates":
+      return <Certificates data={data.certificates} shell={data.shell} />;
     default:
       return null;
   }

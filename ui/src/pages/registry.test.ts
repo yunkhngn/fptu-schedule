@@ -5,7 +5,9 @@ describe("page registry", () => {
   it("contains the registered page definitions", () => {
     const keys = Object.keys(registry).sort();
     expect(keys).toEqual([
+      "curriculum",
       "exams",
+      "my-certificates",
       "news",
       "overview",
       "report-attendance",
@@ -13,6 +15,7 @@ describe("page registry", () => {
       "report-ojt-conditions",
       "report-thesis-conditions",
       "report-transcript",
+      "subject",
       "timetable",
     ]);
   });

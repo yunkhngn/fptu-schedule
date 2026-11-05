@@ -80,9 +80,9 @@ describe("fap-routes", () => {
   });
 
   test("returns wrapped for pages without a dedicated reader yet", () => {
-    const subject = matchRoute("/Subject");
-    assert.ok(subject);
-    assert.equal(subject.kind, "wrapped");
+    const tx = matchRoute("/Transaction");
+    assert.ok(tx);
+    assert.equal(tx.kind, "wrapped");
 
     const arbitrary = matchRoute("/Whatever/Page");
     assert.ok(arbitrary);

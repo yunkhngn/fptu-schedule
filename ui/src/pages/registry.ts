@@ -10,6 +10,9 @@ import { GradeReport } from "./GradeReport";
 import { Transcript } from "./Transcript";
 import { OjtConditions } from "./OjtConditions";
 import { ThesisConditions } from "./ThesisConditions";
+import { Subjects } from "./Subjects";
+import { Curriculum } from "./Curriculum";
+import { Certificates } from "./Certificates";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -143,5 +146,41 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(ThesisConditions, { data, shell, lang }),
+  },
+  subject: {
+    id: "subject",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-filter-card form[action*='/Subject']")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersAcademic || (win.FapPageData && win.FapPageData.academic) || (typeof window !== "undefined" && ((window as any).FapReadersAcademic || (window as any).FapPageData?.academic));
+      if (!reader || typeof reader.readSubjects !== "function") return null;
+      return reader.readSubjects(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Subjects, { data, shell, lang }),
+  },
+  curriculum: {
+    id: "curriculum",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersAcademic || (win.FapPageData && win.FapPageData.academic) || (typeof window !== "undefined" && ((window as any).FapReadersAcademic || (window as any).FapPageData?.academic));
+      if (!reader || typeof reader.readCurriculum !== "function") return null;
+      return reader.readCurriculum(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Curriculum, { data, shell, lang }),
+  },
+  "my-certificates": {
+    id: "my-certificates",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersAcademic || (win.FapPageData && win.FapPageData.academic) || (typeof window !== "undefined" && ((window as any).FapReadersAcademic || (window as any).FapPageData?.academic));
+      if (!reader || typeof reader.readCertificates !== "function") return null;
+      return reader.readCertificates(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Certificates, { data, shell, lang }),
   },
 };
