@@ -85,7 +85,8 @@ export function watchAppearance(
   host: HTMLElement,
   chromeApi: typeof chrome | undefined,
   win: Window = typeof window !== "undefined" ? window : ({} as Window),
-  initial: Appearance
+  initial: Appearance,
+  onChange?: (nextAppearance: Appearance) => void
 ): { stop(): void } {
   const currentAppearance: Appearance = { ...initial };
 
@@ -109,6 +110,7 @@ export function watchAppearance(
 
     if (changed) {
       applyAppearance(host, currentAppearance, win);
+      onChange?.(currentAppearance);
     }
   };
 
@@ -123,6 +125,7 @@ export function watchAppearance(
   const mediaListener = () => {
     if (currentAppearance.theme === "auto") {
       applyAppearance(host, currentAppearance, win);
+      onChange?.(currentAppearance);
     }
   };
 

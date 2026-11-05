@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   normalizePreference,
   resolveTheme,
+  getNextTheme,
+  getThemeLabel,
   type ThemePreference,
   type EffectiveTheme,
 } from "./theme";
@@ -78,5 +80,19 @@ describe("resolveTheme", () => {
     const winDark = createMockWindow(true);
     // @ts-expect-error test runtime fallback for malformed preference
     expect(resolveTheme("unexpected", winDark)).toBe("dark");
+  });
+});
+
+describe("getNextTheme and getThemeLabel helpers", () => {
+  it("cycles through auto -> light -> dark -> auto", () => {
+    expect(getNextTheme("auto")).toBe("light");
+    expect(getNextTheme("light")).toBe("dark");
+    expect(getNextTheme("dark")).toBe("auto");
+  });
+
+  it("returns descriptive Vietnamese label for each preference", () => {
+    expect(getThemeLabel("auto")).toBe("Giao diện: Tự động (theo hệ thống)");
+    expect(getThemeLabel("light")).toBe("Giao diện: Sáng");
+    expect(getThemeLabel("dark")).toBe("Giao diện: Tối");
   });
 });

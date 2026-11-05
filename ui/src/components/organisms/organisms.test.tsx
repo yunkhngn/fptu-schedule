@@ -73,6 +73,34 @@ describe("organisms and templates suite", () => {
     expect(queryByRole("switch")).toBeNull();
   });
 
+  it("does not render ThemeToggle when onThemeChange is undefined in AppShell", () => {
+    const { queryByRole } = render(
+      <AppShell shell={mockShell} activePath="/">
+        <div>Content</div>
+      </AppShell>
+    );
+    expect(queryByRole("button", { name: /^Giao diện:/ })).toBeNull();
+  });
+
+  it("renders ThemeToggle in top bar when onThemeChange is provided to AppShell and forwards preference", () => {
+    const onThemeChange = vi.fn();
+    const { getByRole } = render(
+      <AppShell
+        shell={mockShell}
+        activePath="/"
+        themePreference="light"
+        onThemeChange={onThemeChange}
+      >
+        <div>Content</div>
+      </AppShell>
+    );
+
+    const toggleButton = getByRole("button", { name: "Giao diện: Sáng" });
+    expect(toggleButton).not.toBeNull();
+    fireEvent.click(toggleButton);
+    expect(onThemeChange).toHaveBeenCalledWith("dark");
+  });
+
   it("renders TopNavigation with campus info and unread badge, with static campus/language selector", () => {
     const { getByText } = render(
       <TopNavigation shell={mockShell} />

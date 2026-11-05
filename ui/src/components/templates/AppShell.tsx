@@ -2,12 +2,15 @@ import { useState, type ReactNode } from "react";
 import { AppSidebar } from "@/components/organisms/AppSidebar";
 import { TopNavigation } from "@/components/organisms/TopNavigation";
 import type { ShellData } from "@/data/types";
+import type { ThemePreference } from "@/theme/theme";
 
 export interface AppShellProps {
   shell: ShellData;
   activePath: string;
   children: ReactNode;
   onShowOriginal?: () => void;
+  themePreference?: ThemePreference;
+  onThemeChange?: (next: ThemePreference) => void;
 }
 
 export function AppShell({
@@ -15,6 +18,8 @@ export function AppShell({
   activePath,
   children,
   onShowOriginal,
+  themePreference,
+  onThemeChange,
 }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -37,6 +42,8 @@ export function AppShell({
         <TopNavigation
           shell={shell}
           onToggleSidebar={toggleSidebar}
+          themePreference={themePreference}
+          onThemeChange={onThemeChange}
         />
         <main className="page-enter flex-1 px-4 pt-2 pb-10 sm:px-6 lg:px-8">
           <div className="mx-auto w-full max-w-[1440px]">

@@ -545,6 +545,42 @@ describe("boot lifecycle and fallback", () => {
 
     expect(document.getElementById("fptu-ui-host")).toBe(null);
   });
+
+  it("renders ThemeToggle in top bar and writes next theme to storage when clicked, updating icon", async () => {
+    const store: Record<string, unknown> = { theme: "auto" };
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+
+    const shadowRoot = host!.shadowRoot!;
+    let button: HTMLButtonElement | undefined;
+    await waitFor(() => {
+      button = (shadowRoot.querySelector(
+        'button[aria-label="Giao diện: Tự động (theo hệ thống)"]'
+      ) as HTMLButtonElement | null) ?? undefined;
+      expect(button).toBeTruthy();
+    });
+
+    expect(button!.querySelector("svg.lucide-monitor")).not.toBeNull();
+
+    await act(async () => {
+      button!.click();
+    });
+
+    expect(store.theme).toBe("light");
+
+    await waitFor(() => {
+      const updatedButton = shadowRoot.querySelector(
+        'button[aria-label="Giao diện: Sáng"]'
+      );
+      expect(updatedButton).not.toBeNull();
+      expect(updatedButton!.querySelector("svg.lucide-sun")).not.toBeNull();
+    });
+  });
 });
 
 describe("content.js parser globals in VM", () => {

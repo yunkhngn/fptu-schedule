@@ -10,6 +10,8 @@ interface ThemeModuleShape {
     DARK: string;
   };
   resolveEffectiveTheme?: (savedTheme: string, systemPrefersDark: boolean) => string;
+  getNextTheme?: (currentTheme: string) => string;
+  getThemeLabel?: (theme: string) => string;
 }
 
 const mod = themeModule as unknown as ThemeModuleShape & {
@@ -49,4 +51,20 @@ export function resolveTheme(
       : false;
   const effective = resolveEffectiveTheme(normalized, systemPrefersDark);
   return effective === THEME_VALUES.DARK ? "dark" : "light";
+}
+
+export function getNextTheme(current: ThemePreference): ThemePreference {
+  const fn = mod.getNextTheme ?? mod.default?.getNextTheme;
+  if (fn) return normalizePreference(fn(current));
+  if (current === "auto") return "light";
+  if (current === "light") return "dark";
+  return "auto";
+}
+
+export function getThemeLabel(theme: ThemePreference): string {
+  const fn = mod.getThemeLabel ?? mod.default?.getThemeLabel;
+  if (fn) return fn(theme);
+  if (theme === "light") return "Giao diện: Sáng";
+  if (theme === "dark") return "Giao diện: Tối";
+  return "Giao diện: Tự động (theo hệ thống)";
 }

@@ -12,12 +12,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
+import { ThemeToggle } from "@/components/molecules/ThemeToggle";
+import type { ThemePreference } from "@/theme/theme";
 import type { ShellData } from "@/data/types";
 
 export interface TopNavigationProps {
   shell: ShellData;
   onToggleSidebar?: () => void;
   className?: string;
+  themePreference?: ThemePreference;
+  onThemeChange?: (next: ThemePreference) => void;
 }
 
 const pill =
@@ -27,6 +31,8 @@ export function TopNavigation({
   shell,
   onToggleSidebar,
   className,
+  themePreference,
+  onThemeChange,
 }: TopNavigationProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -93,6 +99,14 @@ export function TopNavigation({
             <span>Tiếng Việt</span>
             <ChevronDown className="size-3.5 text-muted-foreground" />
           </div>
+
+          {/* Theme Toggle */}
+          {onThemeChange && (
+            <ThemeToggle
+              preference={themePreference ?? "auto"}
+              onChange={onThemeChange}
+            />
+          )}
 
           {/* Notifications */}
           <Button

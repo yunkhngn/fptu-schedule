@@ -11,6 +11,7 @@ import {
   SearchField,
   EmptyState,
   SkeletonRows,
+  ThemeToggle,
 } from "./index";
 import type { NewsItemData } from "@/data/types";
 
@@ -93,6 +94,52 @@ describe("molecules component suite", () => {
 
     const { container } = render(<SkeletonRows rows={3} />);
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
+  });
+
+  describe("ThemeToggle", () => {
+    it("renders with 'auto' preference, shows Monitor icon, has descriptive label, and clicking cycles to 'light'", () => {
+      const onChange = vi.fn();
+      const { getByRole, container } = render(
+        <ThemeToggle preference="auto" onChange={onChange} />
+      );
+
+      const button = getByRole("button", {
+        name: "Giao diện: Tự động (theo hệ thống)",
+      });
+      expect(button).not.toBeNull();
+      expect(container.querySelector("svg.lucide-monitor")).not.toBeNull();
+
+      fireEvent.click(button);
+      expect(onChange).toHaveBeenCalledWith("light");
+    });
+
+    it("renders with 'light' preference, shows Sun icon, has descriptive label, and clicking cycles to 'dark'", () => {
+      const onChange = vi.fn();
+      const { getByRole, container } = render(
+        <ThemeToggle preference="light" onChange={onChange} />
+      );
+
+      const button = getByRole("button", { name: "Giao diện: Sáng" });
+      expect(button).not.toBeNull();
+      expect(container.querySelector("svg.lucide-sun")).not.toBeNull();
+
+      fireEvent.click(button);
+      expect(onChange).toHaveBeenCalledWith("dark");
+    });
+
+    it("renders with 'dark' preference, shows Moon icon, has descriptive label, and clicking cycles to 'auto'", () => {
+      const onChange = vi.fn();
+      const { getByRole, container } = render(
+        <ThemeToggle preference="dark" onChange={onChange} />
+      );
+
+      const button = getByRole("button", { name: "Giao diện: Tối" });
+      expect(button).not.toBeNull();
+      expect(container.querySelector("svg.lucide-moon")).not.toBeNull();
+
+      fireEvent.click(button);
+      expect(onChange).toHaveBeenCalledWith("auto");
+    });
   });
 });
 

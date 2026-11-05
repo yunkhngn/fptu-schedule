@@ -12,6 +12,7 @@ import {
   readAppearance,
   applyAppearance,
   watchAppearance,
+  type ThemePreference,
 } from "./appearance/appearance";
 import type { ShellData, PageData } from "./data/types";
 
@@ -230,18 +231,17 @@ async function bootInner(options?: BootOptions): Promise<void> {
     fontBaseUrl,
   });
 
-  applyAppearance(host, appearance, win);
-  const appearanceWatcher = watchAppearance(host, chromeApi, win, appearance);
-
   const reactRoot = createRoot(root as unknown as HTMLElement);
 
   removeReturnPill(win.document);
+
+  let appearanceWatcher: { stop(): void } | null = null;
 
   let givenBack = false;
   const giveBack = (reason: string) => {
     if (givenBack) return;
     givenBack = true;
-    appearanceWatcher.stop();
+    appearanceWatcher?.stop();
     try {
       reactRoot.unmount();
     } catch (_) {}
@@ -258,6 +258,12 @@ async function bootInner(options?: BootOptions): Promise<void> {
     giveBack("user-choice");
   };
 
+  const handleThemeChange = (next: ThemePreference) => {
+    try {
+      chromeApi?.storage?.local?.set?.({ theme: next });
+    } catch (_) {}
+  };
+
   let content: React.ReactNode;
   try {
     content = options?.renderContent ? options.renderContent(pageData) : renderPage(pageData, chromeApi);
@@ -267,19 +273,40 @@ async function bootInner(options?: BootOptions): Promise<void> {
     return;
   }
 
-  reactRoot.render(
-    <RenderBoundary
-      onError={(error) => {
-        console.error("[FPTU UI] render failed", error);
-        // Unmounting while React is still handling the error is unsafe, so wait a tick.
-        setTimeout(() => giveBack(`render-error: ${errorMessage(error)}`), 0);
-      }}
-    >
-      <AppShell shell={shell} activePath={pathname} onShowOriginal={handleShowOriginal}>
-        {content}
-      </AppShell>
-    </RenderBoundary>
+  const renderTree = (themePref: ThemePreference) => {
+    reactRoot.render(
+      <RenderBoundary
+        onError={(error) => {
+          console.error("[FPTU UI] render failed", error);
+          // Unmounting while React is still handling the error is unsafe, so wait a tick.
+          setTimeout(() => giveBack(`render-error: ${errorMessage(error)}`), 0);
+        }}
+      >
+        <AppShell
+          shell={shell}
+          activePath={pathname}
+          onShowOriginal={handleShowOriginal}
+          themePreference={themePref}
+          onThemeChange={handleThemeChange}
+        >
+          {content}
+        </AppShell>
+      </RenderBoundary>
+    );
+  };
+
+  applyAppearance(host, appearance, win);
+  appearanceWatcher = watchAppearance(
+    host,
+    chromeApi,
+    win,
+    appearance,
+    (next) => {
+      renderTree(next.theme);
+    }
   );
+
+  renderTree(appearance.theme);
 
   win.document.documentElement.setAttribute("data-fptu-ui", "active");
 }
