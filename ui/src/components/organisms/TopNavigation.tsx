@@ -42,12 +42,18 @@ export function TopNavigation({
 
   return (
     <header
-      className={cn(
-        "glass sticky top-0 z-30 border-b border-border/70 lg:border-none lg:bg-transparent lg:backdrop-blur-none",
-        className
-      )}
+      className={cn("sticky top-0 z-30", className)}
     >
-      <div className="grid h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 lg:px-8">
+      {/*
+        Blur and tint for whatever scrolls underneath. It is its own layer so the mask can fade it out
+        below the bar without fading the controls, and it reaches 24px past the bar so the fade has room.
+      */}
+      <div
+        data-topbar-backdrop
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+24px)] bg-background/70 backdrop-blur-xl backdrop-saturate-150 [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent)] [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+      />
+      <div className="relative grid h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 lg:px-8">
         {/* Toggle Sidebar Button */}
         <Button
           variant="outline"
