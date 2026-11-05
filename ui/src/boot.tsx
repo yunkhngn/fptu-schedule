@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { matchPage, type PageId } from "./routes";
-import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled } from "./storage";
+import { isFapUiEnabled, setFapUiEnabled, clearLegacyOriginalPreferences } from "./storage";
 import { mountShadow } from "./shadow/mount";
 import { splitDocumentCss } from "./shadow/css";
 import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
@@ -31,7 +31,7 @@ function getExtractor(win: Window) {
 function cleanupFallback(doc: Document, win: Window, reason: string) {
   doc.documentElement.removeAttribute("data-fptu-ui");
   doc.documentElement.setAttribute("data-fptu-ui-reason", reason);
-  if (reason !== "user-choice" && reason !== "disabled" && reason !== "original-preference") {
+  if (reason !== "user-choice" && reason !== "disabled") {
     try {
       console.warn("[FPTU UI] showing the original FAP page:", reason);
     } catch (_) {}
@@ -40,6 +40,17 @@ function cleanupFallback(doc: Document, win: Window, reason: string) {
   if (host) host.remove();
   // @ts-expect-error flag cleanup
   delete win.__fptuUi;
+  // @ts-expect-error handle cleanup
+  delete win.__fptuUiGiveBack;
+}
+
+/** Floating switch on pages that show the original FAP because the student turned the new interface off. */
+function showReturnPill(win: Window, chromeApi: typeof chrome | undefined) {
+  mountReturnPill(win.document, async () => {
+    await setFapUiEnabled(true, chromeApi);
+    // The storage listener turns the interface on in every open tab; without it, reload this tab.
+    if (!chromeApi?.storage?.onChanged?.addListener) win.location.reload();
+  });
 }
 
 async function waitForData(doc: Document, page: PageId, timeoutMs: number): Promise<boolean> {
@@ -130,16 +141,7 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const enabled = await isFapUiEnabled(chromeApi);
   if (!enabled) {
     cleanupFallback(win.document, win, "disabled");
-    return;
-  }
-
-  const originalPref = await readOriginalPreference(page, chromeApi);
-  if (originalPref) {
-    cleanupFallback(win.document, win, "original-preference");
-    mountReturnPill(win.document, async () => {
-      await saveOriginalPreference(page, false, chromeApi);
-      win.location.reload();
-    });
+    showReturnPill(win, chromeApi);
     return;
   }
 
@@ -225,16 +227,23 @@ async function bootInner(options?: BootOptions): Promise<void> {
 
   removeReturnPill(win.document);
 
+  let givenBack = false;
   const giveBack = (reason: string) => {
+    if (givenBack) return;
+    givenBack = true;
     try {
       reactRoot.unmount();
     } catch (_) {}
     unmountShadow();
     cleanupFallback(win.document, win, reason);
+    if (reason === "user-choice" || reason === "disabled") showReturnPill(win, chromeApi);
   };
+  // @ts-expect-error handle for the storage listener
+  win.__fptuUiGiveBack = giveBack;
 
   const handleShowOriginal = async () => {
-    await saveOriginalPreference(page, true, chromeApi);
+    // One switch for every page and tab; the storage listener hands the other open tabs back too.
+    await setFapUiEnabled(false, chromeApi);
     giveBack("user-choice");
   };
 
@@ -264,9 +273,45 @@ async function bootInner(options?: BootOptions): Promise<void> {
   win.document.documentElement.setAttribute("data-fptu-ui", "active");
 }
 
+/**
+ * Follows the master switch (popup or floating button) in every open tab without a reload:
+ * off hands the page back to the original FAP, on builds the new interface again.
+ */
+function watchMasterSwitch(win: Window, chromeApi: typeof chrome | undefined, options?: BootOptions) {
+  // @ts-expect-error watcher flag
+  if (win.__fptuUiWatching) return;
+  const onChanged = chromeApi?.storage?.onChanged;
+  if (!onChanged?.addListener) return;
+  // @ts-expect-error watcher flag
+  win.__fptuUiWatching = true;
+
+  onChanged.addListener((changes: Record<string, { newValue?: unknown }>, area: string) => {
+    if (area !== "local" || !changes || !("fapUiEnabled" in changes)) return;
+    const enabled = changes.fapUiEnabled.newValue !== false;
+    if (!enabled) {
+      // @ts-expect-error handle set by bootInner
+      const giveBack = win.__fptuUiGiveBack as ((reason: string) => void) | undefined;
+      if (giveBack) {
+        giveBack("disabled");
+      } else if (!win.document.getElementById("fptu-ui-return")) {
+        showReturnPill(win, chromeApi);
+      }
+    } else {
+      removeReturnPill(win.document);
+      void boot(options);
+    }
+  });
+}
+
 /** Never leave the page hidden: any unexpected error gives the original FAP page back. */
 export async function boot(options?: BootOptions): Promise<void> {
   try {
+    const win = options?.win || (typeof window !== "undefined" ? window : null);
+    if (win && win.document && matchPage(win.location ? win.location.pathname : "")) {
+      const chromeApi = options?.chromeApi || (win as any).chrome;
+      void clearLegacyOriginalPreferences(chromeApi);
+      watchMasterSwitch(win, chromeApi, options);
+    }
     await bootInner(options);
   } catch (error) {
     const win = options?.win || (typeof window !== "undefined" ? window : null);

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { waitFor, act } from "@testing-library/react";
 import { matchPage } from "./routes";
-import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled, setFapUiEnabled } from "./storage";
+import { isFapUiEnabled, setFapUiEnabled } from "./storage";
 import { boot } from "./boot";
 import fs from "node:fs";
 import path from "node:path";
@@ -30,29 +30,6 @@ describe("matchPage router", () => {
 });
 
 describe("storage preferences", () => {
-  it("reads and writes fapUiOriginal per page", async () => {
-    const store: Record<string, unknown> = {};
-    const mockChrome = {
-      storage: {
-        local: {
-          get: vi.fn(async (keys: string[]) => {
-            const res: Record<string, unknown> = {};
-            keys.forEach((k) => { res[k] = store[k]; });
-            return res;
-          }),
-          set: vi.fn(async (items: Record<string, unknown>) => {
-            Object.assign(store, items);
-          }),
-        },
-      },
-    } as unknown as typeof chrome;
-
-    expect(await readOriginalPreference("timetable", mockChrome)).toBe(false);
-    await saveOriginalPreference("timetable", true, mockChrome);
-    expect(await readOriginalPreference("timetable", mockChrome)).toBe(true);
-    expect(store["fapUiOriginal:timetable"]).toBe(true);
-  });
-
   it("reads and writes fapUiEnabled master toggle (default true)", async () => {
     const store: Record<string, unknown> = {};
     const mockChrome = {
@@ -89,6 +66,7 @@ describe("boot lifecycle and fallback", () => {
   });
 
   afterEach(() => {
+    document.getElementById("fptu-ui-return")?.remove();
     document.documentElement.removeAttribute("data-fptu-ui");
     const oldHost = document.getElementById("fptu-ui-host");
     if (oldHost) oldHost.remove();
@@ -358,110 +336,112 @@ describe("boot lifecycle and fallback", () => {
     errorSpy.mockRestore();
   });
 
-  it("offers a way back to the new interface on a page the student chose to see in its original form", async () => {
-    document.body.innerHTML = `<div class="wrapper">original FAP page</div>`;
-    const store: Record<string, unknown> = { "fapUiOriginal:overview": true };
-    const mockChrome = {
+  /** chrome.storage stand-in whose writes notify onChanged listeners, like the real one does in every tab. */
+  function makeChrome(store: Record<string, unknown>) {
+    const listeners: Array<(changes: Record<string, { newValue?: unknown }>, area: string) => void> = [];
+    return {
       storage: {
         local: {
           get: vi.fn(async (keys: string[]) => Object.fromEntries(keys.map((k) => [k, store[k]]))),
           set: vi.fn(async (items: Record<string, unknown>) => {
+            const changes = Object.fromEntries(Object.entries(items).map(([k, v]) => [k, { newValue: v }]));
             Object.assign(store, items);
+            listeners.forEach((l) => l(changes, "local"));
           }),
+          remove: vi.fn(async () => {}),
         },
+        onChanged: { addListener: (l: (typeof listeners)[number]) => listeners.push(l) },
       },
     } as unknown as typeof chrome;
-    const reload = vi.fn();
-    const mockWin = {
-      location: { pathname: "/", reload },
-      document: window.document,
-    } as unknown as Window;
+  }
 
-    await boot({ win: mockWin, chromeApi: mockChrome });
+  const overviewHtml = `
+    <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+    <div class="fap-home-student-card">
+      <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+    </div>
+    <div class="fap-home-news-item">
+      <span class="fap-home-news-item__title">Title 1</span>
+      <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+    </div>
+  `;
+
+  it("offers a floating switch on pages while the new interface is switched off", async () => {
+    document.body.innerHTML = `<div class="wrapper">original FAP page</div>`;
+    const store: Record<string, unknown> = { fapUiEnabled: false };
+    const mockChrome = makeChrome(store);
+    const mockWin = { location: { pathname: "/", reload: vi.fn() }, document: window.document } as unknown as Window;
+
+    // Short timeout: switching on starts a boot that waits for data this bare page never gets.
+    await boot({ win: mockWin, chromeApi: mockChrome, timeoutMs: 30 });
 
     expect(document.getElementById("fptu-ui-host")).toBe(null);
-    const pill = document.getElementById("fptu-ui-return");
-    expect(pill).not.toBe(null);
-    const button = pill!.shadowRoot!.querySelector("button")!;
+    const button = document.getElementById("fptu-ui-return")!.shadowRoot!.querySelector("button")!;
     expect(button.textContent).toContain("Dùng giao diện mới");
 
     button.click();
-    await waitFor(() => expect(reload).toHaveBeenCalled());
-    expect(store["fapUiOriginal:overview"]).toBe(false);
+    await waitFor(() => expect(store.fapUiEnabled).toBe(true));
+    // The listener removes the switch; on this bare page the data never arrives, so no interface appears.
+    await waitFor(() => expect(document.getElementById("fptu-ui-return")).toBe(null));
+    await waitFor(() => expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toBe("data-timeout"));
   });
 
-  it("unmounts and saves preference when student clicks 'Xem bản FAP gốc'", async () => {
+  it("'Xem bản FAP gốc' turns the interface off for every page with one master switch", async () => {
     const store: Record<string, unknown> = {};
-    const mockChrome = {
-      storage: {
-        local: {
-          get: vi.fn(async (keys: string[]) => {
-            const res: Record<string, unknown> = {};
-            keys.forEach((k) => { res[k] = store[k]; });
-            return res;
-          }),
-          set: vi.fn(async (items: Record<string, unknown>) => {
-            Object.assign(store, items);
-          }),
-        },
-      },
-    } as unknown as typeof chrome;
-
-    document.body.innerHTML = `
-      <div class="fap-topbar">
-        <div class="fap-topbar-user">
-          <h5>Nguyễn Văn A</h5>
-          <h6>SE000000</h6>
-        </div>
-      </div>
-      <div class="fap-home-student-card">
-        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
-      </div>
-      <div class="fap-home-news-item">
-        <span class="fap-home-news-item__title">Title 1</span>
-        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
-      </div>
-    `;
-
-    const mockWin = {
-      location: { pathname: "/" },
-      document: window.document,
-      chrome: mockChrome,
-    } as unknown as Window;
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
 
     await boot({ win: mockWin, chromeApi: mockChrome });
-
     expect(document.getElementById("fptu-ui-host")).not.toBe(null);
-    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
 
-    // Click 'Xem bản FAP gốc' inside Shadow DOM
-    const host = document.getElementById("fptu-ui-host");
-    const shadowRoot = host?.shadowRoot;
-
+    const shadowRoot = document.getElementById("fptu-ui-host")!.shadowRoot!;
     let button: HTMLButtonElement | undefined;
     await waitFor(() => {
-      button = Array.from(shadowRoot?.querySelectorAll("button") || []).find((b) =>
+      button = Array.from(shadowRoot.querySelectorAll("button")).find((b) =>
         b.textContent?.includes("Xem bản FAP gốc")
       ) as HTMLButtonElement | undefined;
       expect(button).toBeTruthy();
     });
-
     await act(async () => {
-      button?.click();
+      button!.click();
     });
 
-    // Verify host unmounted and attribute removed
     await waitFor(() => {
       expect(document.getElementById("fptu-ui-host")).toBe(null);
       expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
-      expect(store["fapUiOriginal:overview"]).toBe(true);
+      expect(store.fapUiEnabled).toBe(false);
+      expect(document.getElementById("fptu-ui-return")).not.toBe(null);
+    });
+    expect(Object.keys(store).some((k) => k.startsWith("fapUiOriginal"))).toBe(false);
+  });
+
+  it("follows the master switch live: off hands the page back, on builds the interface again", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = { location: { pathname: "/" }, document: window.document, chrome: mockChrome } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+
+    // e.g. the popup switch, or the floating button in another tab
+    await act(async () => {
+      await mockChrome.storage.local.set({ fapUiEnabled: false });
+    });
+    await waitFor(() => {
+      expect(document.getElementById("fptu-ui-host")).toBe(null);
+      expect(document.getElementById("fptu-ui-return")).not.toBe(null);
     });
 
-    // Subsequent boot sees preference and does not mount
-    // @ts-expect-error test flag cleanup
-    delete window.__fptuUi;
-    await boot({ win: mockWin, chromeApi: mockChrome });
-    expect(document.getElementById("fptu-ui-host")).toBe(null);
+    await act(async () => {
+      await mockChrome.storage.local.set({ fapUiEnabled: true });
+    });
+    await waitFor(() => {
+      expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+      expect(document.getElementById("fptu-ui-return")).toBe(null);
+      expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+    });
   });
 });
 

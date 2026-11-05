@@ -339,10 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
     fapUiToggle.addEventListener("change", () => {
       if (locStorage) {
         locStorage.set({ fapUiEnabled: fapUiToggle.checked });
-        if (fapUiToggle.checked) {
-          // Switching the new interface back on also forgets pages the student chose to view in their original form.
-          locStorage.remove(["overview", "timetable", "exams", "news"].map((page) => `fapUiOriginal:${page}`));
-        }
       }
     });
   }
