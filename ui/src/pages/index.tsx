@@ -5,9 +5,23 @@ import { TimetablePage } from "./Timetable";
 import { ExamsPage } from "./Exams";
 import { NewsPage } from "./News";
 import { WrappedPage } from "./Wrapped";
+import { AttendanceReport } from "./AttendanceReport";
+import { GradeReport } from "./GradeReport";
+import { Transcript } from "./Transcript";
 import { registry, type PageDefinition } from "./registry";
 
-export { OverviewPage, TimetablePage, ExamsPage, NewsPage, WrappedPage, registry, type PageDefinition };
+export {
+  OverviewPage,
+  TimetablePage,
+  ExamsPage,
+  NewsPage,
+  WrappedPage,
+  AttendanceReport,
+  GradeReport,
+  Transcript,
+  registry,
+  type PageDefinition,
+};
 
 export function renderPage(
   data: PageData,
@@ -33,6 +47,12 @@ export function renderPage(
           chromeApi={chromeApi}
         />
       );
+    case "report-attendance":
+      return <AttendanceReport data={data.attendance} shell={data.shell} />;
+    case "report-grade":
+      return <GradeReport data={data.grade} shell={data.shell} />;
+    case "report-transcript":
+      return <Transcript data={data.transcript} shell={data.shell} />;
     default:
       return null;
   }

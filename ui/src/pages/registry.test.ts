@@ -2,9 +2,17 @@ import { describe, it, expect } from "vitest";
 import { registry } from "./registry";
 
 describe("page registry", () => {
-  it("contains exactly the four initial page definitions", () => {
+  it("contains the registered page definitions", () => {
     const keys = Object.keys(registry).sort();
-    expect(keys).toEqual(["exams", "news", "overview", "timetable"]);
+    expect(keys).toEqual([
+      "exams",
+      "news",
+      "overview",
+      "report-attendance",
+      "report-grade",
+      "report-transcript",
+      "timetable",
+    ]);
   });
 
   it("each page definition conforms to the PageDefinition interface", () => {

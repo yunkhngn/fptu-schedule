@@ -71,7 +71,22 @@
     applyAppearance(host, { theme, accent }, window);
 
     const reactRoot = createRoot(root);
-    const activePath = page === "overview" ? "/" : page === "timetable" ? "/thoi-khoa-bieu" : page === "exams" ? "/lich-thi" : "/tin-tuc";
+    const activePath =
+      page === "overview"
+        ? "/"
+        : page === "timetable"
+        ? "/thoi-khoa-bieu"
+        : page === "exams"
+        ? "/lich-thi"
+        : page === "news"
+        ? "/tin-tuc"
+        : page === "report-attendance"
+        ? "/bao-cao-diem-danh"
+        : page === "report-grade"
+        ? "/bao-cao-diem"
+        : page === "report-transcript"
+        ? "/bang-diem"
+        : "/";
 
     reactRoot.render(
       React.createElement(

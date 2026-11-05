@@ -56,11 +56,11 @@ const ALL_PAGES = ["overview", "timetable", "exams", "news"];
 const PAGES = requestedPage ? [requestedPage] : ALL_PAGES;
 
 const isVisualInspection =
-  (theme && theme !== "light") || Boolean(accent && accent !== "lavender");
+  (theme && theme !== "light") ||
+  Boolean(accent && accent !== "lavender") ||
+  (requestedPage ? !fs.existsSync(path.join(refDir, `${requestedPage}.png`)) : false);
 const outDir = path.resolve(parityDir, "out");
-if (isVisualInspection) {
-  fs.mkdirSync(outDir, { recursive: true });
-}
+fs.mkdirSync(outDir, { recursive: true });
 
 async function main() {
   console.log("Starting local Vite server (no HMR) on port", PORT, "...");

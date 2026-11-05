@@ -83,6 +83,53 @@ export type ExamItem = {
   kind?: string;
 };
 
+export type AttendanceReportData = {
+  courses: Array<{
+    code: string;
+    name: string;
+    attended: number;
+    absent: number;
+    total: number;
+    rate: number | null;
+  }>;
+  selectedCourse?: string;
+  filter: { value: string; options: Array<{ value: string; label: string }> } | null;
+  sessions: Array<{
+    index: string;
+    date: string;
+    slot: string;
+    room: string;
+    status: string;
+    note: string;
+  }>;
+};
+
+export type GradeReportData = {
+  term: { value: string; options: Array<{ value: string; label: string }> } | null;
+  courses: Array<{
+    code: string;
+    name: string;
+    components: Array<{ name: string; weight: string; value: string }>;
+    total: string;
+    status: string;
+  }>;
+};
+
+export type TranscriptData = {
+  programs: Array<{
+    title: string;
+    rows: Array<{
+      code: string;
+      name: string;
+      credit: string;
+      grade: string;
+      status: string;
+    }>;
+    gpa?: string;
+    credits?: string;
+  }>;
+};
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -91,5 +138,8 @@ export type PageData = {
   | { page: "timetable"; sessions: ClassSession[]; weekStart: string }
   | { page: "exams"; exams: ExamItem[] }
   | { page: "news"; news: NewsItemData[]; categories: string[] }
+  | { page: "report-attendance"; attendance: AttendanceReportData }
+  | { page: "report-grade"; grade: GradeReportData }
+  | { page: "report-transcript"; transcript: TranscriptData }
 );
 

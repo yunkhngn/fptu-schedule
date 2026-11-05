@@ -5,6 +5,9 @@ import type {
   ExamItem,
   NewsItemData,
   PageData,
+  AttendanceReportData,
+  GradeReportData,
+  TranscriptData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -213,7 +216,77 @@ export const mockExams: ExamItem[] = [
   },
 ];
 
-export function mockPageData(page: "overview" | "timetable" | "exams" | "news"): PageData {
+export const mockAttendanceReport: AttendanceReportData = {
+  courses: [
+    { code: "MLN122", name: "Kinh tế chính trị Mác - Lênin", attended: 10, absent: 2, total: 12, rate: 10 / 12 },
+    { code: "EXE201", name: "Khởi nghiệp trải nghiệm 2", attended: 0, absent: 0, total: 0, rate: null },
+  ],
+  selectedCourse: "MLN122 - Kinh tế chính trị Mác - Lênin",
+  filter: {
+    value: "fall2026",
+    options: [
+      { value: "fall2026", label: "Fall2026" },
+      { value: "summer2026", label: "Summer2026" },
+      { value: "spring2026", label: "Spring2026" },
+    ],
+  },
+  sessions: [
+    { index: "1", date: "02/09/2026", slot: "07:30 - 09:50", room: "AL-101", lecturer: "Nguyễn Văn B", class: "SE1938-NJ", status: "Có mặt", note: "-" },
+    { index: "2", date: "05/09/2026", slot: "07:30 - 09:50", room: "AL-101", lecturer: "Nguyễn Văn B", class: "SE1938-NJ", status: "Có mặt", note: "-" },
+    { index: "3", date: "09/09/2026", slot: "07:30 - 09:50", room: "AL-101", lecturer: "Nguyễn Văn B", class: "SE1938-NJ", status: "Vắng mặt", note: "-" },
+  ],
+};
+
+export const mockGradeReport: GradeReportData = {
+  term: {
+    value: "fall2026",
+    options: [
+      { value: "fall2026", label: "Fall2026" },
+      { value: "summer2026", label: "Summer2026" },
+    ],
+  },
+  courses: [
+    {
+      code: "FER202",
+      name: "Front-End web development with React",
+      components: [
+        { name: "Progress Test 1", weight: "10%", value: "8.5" },
+        { name: "Assignment", weight: "20%", value: "9.0" },
+        { name: "Practical Exam", weight: "30%", value: "7.5" },
+        { name: "Final Exam", weight: "40%", value: "8.0" },
+      ],
+      total: "8.2",
+      status: "Passed",
+    },
+  ],
+};
+
+export const mockTranscript: TranscriptData = {
+  programs: [
+    {
+      title: "Chương trình Kỹ thuật phần mềm (BIT_SE_19B_NJ)",
+      rows: [
+        { code: "PRF192", name: "C Programming", credit: "3", grade: "8.0", status: "Passed" },
+        { code: "PRO192", name: "Object-Oriented Programming with Java", credit: "3", grade: "8.5", status: "Passed" },
+        { code: "CSD201", name: "Data Structures and Algorithms", credit: "3", grade: "7.8", status: "Passed" },
+        { code: "DBI202", name: "Database Systems", credit: "3", grade: "8.2", status: "Passed" },
+      ],
+      gpa: "8.13",
+      credits: "12",
+    },
+  ],
+};
+
+export function mockPageData(
+  page:
+    | "overview"
+    | "timetable"
+    | "exams"
+    | "news"
+    | "report-attendance"
+    | "report-grade"
+    | "report-transcript"
+): PageData {
   switch (page) {
     case "overview":
       return {
@@ -240,6 +313,24 @@ export function mockPageData(page: "overview" | "timetable" | "exams" | "news"):
         page: "news",
         news: mockNews,
         categories: mockCategories,
+      };
+    case "report-attendance":
+      return {
+        shell: mockShell,
+        page: "report-attendance",
+        attendance: mockAttendanceReport,
+      };
+    case "report-grade":
+      return {
+        shell: mockShell,
+        page: "report-grade",
+        grade: mockGradeReport,
+      };
+    case "report-transcript":
+      return {
+        shell: mockShell,
+        page: "report-transcript",
+        transcript: mockTranscript,
       };
   }
 }

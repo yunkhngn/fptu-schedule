@@ -5,6 +5,9 @@ import { OverviewPage } from "./Overview";
 import { TimetablePage } from "./Timetable";
 import { ExamsPage } from "./Exams";
 import { NewsPage } from "./News";
+import { AttendanceReport } from "./AttendanceReport";
+import { GradeReport } from "./GradeReport";
+import { Transcript } from "./Transcript";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -78,5 +81,41 @@ export const registry: Record<string, PageDefinition<any>> = {
       return extractor.readNews(doc);
     },
     Component: ({ data }) => React.createElement(NewsPage, { news: data.news, categories: data.categories }),
+  },
+  "report-attendance": {
+    id: "report-attendance",
+    ready: (doc: Document) => Boolean(doc.querySelector("#attendance-report, .attendance-session-sheet")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersReports || (win.FapPageData && win.FapPageData.reports) || (typeof window !== "undefined" && ((window as any).FapReadersReports || (window as any).FapPageData?.reports));
+      if (!reader || typeof reader.readAttendanceReport !== "function") return null;
+      return reader.readAttendanceReport(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(AttendanceReport, { data, shell, lang }),
+  },
+  "report-grade": {
+    id: "report-grade",
+    ready: (doc: Document) => Boolean(doc.querySelector("#grade-report, .student-mark-sheet")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersReports || (win.FapPageData && win.FapPageData.reports) || (typeof window !== "undefined" && ((window as any).FapReadersReports || (window as any).FapPageData?.reports));
+      if (!reader || typeof reader.readGradeReport !== "function") return null;
+      return reader.readGradeReport(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(GradeReport, { data, shell, lang }),
+  },
+  "report-transcript": {
+    id: "report-transcript",
+    ready: (doc: Document) => Boolean(doc.querySelector("#gpa-helper, .fap-sheet, table")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersReports || (win.FapPageData && win.FapPageData.reports) || (typeof window !== "undefined" && ((window as any).FapReadersReports || (window as any).FapPageData?.reports));
+      if (!reader || typeof reader.readTranscript !== "function") return null;
+      return reader.readTranscript(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Transcript, { data, shell, lang }),
   },
 };
