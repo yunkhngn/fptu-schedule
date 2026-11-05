@@ -13,6 +13,15 @@ import { ThesisConditions } from "./ThesisConditions";
 import { Subjects } from "./Subjects";
 import { Curriculum } from "./Curriculum";
 import { Certificates } from "./Certificates";
+import { Transactions } from "./Transactions";
+import { Documents } from "./Documents";
+import { Wishlist } from "./Wishlist";
+import { FyeCheckIn } from "./FyeCheckIn";
+import { FyeMentorFeedback } from "./FyeMentorFeedback";
+import { Applications } from "./Applications";
+import { ApplicationCatalog } from "./ApplicationCatalog";
+import { StartupGroupEmpty } from "./StartupGroupEmpty";
+import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
 import { registry, type PageDefinition } from "./registry";
 
 export {
@@ -29,6 +38,15 @@ export {
   Subjects,
   Curriculum,
   Certificates,
+  Transactions,
+  Documents,
+  Wishlist,
+  FyeCheckIn,
+  FyeMentorFeedback,
+  Applications,
+  ApplicationCatalog,
+  StartupGroupEmpty,
+  CrossClassChangeEmpty,
   registry,
   type PageDefinition,
 };
@@ -73,6 +91,24 @@ export function renderPage(
       return <Curriculum data={data.curriculum} shell={data.shell} />;
     case "my-certificates":
       return <Certificates data={data.certificates} shell={data.shell} />;
+    case "transaction":
+      return <Transactions data={data.transactions} shell={data.shell} />;
+    case "document":
+      return <Documents data={data.documents} shell={data.shell} />;
+    case "wishlist":
+      return <Wishlist data={data.wishlist} shell={data.shell} />;
+    case "fye-check-in-log":
+      return <FyeCheckIn data={data.fye} shell={data.shell} />;
+    case "fye-mentor-feedback":
+      return <FyeMentorFeedback data={data.fye} shell={data.shell} />;
+    case "application":
+      return <Applications data={data.applications} shell={data.shell} />;
+    case "application-catalog":
+      return <ApplicationCatalog data={data.catalog} shell={data.shell} />;
+    case "startup-group":
+      return <StartupGroupEmpty data={data.startup} shell={data.shell} />;
+    case "cross-class-change":
+      return <CrossClassChangeEmpty data={data.crossClass} shell={data.shell} />;
     default:
       return null;
   }

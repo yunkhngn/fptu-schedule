@@ -178,6 +178,61 @@ export type CertificatesData = {
   }>;
 };
 
+export type TransactionsData = {
+  rows: Array<{
+    date: string;
+    description: string;
+    amount: string;
+    direction: "in" | "out" | "unknown";
+    status?: string;
+  }>;
+  balance?: string;
+};
+
+export type DocumentsData = {
+  rows: Array<{
+    title: string;
+    category?: string;
+    date?: string;
+    href: string | null;
+  }>;
+};
+
+export type WishlistData = {
+  rows: Array<{
+    code: string;
+    name: string;
+    status: string;
+    registerHref?: string | null;
+  }>;
+  registerHref: string | null;
+};
+
+export type FyeLogData = {
+  rows: Array<Record<string, string>>;
+};
+
+export type ApplicationsData = {
+  rows: Array<{
+    type: string;
+    created: string;
+    status: string;
+    href: string | null;
+  }>;
+};
+
+export type ApplicationCatalogData = {
+  items: Array<{
+    title: string;
+    description?: string;
+    href: string;
+  }>;
+};
+
+export type ListOrEmptyData =
+  | { empty: true; createHref: string | null }
+  | { empty: false; createHref?: string | null };
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -194,5 +249,14 @@ export type PageData = {
   | { page: "subject"; subjects: SubjectsData }
   | { page: "curriculum"; curriculum: CurriculumData }
   | { page: "my-certificates"; certificates: CertificatesData }
+  | { page: "transaction"; transactions: TransactionsData }
+  | { page: "document"; documents: DocumentsData }
+  | { page: "wishlist"; wishlist: WishlistData }
+  | { page: "fye-check-in-log"; fye: FyeLogData }
+  | { page: "fye-mentor-feedback"; fye: FyeLogData }
+  | { page: "application"; applications: ApplicationsData }
+  | { page: "application-catalog"; catalog: ApplicationCatalogData }
+  | { page: "startup-group"; startup: ListOrEmptyData }
+  | { page: "cross-class-change"; crossClass: ListOrEmptyData }
 );
 

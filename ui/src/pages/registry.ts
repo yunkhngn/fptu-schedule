@@ -13,6 +13,15 @@ import { ThesisConditions } from "./ThesisConditions";
 import { Subjects } from "./Subjects";
 import { Curriculum } from "./Curriculum";
 import { Certificates } from "./Certificates";
+import { Transactions } from "./Transactions";
+import { Documents } from "./Documents";
+import { Wishlist } from "./Wishlist";
+import { FyeCheckIn } from "./FyeCheckIn";
+import { FyeMentorFeedback } from "./FyeMentorFeedback";
+import { Applications } from "./Applications";
+import { ApplicationCatalog } from "./ApplicationCatalog";
+import { StartupGroupEmpty } from "./StartupGroupEmpty";
+import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -182,5 +191,113 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(Certificates, { data, shell, lang }),
+  },
+  transaction: {
+    id: "transaction",
+    ready: (doc: Document) => Boolean(doc.querySelector("#transaction-datatable, table, .fap-filter-card")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readTransactions !== "function") return null;
+      return reader.readTransactions(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Transactions, { data, shell, lang }),
+  },
+  document: {
+    id: "document",
+    ready: (doc: Document) => Boolean(doc.querySelector("#document-datatable, table, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readDocuments !== "function") return null;
+      return reader.readDocuments(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Documents, { data, shell, lang }),
+  },
+  wishlist: {
+    id: "wishlist",
+    ready: (doc: Document) => Boolean(doc.querySelector("#wishlist-table, table, .fap-empty-card, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readWishlist !== "function") return null;
+      return reader.readWishlist(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Wishlist, { data, shell, lang }),
+  },
+  "fye-check-in-log": {
+    id: "fye-check-in-log",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-empty-card, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readFyeLog !== "function") return null;
+      return reader.readFyeLog(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(FyeCheckIn, { data, shell, lang }),
+  },
+  "fye-mentor-feedback": {
+    id: "fye-mentor-feedback",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-empty-card, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readFyeLog !== "function") return null;
+      return reader.readFyeLog(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(FyeMentorFeedback, { data, shell, lang }),
+  },
+  application: {
+    id: "application",
+    ready: (doc: Document) => Boolean(doc.querySelector("table, .fap-empty-card, .fap-page-title__crumb-current")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readApplications !== "function") return null;
+      return reader.readApplications(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Applications, { data, shell, lang }),
+  },
+  "application-catalog": {
+    id: "application-catalog",
+    ready: (doc: Document) => Boolean(doc.querySelector(".application-category, .card, a[href*='/Application/Create']")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readApplicationCatalog !== "function") return null;
+      return reader.readApplicationCatalog(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(ApplicationCatalog, { data, shell, lang }),
+  },
+  "startup-group": {
+    id: "startup-group",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-empty-card, table, a[href*='/StartupGroup/Add']")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readListOrEmpty !== "function") return null;
+      return reader.readListOrEmpty(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(StartupGroupEmpty, { data, shell, lang }),
+  },
+  "cross-class-change": {
+    id: "cross-class-change",
+    ready: (doc: Document) => Boolean(doc.querySelector(".fap-empty-card, table, a[href*='/CrossClassChange/Create']")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersRecords || (win.FapPageData && win.FapPageData.records) || (typeof window !== "undefined" && ((window as any).FapReadersRecords || (window as any).FapPageData?.records));
+      if (!reader || typeof reader.readListOrEmpty !== "function") return null;
+      return reader.readListOrEmpty(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(CrossClassChangeEmpty, { data, shell, lang }),
   },
 };

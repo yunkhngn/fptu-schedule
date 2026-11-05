@@ -12,6 +12,13 @@ import type {
   SubjectsData,
   CurriculumData,
   CertificatesData,
+  TransactionsData,
+  DocumentsData,
+  WishlistData,
+  FyeLogData,
+  ApplicationsData,
+  ApplicationCatalogData,
+  ListOrEmptyData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -352,6 +359,96 @@ export const mockCertificates: CertificatesData = {
   ],
 };
 
+export const mockTransactions: TransactionsData = {
+  rows: [
+    {
+      date: "01/10/2026",
+      amount: "-100.000",
+      direction: "out",
+      type: "Học phí",
+      balance: "500.000",
+      description: "Thanh toán học phí",
+    },
+    {
+      date: "15/09/2026",
+      amount: "2.000.000",
+      direction: "in",
+      type: "Nộp tiền",
+      balance: "600.000",
+      description: "Nộp tiền vào tài khoản",
+    },
+  ],
+};
+
+export const mockDocuments: DocumentsData = {
+  rows: [
+    {
+      title: "Biểu mẫu xin cấp bảng điểm",
+      category: "Khảo thí",
+      date: "10/09/2026",
+      href: "/Document/Detail/1",
+    },
+  ],
+};
+
+export const mockWishlist: WishlistData = {
+  rows: [
+    {
+      code: "SWE301",
+      name: "Software Architecture",
+      status: "Chờ mở lớp",
+      registerHref: "/Wishlist/Register?code=SWE301",
+    },
+  ],
+  registerHref: "/Wishlist/Register",
+};
+
+export const mockFyeLog: FyeLogData = {
+  rows: [
+    {
+      activity: "Check-in tuần 1",
+      date: "05/09/2026",
+      status: "Đã hoàn thành",
+    },
+  ],
+};
+
+export const mockApplications: ApplicationsData = {
+  rows: [
+    {
+      type: "Đơn xin nghỉ học tạm thời",
+      created: "20/09/2026",
+      status: "Đã duyệt",
+      href: "/Application/Detail/1",
+    },
+  ],
+};
+
+export const mockApplicationCatalog: ApplicationCatalogData = {
+  items: [
+    {
+      title: "Đơn xin cấp bảng điểm",
+      description: "Xin cấp bảng điểm tạm thời hoặc chính thức",
+      href: "/Application/Create?type=transcript",
+    },
+    {
+      title: "Đơn xin rút học phần",
+      description: "Đơn xin thôi học học phần trong kỳ",
+      href: "/Application/Create?type=withdraw",
+    },
+  ],
+};
+
+export const mockStartupGroup: ListOrEmptyData = {
+  empty: true,
+  createHref: "/StartupGroup/Add",
+};
+
+export const mockCrossClassChange: ListOrEmptyData = {
+  empty: true,
+  createHref: "/CrossClassChange/Create",
+};
+
 export function mockPageData(
   page:
     | "overview"
@@ -366,6 +463,15 @@ export function mockPageData(
     | "subject"
     | "curriculum"
     | "my-certificates"
+    | "transaction"
+    | "document"
+    | "wishlist"
+    | "fye-check-in-log"
+    | "fye-mentor-feedback"
+    | "application"
+    | "application-catalog"
+    | "startup-group"
+    | "cross-class-change"
 ): PageData {
   switch (page) {
     case "overview":
@@ -441,6 +547,60 @@ export function mockPageData(
         shell: mockShell,
         page: "my-certificates",
         certificates: mockCertificates,
+      };
+    case "transaction":
+      return {
+        shell: mockShell,
+        page: "transaction",
+        transactions: mockTransactions,
+      };
+    case "document":
+      return {
+        shell: mockShell,
+        page: "document",
+        documents: mockDocuments,
+      };
+    case "wishlist":
+      return {
+        shell: mockShell,
+        page: "wishlist",
+        wishlist: mockWishlist,
+      };
+    case "fye-check-in-log":
+      return {
+        shell: mockShell,
+        page: "fye-check-in-log",
+        fye: mockFyeLog,
+      };
+    case "fye-mentor-feedback":
+      return {
+        shell: mockShell,
+        page: "fye-mentor-feedback",
+        fye: mockFyeLog,
+      };
+    case "application":
+      return {
+        shell: mockShell,
+        page: "application",
+        applications: mockApplications,
+      };
+    case "application-catalog":
+      return {
+        shell: mockShell,
+        page: "application-catalog",
+        catalog: mockApplicationCatalog,
+      };
+    case "startup-group":
+      return {
+        shell: mockShell,
+        page: "startup-group",
+        startup: mockStartupGroup,
+      };
+    case "cross-class-change":
+      return {
+        shell: mockShell,
+        page: "cross-class-change",
+        crossClass: mockCrossClassChange,
       };
   }
 }
