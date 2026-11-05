@@ -26,10 +26,13 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
 import { EmptyState } from "@/components/molecules/EmptyState";
+import { useLang, useT } from "@/i18n";
 import type { ClassSession, Attendance } from "@/data/types";
 
-const dayNames = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
-const shortDay = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const DAY_NAMES_VI = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
+const SHORT_DAY_VI = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const DAY_NAMES_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const SHORT_DAY_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const courseNames: Record<string, string> = {
   WDP301: "Dự án phát triển Web",
@@ -83,6 +86,10 @@ export function ScheduleCalendar({
   status = "idle",
   onRetry,
 }: ScheduleCalendarProps) {
+  const lang = useLang();
+  const t = useT();
+  const dayNames = lang === "en" ? DAY_NAMES_EN : DAY_NAMES_VI;
+  const shortDay = lang === "en" ? SHORT_DAY_EN : SHORT_DAY_VI;
   const [today, setToday] = useState<Date | null>(null);
   const [weekStart, setWeekStart] = useState<Date>(() => parseISO(initialWeekStart));
   const [selectedDay, setSelectedDay] = useState(0);
@@ -140,11 +147,14 @@ export function ScheduleCalendar({
           </span>
           <div className="min-w-0">
             <p className="text-[15px] font-semibold tracking-tight">
-              Tuần {getISOWeek(weekStart)}, {format(weekStart, "yyyy")}
+              {lang === "en"
+                ? `Week ${getISOWeek(weekStart)}, ${format(weekStart, "yyyy")}`
+                : `Tuần ${getISOWeek(weekStart)}, ${format(weekStart, "yyyy")}`}
             </p>
             <p className="text-xs text-muted-foreground">
               {format(weekStart, "dd/MM")} – {format(addDays(weekStart, 6), "dd/MM/yyyy")}
-              {weekSessions.length > 0 && ` · ${weekSessions.length} buổi học`}
+              {weekSessions.length > 0 &&
+                ` · ${weekSessions.length} ${lang === "en" ? "sessions" : "buổi học"}`}
             </p>
           </div>
         </div>
@@ -152,22 +162,22 @@ export function ScheduleCalendar({
           <Button
             variant="outline"
             size="sm"
-            aria-label="Tuần trước"
+            aria-label={t("timetable.prev_week")}
             onClick={() => showWeek(addWeeks(weekStart, -1))}
           >
             <ChevronLeft className="size-4" />{" "}
-            <span className="hidden sm:inline">Tuần trước</span>
+            <span className="hidden sm:inline">{t("timetable.prev_week")}</span>
           </Button>
           <Button variant="soft" size="sm" onClick={goToday}>
-            Tuần hiện tại
+            {t("timetable.current_week")}
           </Button>
           <Button
             variant="outline"
             size="sm"
-            aria-label="Tuần sau"
+            aria-label={t("timetable.next_week")}
             onClick={() => showWeek(addWeeks(weekStart, 1))}
           >
-            <span className="hidden sm:inline">Tuần sau</span>{" "}
+            <span className="hidden sm:inline">{t("timetable.next_week")}</span>{" "}
             <ChevronRight className="size-4" />
           </Button>
         </div>
@@ -348,9 +358,16 @@ export function ScheduleCalendar({
 }
 
 function SessionCard({ s }: { s: ClassSession }) {
+  const t = useT();
   const meta = attendanceMeta[s.attendance];
   const StatusIcon = meta.icon;
   const name = courseNames[s.courseCode];
+  const statusLabel =
+    s.attendance === "attended"
+      ? t("timetable.attended")
+      : s.attendance === "absent"
+      ? t("timetable.absent")
+      : t("timetable.not_yet");
   return (
     <div
       className={cn(
@@ -371,7 +388,7 @@ function SessionCard({ s }: { s: ClassSession }) {
             meta.badge
           )}
         >
-          <StatusIcon className="size-3" /> {meta.label}
+          <StatusIcon className="size-3" /> {statusLabel}
         </span>
       </div>
       <div className="space-y-1 text-foreground/80">

@@ -6,6 +6,7 @@ import { DashboardCard } from "@/components/molecules/DashboardCard";
 import type { ClassSession } from "@/data/types";
 import { createFapWeekLoader, type WeekLoader } from "@/data/weekLoader";
 import { useWeekSessions } from "@/hooks/useWeekSessions";
+import { useT } from "@/i18n";
 
 export interface TimetablePageProps {
   sessions: ClassSession[];
@@ -27,6 +28,7 @@ const ROOM_LEGEND = [
 ];
 
 export function TimetablePage({ sessions, weekStart, loadWeek }: TimetablePageProps) {
+  const t = useT();
   const [loader] = useState<WeekLoader | undefined>(() => loadWeek ?? createFapWeekLoader());
   const week = useWeekSessions(sessions, weekStart, loader);
 
@@ -34,7 +36,7 @@ export function TimetablePage({ sessions, weekStart, loadWeek }: TimetablePagePr
     <div className="space-y-6 pt-2">
       <PageHeader
         eyebrow="Học tập · Lịch học"
-        title="Thời khóa biểu tuần"
+        title={t("timetable.title")}
         description="Xem lịch học, phòng học và tình trạng điểm danh theo từng tuần."
       />
 

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { ChevronDown, LayoutGrid, LayoutTemplate, Settings2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAV_GROUPS, navHref, isParent, type NavItem as NavItemType } from "@/data/nav";
+import { NAV_GROUPS, navHref, isParent, getNavTitle, type NavItem as NavItemType } from "@/data/nav";
 import { NavItem } from "@/components/molecules/NavItem";
 import { Switch } from "@/components/atoms/Switch";
 import { BrandLogo, Mascot } from "@/components/atoms/Brand";
+import { useT } from "@/i18n";
 import type { ShellData } from "@/data/types";
 
 export interface AppSidebarProps {
@@ -28,6 +29,7 @@ function SidebarGroup({
   collapsed: boolean;
   onNavigate?: () => void;
 }) {
+  const t = useT();
   if (!isParent(item)) {
     const href = navHref(item.to);
     const active = activePath === href || activePath === item.to;
@@ -39,7 +41,7 @@ function SidebarGroup({
         collapsed={collapsed}
         onClick={onNavigate}
       >
-        {item.title}
+        {getNavTitle(item.title, t)}
       </NavItem>
     );
   }
@@ -68,7 +70,7 @@ function SidebarGroup({
         {!collapsed && (
           <>
             <span className={cn("truncate", isAnyChildActive && "text-foreground")}>
-              {item.title}
+              {getNavTitle(item.title, t)}
             </span>
             <ChevronDown
               className={cn(
@@ -109,7 +111,7 @@ function SidebarGroup({
                       {active && (
                         <span className="absolute top-1/2 -left-[13px] h-4 w-[2px] -translate-y-1/2 rounded-full bg-primary" />
                       )}
-                      <span className="truncate">{child.title}</span>
+                      <span className="truncate">{getNavTitle(child.title, t)}</span>
                     </a>
                   </li>
                 );
@@ -130,6 +132,7 @@ export function AppSidebar({
   onNavigate,
   onShowOriginal,
 }: AppSidebarProps) {
+  const t = useT();
   const [logoFailed, setLogoFailed] = useState(false);
   const isDashboardActive = activePath === "/" || activePath === "";
 
@@ -178,7 +181,7 @@ export function AppSidebar({
               collapsed={collapsed}
               onClick={onNavigate}
             >
-              Tổng quan
+              {t("nav.overview")}
             </NavItem>
           </div>
 
@@ -189,7 +192,7 @@ export function AppSidebar({
                 <div className="mx-auto mb-2 h-px w-6 bg-border" />
               ) : (
                 <p className="mb-1.5 px-3 text-[11px] font-medium tracking-[0.08em] text-muted-foreground/80 uppercase">
-                  {group.label}
+                  {getNavTitle(group.label, t)}
                 </p>
               )}
               <div className="space-y-0.5">

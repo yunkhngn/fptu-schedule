@@ -6,6 +6,7 @@ import { CategoryFilter } from "@/components/molecules/CategoryFilter";
 import { SearchField } from "@/components/molecules/SearchField";
 import { AnnouncementList } from "@/components/organisms/AnnouncementList";
 import { useReadNews } from "@/hooks/useReadNews";
+import { useLang, useT } from "@/i18n";
 import type { NewsItemData } from "@/data/types";
 
 export interface NewsPageProps {
@@ -15,6 +16,8 @@ export interface NewsPageProps {
 }
 
 export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
+  const lang = useLang();
+  const t = useT();
   const [category, setCategory] = useState("Tất cả");
   const [query, setQuery] = useState("");
   const { isRead, markAllRead, markRead } = useReadNews(chromeApi);
@@ -37,9 +40,13 @@ export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
   return (
     <div className="space-y-6 pt-2">
       <PageHeader
-        eyebrow="Học tập · Tin tức & tài liệu"
-        title="Tin tức"
-        description="Thông báo từ phòng Đào tạo, Khảo thí, Tài chính và các đơn vị trong trường."
+        eyebrow={lang === "en" ? "Academics · News & Documents" : "Học tập · Tin tức & tài liệu"}
+        title={t("news.title")}
+        description={
+          lang === "en"
+            ? "Announcements from Academic, Examination, Financial, and campus departments."
+            : "Thông báo từ phòng Đào tạo, Khảo thí, Tài chính và các đơn vị trong trường."
+        }
         actions={
           <Button
             variant="outline"
@@ -47,7 +54,7 @@ export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
             onClick={() => markAllRead(allIds)}
           >
             <CheckCheck className="size-4" />
-            <span>Đánh dấu tất cả đã đọc</span>
+            <span>{lang === "en" ? "Mark all as read" : "Đánh dấu tất cả đã đọc"}</span>
           </Button>
         }
       />
@@ -65,12 +72,14 @@ export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
             <SearchField
               value={query}
               onChange={setQuery}
-              placeholder="Tìm theo tiêu đề…"
+              placeholder={lang === "en" ? "Search by title…" : "Tìm theo tiêu đề…"}
             />
           </div>
         </div>
 
-        <p className="mt-4 text-xs text-muted-foreground">{items.length} tin</p>
+        <p className="mt-4 text-xs text-muted-foreground">
+          {items.length} {lang === "en" ? (items.length === 1 ? "article" : "articles") : "tin"}
+        </p>
 
         <div className="mt-2">
           <AnnouncementList

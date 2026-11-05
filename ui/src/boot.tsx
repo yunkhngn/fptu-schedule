@@ -8,6 +8,7 @@ import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
 import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage } from "./pages";
+import { I18nProvider, normalizeLang } from "./i18n";
 import {
   readAppearance,
   applyAppearance,
@@ -273,6 +274,9 @@ async function bootInner(options?: BootOptions): Promise<void> {
     return;
   }
 
+  const topbar = typeof extractor?.readTopbar === "function" ? extractor.readTopbar(win.document) : null;
+  const lang = normalizeLang(topbar?.language?.current);
+
   const renderTree = (themePref: ThemePreference) => {
     reactRoot.render(
       <RenderBoundary
@@ -282,15 +286,17 @@ async function bootInner(options?: BootOptions): Promise<void> {
           setTimeout(() => giveBack(`render-error: ${errorMessage(error)}`), 0);
         }}
       >
-        <AppShell
-          shell={shell}
-          activePath={pathname}
-          onShowOriginal={handleShowOriginal}
-          themePreference={themePref}
-          onThemeChange={handleThemeChange}
-        >
-          {content}
-        </AppShell>
+        <I18nProvider lang={lang}>
+          <AppShell
+            shell={shell}
+            activePath={pathname}
+            onShowOriginal={handleShowOriginal}
+            themePreference={themePref}
+            onThemeChange={handleThemeChange}
+          >
+            {content}
+          </AppShell>
+        </I18nProvider>
       </RenderBoundary>
     );
   };

@@ -62,6 +62,40 @@ export function navHref(route: string): string {
   return FAP_URLS[route] || route;
 }
 
+export const NAV_KEY_MAP: Record<string, string> = {
+  "Tổng quan": "nav.overview",
+  "Thời khóa biểu": "nav.timetable",
+  "Lịch thi": "nav.exams",
+  "Tin tức": "nav.news",
+  "Lịch học": "nav.schedule",
+  "Báo cáo học tập": "nav.reports",
+  "Báo cáo điểm danh": "nav.attendance",
+  "Báo cáo điểm": "nav.grades",
+  "Bảng điểm": "nav.transcript",
+  "Môn học & chương trình": "nav.curriculum",
+  "Môn học": "nav.courses",
+  "Khung chương trình": "nav.curriculum_framework",
+  "Chứng chỉ": "nav.certificates",
+  "Chứng chỉ của tôi": "nav.certificates",
+  "Tài liệu": "nav.documents",
+  "Điều kiện OJT": "nav.ojt_conditions",
+  "Điều kiện KLTN": "nav.thesis_conditions",
+  "Đơn từ": "nav.applications",
+  "Xem đơn": "nav.view_applications",
+  "Gửi đơn": "nav.submit_application",
+  "Đơn đổi lớp chéo": "nav.cross_class_change",
+  "Đơn khởi nghiệp": "nav.startup_application",
+  "Tài chính": "nav.finance",
+  "Thanh toán": "nav.payments",
+  "Học tập": "nav.academic",
+};
+
+export function getNavTitle(title: string, t?: (key: string) => string): string {
+  if (!t) return title;
+  const key = NAV_KEY_MAP[title];
+  return key ? t(key) : title;
+}
+
 export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Học tập",
