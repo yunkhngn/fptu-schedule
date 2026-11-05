@@ -282,6 +282,82 @@ describe("boot lifecycle and fallback", () => {
     expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
   });
 
+  it("records why it fell back, so a student can report it", async () => {
+    document.body.innerHTML = timetableShellHtml;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+    const mockWin = {
+      location: { pathname: "/WeeklyTimetable" },
+      document: window.document,
+      extractWeeklyScheduleFromTable: parseLoadedTable(window.document),
+    } as unknown as Window;
+
+    await boot({ win: mockWin, timeoutMs: 40 });
+
+    expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toBe("data-timeout");
+  });
+
+  it("falls back to the original FAP instead of leaving the page hidden when rendering throws", async () => {
+    document.body.innerHTML = `
+      <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+      <div class="fap-home-student-card">
+        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+      </div>
+      <div class="fap-home-news-item">
+        <span class="fap-home-news-item__title">Title 1</span>
+        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+      </div>
+    `;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      customElements: window.customElements,
+    } as unknown as Window;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    await boot({
+      win: mockWin,
+      renderContent: () => {
+        throw new Error("boom");
+      },
+    });
+    await waitFor(() => expect(document.getElementById("fptu-ui-host")).toBe(null));
+
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toMatch(/^render-error: boom/);
+    errorSpy.mockRestore();
+  });
+
+  it("falls back to the original FAP when a component throws while React renders", async () => {
+    document.body.innerHTML = `
+      <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+      <div class="fap-home-student-card">
+        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+      </div>
+      <div class="fap-home-news-item">
+        <span class="fap-home-news-item__title">Title 1</span>
+        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+      </div>
+    `;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      customElements: window.customElements,
+    } as unknown as Window;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const Boom = () => {
+      throw new Error("component boom");
+    };
+
+    await boot({ win: mockWin, renderContent: () => <Boom /> });
+    await waitFor(() => expect(document.getElementById("fptu-ui-host")).toBe(null));
+
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui-reason")).toMatch(/^render-error: component boom/);
+    errorSpy.mockRestore();
+  });
+
   it("unmounts and saves preference when student clicks 'Xem bản FAP gốc'", async () => {
     const store: Record<string, unknown> = {};
     const mockChrome = {

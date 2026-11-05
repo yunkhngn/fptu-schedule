@@ -23,8 +23,18 @@ function getExtractor(win: Window) {
   return win.FapPageData || (typeof window !== "undefined" && (window as any).FapPageData);
 }
 
-function cleanupFallback(doc: Document, win: Window) {
+/**
+ * Gives the page back to the original FAP. The reason is written to <html data-fptu-ui-reason> and the
+ * console so a student can tell us why the new interface did not show.
+ */
+function cleanupFallback(doc: Document, win: Window, reason: string) {
   doc.documentElement.removeAttribute("data-fptu-ui");
+  doc.documentElement.setAttribute("data-fptu-ui-reason", reason);
+  if (reason !== "user-choice" && reason !== "disabled" && reason !== "original-preference") {
+    try {
+      console.warn("[FPTU UI] showing the original FAP page:", reason);
+    } catch (_) {}
+  }
   const host = doc.getElementById("fptu-ui-host");
   if (host) host.remove();
   // @ts-expect-error flag cleanup
@@ -82,7 +92,27 @@ async function waitForData(doc: Document, page: PageId, timeoutMs: number): Prom
   });
 }
 
-export async function boot(options?: BootOptions): Promise<void> {
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+class RenderBoundary extends React.Component<
+  { onError: (error: unknown) => void; children?: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown) {
+    this.props.onError(error);
+  }
+  render() {
+    return this.state.hasError ? null : (this.props.children ?? null);
+  }
+}
+
+async function bootInner(options?: BootOptions): Promise<void> {
   const win = options?.win || (typeof window !== "undefined" ? window : null);
   if (!win || !win.document) return;
 
@@ -98,32 +128,32 @@ export async function boot(options?: BootOptions): Promise<void> {
   const chromeApi = options?.chromeApi || (win as any).chrome;
   const enabled = await isFapUiEnabled(chromeApi);
   if (!enabled) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "disabled");
     return;
   }
 
   const originalPref = await readOriginalPreference(page, chromeApi);
   if (originalPref) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "original-preference");
     return;
   }
 
   const timeoutMs = options?.timeoutMs !== undefined ? options.timeoutMs : 8000;
   const dataReady = await waitForData(win.document, page, timeoutMs);
   if (!dataReady) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "data-timeout");
     return;
   }
 
   const extractor = getExtractor(win);
   if (!extractor) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "no-extractor");
     return;
   }
 
   const shell = extractor.readShell(win.document);
   if (!shell) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "no-shell");
     return;
   }
 
@@ -133,7 +163,7 @@ export async function boot(options?: BootOptions): Promise<void> {
   if (page === "overview") {
     const home = extractor.readHome(win.document);
     if (!home) {
-      cleanupFallback(win.document, win);
+      cleanupFallback(win.document, win, "no-home-data");
       return;
     }
     pageData = { shell, page: "overview", home };
@@ -143,7 +173,7 @@ export async function boot(options?: BootOptions): Promise<void> {
     const raw = getWeekly ? getWeekly(win.document) : { schedule: [] };
     const tt = extractor.toTimetable(raw.schedule);
     if (hasRows && tt.sessions.length === 0) {
-      cleanupFallback(win.document, win);
+      cleanupFallback(win.document, win, "timetable-parser-empty");
       return;
     }
     pageData = { shell, page: "timetable", sessions: tt.sessions, weekStart: tt.weekStart };
@@ -153,21 +183,21 @@ export async function boot(options?: BootOptions): Promise<void> {
     const raw = getExams ? getExams(win.document) : [];
     const ex = extractor.toExams(raw);
     if (hasRows && ex.length === 0) {
-      cleanupFallback(win.document, win);
+      cleanupFallback(win.document, win, "exams-parser-empty");
       return;
     }
     pageData = { shell, page: "exams", exams: ex };
   } else if (page === "news") {
     const newsData = extractor.readNews(win.document);
     if (!newsData) {
-      cleanupFallback(win.document, win);
+      cleanupFallback(win.document, win, "no-news-data");
       return;
     }
     pageData = { shell, page: "news", news: newsData.news, categories: newsData.categories };
   }
 
   if (!pageData) {
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, "no-page-data");
     return;
   }
 
@@ -188,22 +218,54 @@ export async function boot(options?: BootOptions): Promise<void> {
 
   const reactRoot = createRoot(root as unknown as HTMLElement);
 
-  const handleShowOriginal = async () => {
-    await saveOriginalPreference(page, true, chromeApi);
-    reactRoot.unmount();
+  const giveBack = (reason: string) => {
+    try {
+      reactRoot.unmount();
+    } catch (_) {}
     unmountShadow();
-    cleanupFallback(win.document, win);
+    cleanupFallback(win.document, win, reason);
   };
 
+  const handleShowOriginal = async () => {
+    await saveOriginalPreference(page, true, chromeApi);
+    giveBack("user-choice");
+  };
+
+  let content: React.ReactNode;
+  try {
+    content = options?.renderContent ? options.renderContent(pageData) : renderPage(pageData, chromeApi);
+  } catch (error) {
+    console.error("[FPTU UI] render failed", error);
+    giveBack(`render-error: ${errorMessage(error)}`);
+    return;
+  }
+
   reactRoot.render(
-    <AppShell
-      shell={shell}
-      activePath={pathname}
-      onShowOriginal={handleShowOriginal}
+    <RenderBoundary
+      onError={(error) => {
+        console.error("[FPTU UI] render failed", error);
+        // Unmounting while React is still handling the error is unsafe, so wait a tick.
+        setTimeout(() => giveBack(`render-error: ${errorMessage(error)}`), 0);
+      }}
     >
-      {options?.renderContent ? options.renderContent(pageData) : renderPage(pageData, chromeApi)}
-    </AppShell>
+      <AppShell shell={shell} activePath={pathname} onShowOriginal={handleShowOriginal}>
+        {content}
+      </AppShell>
+    </RenderBoundary>
   );
 
   win.document.documentElement.setAttribute("data-fptu-ui", "active");
+}
+
+/** Never leave the page hidden: any unexpected error gives the original FAP page back. */
+export async function boot(options?: BootOptions): Promise<void> {
+  try {
+    await bootInner(options);
+  } catch (error) {
+    const win = options?.win || (typeof window !== "undefined" ? window : null);
+    if (win && win.document) {
+      console.error("[FPTU UI] boot failed", error);
+      cleanupFallback(win.document, win, `error: ${errorMessage(error)}`);
+    }
+  }
 }
