@@ -130,6 +130,7 @@ export function AppSidebar({
   onNavigate,
   onShowOriginal,
 }: AppSidebarProps) {
+  const [logoFailed, setLogoFailed] = useState(false);
   const isDashboardActive = activePath === "/" || activePath === "";
 
   return (
@@ -141,27 +142,22 @@ export function AppSidebar({
       )}
     >
       <div className="h-full overflow-hidden rounded-3xl border border-border bg-surface shadow-soft flex flex-col">
-        {/* Brand: the logo on top, the name under it; collapsed, only the mascot fits. */}
+        {/* Brand: the logo, centred. Collapsed, only the mascot fits. If the logo cannot be shown, the name stands in. */}
         <div
           className={cn(
-            "flex shrink-0 flex-col items-start gap-2.5 px-5 pt-5 pb-3",
-            collapsed && "h-[72px] items-center justify-center px-0 py-0"
+            "flex shrink-0 items-center justify-center px-5 py-5",
+            collapsed && "h-[72px] px-0 py-0"
           )}
         >
           {collapsed ? (
             <Mascot className="size-10" />
+          ) : logoFailed ? (
+            <div className="min-w-0 text-center leading-tight">
+              <p className="truncate text-[15px] font-semibold tracking-tight">Trường Đại học FPT</p>
+              <p className="truncate text-xs text-muted-foreground">FPT Education · FAP</p>
+            </div>
           ) : (
-            <>
-              <BrandLogo className="h-12" />
-              <div className="min-w-0 leading-tight">
-                <p className="truncate text-[15px] font-semibold tracking-tight">
-                  Trường Đại học FPT
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  FPT Education · FAP
-                </p>
-              </div>
-            </>
+            <BrandLogo className="h-14" onFail={() => setLogoFailed(true)} />
           )}
         </div>
 
