@@ -157,9 +157,34 @@ test("hasOriginalRows detects presence of original data rows", () => {
   const weekDoc = createDoc(weekHtml);
   assert.strictEqual(FapPageData.hasOriginalRows(weekDoc, "timetable"), true);
 
+  const examHtml = loadFixture("exam.html");
+  const examDoc = createDoc(examHtml);
+  assert.strictEqual(FapPageData.hasOriginalRows(examDoc, "exams"), true);
+
+  const newsHtml = loadFixture("pages/news.html");
+  const newsDoc = createDoc(newsHtml);
+  assert.strictEqual(FapPageData.hasOriginalRows(newsDoc, "news"), true);
+
+  const homeHtml = loadFixture("pages/home.html");
+  const homeDoc = createDoc(homeHtml);
+  assert.strictEqual(FapPageData.hasOriginalRows(homeDoc, "overview"), true);
+
   const emptyDoc = createDoc("<div><table><tbody></tbody></table></div>");
   assert.strictEqual(FapPageData.hasOriginalRows(emptyDoc, "timetable"), false);
   assert.strictEqual(FapPageData.hasOriginalRows(emptyDoc, "exams"), false);
   assert.strictEqual(FapPageData.hasOriginalRows(emptyDoc, "news"), false);
   assert.strictEqual(FapPageData.hasOriginalRows(emptyDoc, "overview"), false);
+});
+
+test("null and empty inputs are handled safely", () => {
+  assert.strictEqual(FapPageData.readShell(null), null);
+  assert.strictEqual(FapPageData.readHome(null), null);
+  assert.strictEqual(FapPageData.readNews(null), null);
+  assert.strictEqual(FapPageData.hasOriginalRows(null, "timetable"), false);
+
+  const emptyTimetable = FapPageData.toTimetable([], new Date("2026-11-05"));
+  assert.deepStrictEqual(emptyTimetable.sessions, []);
+  assert.strictEqual(emptyTimetable.weekStart, "2026-11-02");
+
+  assert.deepStrictEqual(FapPageData.toExams([]), []);
 });
