@@ -225,6 +225,63 @@ describe("boot lifecycle and fallback", () => {
     expect(document.getElementById("fptu-ui-host")).toBe(null);
   });
 
+  const timetableShellHtml = `
+    <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+    <div id="weekly-timetable-container" data-fetch-url="/WeeklyTimetable/WeekPartial">
+      <div class="text-muted">Đang tải thời khóa biểu tuần...</div>
+    </div>
+  `;
+  const timetableRow = {
+    title: "PRM393",
+    date: "3/11/2026",
+    slot: "Slot 3",
+    location: "DE-338",
+    attendanceStatus: "attended",
+    isOnline: false,
+    description: "SE1938 - NJ - duongtb",
+    rawDate: { timeRange: "12:50-15:10" },
+  };
+  // Stand-in for FAP's table, which arrives after the page is idle (the real one is fetched from /WeeklyTimetable/WeekPartial).
+  const parseLoadedTable = (doc: Document) => () => ({
+    schedule: doc.querySelector("#weekly-timetable-container table") ? [timetableRow] : [],
+    skipped: 0,
+  });
+
+  it("waits for the timetable that FAP loads after the page is idle", async () => {
+    document.body.innerHTML = timetableShellHtml;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+    const mockWin = {
+      location: { pathname: "/WeeklyTimetable" },
+      document: window.document,
+      extractWeeklyScheduleFromTable: parseLoadedTable(window.document),
+    } as unknown as Window;
+
+    setTimeout(() => {
+      document.getElementById("weekly-timetable-container")!.innerHTML =
+        '<div class="weekly-timetable-grid"><table><tbody><tr><td>x</td></tr></tbody></table></div>';
+    }, 40);
+
+    await boot({ win: mockWin, timeoutMs: 1000 });
+
+    expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+  });
+
+  it("falls back to the original FAP when the timetable never loads", async () => {
+    document.body.innerHTML = timetableShellHtml;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+    const mockWin = {
+      location: { pathname: "/WeeklyTimetable" },
+      document: window.document,
+      extractWeeklyScheduleFromTable: parseLoadedTable(window.document),
+    } as unknown as Window;
+
+    await boot({ win: mockWin, timeoutMs: 60 });
+
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+  });
+
   it("unmounts and saves preference when student clicks 'Xem bản FAP gốc'", async () => {
     const store: Record<string, unknown> = {};
     const mockChrome = {

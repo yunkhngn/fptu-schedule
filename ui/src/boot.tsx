@@ -42,6 +42,11 @@ async function waitForData(doc: Document, page: PageId, timeoutMs: number): Prom
       }
       return Boolean(student || news.length > 0);
     }
+    if (page === "timetable") {
+      // FAP fetches the week from /WeeklyTimetable/WeekPartial after the page is idle; until then the
+      // container only holds a loading message and the parser would see an empty week.
+      return Boolean(doc.querySelector("#weekly-timetable-container table, .weekly-timetable-grid table"));
+    }
     return true;
   };
 
