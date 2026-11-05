@@ -188,3 +188,66 @@ test("null and empty inputs are handled safely", () => {
 
   assert.deepStrictEqual(FapPageData.toExams([]), []);
 });
+
+test("readTopbar extracts campus, language, notifications, and profile from fap-home.html", () => {
+  const html = loadFixture("fap-home.html");
+  const doc = createDoc(html);
+
+  const topbar = FapPageData.readTopbar(doc);
+  assert.ok(topbar, "Topbar data should be present");
+
+  assert.deepStrictEqual(topbar.campus, {
+    name: "Cơ sở Hà Nội (HN)",
+    code: "HN",
+    isMain: true,
+  });
+
+  assert.ok(topbar.language, "Language data should be present");
+  assert.strictEqual(topbar.language.current, "vi");
+  assert.deepStrictEqual(topbar.language.options, [
+    { culture: "vi", label: "Tiếng Việt" },
+    { culture: "en", label: "English" },
+  ]);
+
+  assert.ok(topbar.notifications, "Notifications data should be present");
+  assert.strictEqual(topbar.notifications.available, true);
+  assert.strictEqual(typeof topbar.notifications.unread, "number");
+
+  assert.ok(topbar.profile, "Profile data should be present");
+  assert.strictEqual(topbar.profile.name, "Nguyễn Văn A");
+  assert.strictEqual(topbar.profile.studentId, "SE000000");
+  assert.ok(topbar.profile.accountHref.endsWith("/Account"), "accountHref should end with /Account");
+  assert.strictEqual(topbar.profile.canLogout, true);
+});
+
+test("readTopbar returns null fields on empty document or missing blocks", () => {
+  const emptyDoc = createDoc("<div>Nothing</div>");
+  const topbar = FapPageData.readTopbar(emptyDoc);
+  assert.deepStrictEqual(topbar, {
+    campus: null,
+    language: null,
+    notifications: null,
+    profile: null,
+  });
+
+  assert.deepStrictEqual(FapPageData.readTopbar(null), {
+    campus: null,
+    language: null,
+    notifications: null,
+    profile: null,
+  });
+});
+
+test("readTopbar safely handles malicious tags in profile name", () => {
+  const html = `
+    <div class="fap-topbar-user">
+      <h5>&lt;img src=x onerror=alert(1)&gt;</h5>
+      <h6>SE123456</h6>
+    </div>
+  `;
+  const doc = createDoc(html);
+  const topbar = FapPageData.readTopbar(doc);
+  assert.ok(topbar.profile);
+  assert.strictEqual(topbar.profile.name, "<img src=x onerror=alert(1)>");
+});
+
