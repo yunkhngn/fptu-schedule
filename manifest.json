@@ -47,7 +47,8 @@
         "*://fap.fpt.edu.vn/*"
       ],
       "css": [
-        "lib/fap-ui-early.css"
+        "lib/fap-ui-early.css",
+        "lib/fap-ui-login.css"
       ],
       "js": [
         "lib/fap-routes.js",
@@ -63,6 +64,7 @@
         "lib/fap-table-reader.js",
         "lib/fap-page-data.js",
         "lib/fap-form-reader.js",
+        "lib/fap-readers-login.js",
         "lib/fap-readers-reports.js",
         "lib/fap-readers-conditions.js",
         "lib/fap-readers-academic.js",

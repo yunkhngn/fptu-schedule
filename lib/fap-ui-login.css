@@ -1,0 +1,155 @@
+/* ---------------------------------------------------------------------------------------------
+   FAP's own sign-in block (tabs, Google and FeID links, the parent form) shown inside the new sign-in page.
+   The markup is FAP's, so the browser's password manager, FAP's validation and the reCAPTCHA keep working;
+   these rules only give it the new look. The block is a light-DOM child of the interface host, so it
+   inherits the design tokens (light, dark and the accent colour) from the host.
+   Every rule is gated by the active new sign-in page and by the block itself.
+   --------------------------------------------------------------------------------------------- */
+
+html[data-fptu-ui="active"] #login-step-credentials {
+  color: var(--foreground, #17181d);
+  font-family: var(--font-sans, inherit);
+  letter-spacing: -0.006em;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .login-role-tabs {
+  margin-bottom: 1rem !important;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .nav-pills {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-2, #f3f4fa);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .nav-link {
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.6rem 0.9rem;
+  background: transparent;
+  color: var(--muted-foreground, #5b6478);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .nav-link:hover {
+  color: var(--foreground, #17181d);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .nav-link.active {
+  background: var(--surface, #ffffff);
+  color: var(--foreground, #17181d);
+  box-shadow: var(--shadow-soft, 0 1px 2px rgba(23, 24, 29, 0.06));
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .nav-link:focus-visible {
+  outline: 2px solid var(--ring, #9695ee);
+  outline-offset: 2px;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .tab-pane > p {
+  color: var(--muted-foreground, #5b6478);
+  font-size: 0.8125rem;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--border, #ecedf4);
+  padding: 0.65rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn:focus-visible {
+  outline: 2px solid var(--ring, #9695ee);
+  outline-offset: 2px;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn-outline-secondary {
+  background: var(--surface, #ffffff);
+  color: var(--foreground, #17181d);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn-outline-secondary:hover {
+  background: var(--surface-2, #f3f4fa);
+  color: var(--foreground, #17181d);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn-primary {
+  border-color: transparent;
+  background: var(--primary-strong, #5b50c9);
+  color: var(--primary-foreground, #ffffff);
+  box-shadow: var(--shadow-soft, 0 1px 2px rgba(23, 24, 29, 0.06));
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .btn-primary:hover {
+  filter: brightness(1.08);
+  color: var(--primary-foreground, #ffffff);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .form-label {
+  margin-bottom: 0.35rem;
+  color: var(--muted-foreground, #5b6478);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .form-control {
+  min-height: 2.75rem;
+  border: 1px solid var(--input, #e4e5ee);
+  border-radius: 14px;
+  background: var(--surface, #ffffff);
+  color: var(--foreground, #17181d);
+  font-size: 0.9375rem;
+  box-shadow: none;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .form-control::placeholder {
+  color: var(--muted-foreground, #5b6478);
+  opacity: 0.8;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .form-control:focus-visible {
+  border-color: var(--ring, #9695ee);
+  outline: 2px solid var(--ring, #9695ee);
+  outline-offset: 0;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .form-control:focus {
+  border-color: var(--ring, #9695ee);
+  box-shadow: none;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .input-group-text {
+  border: 1px solid var(--input, #e4e5ee);
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+  background: var(--surface, #ffffff);
+  color: var(--muted-foreground, #5b6478);
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .input-group .form-control {
+  border-radius: 14px 0 0 14px;
+}
+
+html[data-fptu-ui="active"] #login-step-credentials .text-danger {
+  color: var(--danger-strong, #b3263a) !important;
+  font-size: 0.75rem;
+}

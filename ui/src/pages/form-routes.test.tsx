@@ -22,7 +22,12 @@ describe("write pages that stay in FAP's own content", () => {
     document.body.innerHTML = "";
     document.documentElement.removeAttribute("data-fptu-ui");
   });
-  afterEach(() => {
+  let bootedWin: any = null;
+  afterEach(async () => {
+    // Unmount the React tree before the environment is torn down, or a pending render throws after the test ends.
+    bootedWin?.__fptuUiGiveBack?.("test-cleanup");
+    bootedWin = null;
+    await new Promise((r) => setTimeout(r, 0));
     document.getElementById("fptu-ui-host")?.remove();
     delete (window as any).__fptuUi;
   });
@@ -41,6 +46,7 @@ describe("write pages that stay in FAP's own content", () => {
       const original = Array.from(document.querySelectorAll("form"));
 
       const win = { location: { pathname: page.path }, document: window.document, customElements: window.customElements } as unknown as Window;
+      bootedWin = win;
       await boot({ win, timeoutMs: 100 });
 
       const host = document.getElementById("fptu-ui-host");

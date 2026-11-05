@@ -5,6 +5,7 @@ import { isFapUiEnabled, setFapUiEnabled, clearLegacyOriginalPreferences } from 
 import { mountShadow } from "./shadow/mount";
 import { splitDocumentCss } from "./shadow/css";
 import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
+import { bootLogin } from "./login/bootLogin";
 import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage, registry, WrappedPage } from "./pages";
@@ -134,15 +135,17 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const matched = matchRoute(pathname);
   if (!matched) return;
 
-  // The login page gets its own interface in Task 15. Until then there is nothing to show, and the early script
-  // has already hidden the page behind the splash, so hand the original page back right away rather than
-  // leaving the student staring at the splash until the 10 second safety timer fires.
+  const chromeApi = options?.chromeApi || (win as any).chrome;
+
+  // The sign-in page has no sidebar and nothing to wait for: it shows FAP's sign-in block in the new design.
   if (matched.kind === "auth") {
-    cleanupFallback(win.document, win, "login-not-built");
+    await bootLogin(win, { chromeApi, css: options?.css }, {
+      cleanup: (reason) => cleanupFallback(win.document, win, reason),
+      showPill: () => showReturnPill(win, chromeApi),
+    });
     return;
   }
 
-  const chromeApi = options?.chromeApi || (win as any).chrome;
   const enabled = await isFapUiEnabled(chromeApi);
   if (!enabled) {
     cleanupFallback(win.document, win, "disabled");

@@ -113,3 +113,18 @@ html[data-fptu-ui="pending"] #fptu-splash {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------
+   The sign-in page has no .wrapper: FAP's own card sits in .account-pages over a backdrop. Hide both while the
+   new page is prepared and once it is shown. The sign-in block itself is moved out of .account-pages into the
+   new page, so it stays visible there.
+   --------------------------------------------------------------------------------------------- */
+html[data-fptu-ui="pending"] body.authentication-bg .account-pages,
+html[data-fptu-ui="pending"] body.authentication-bg .login-auth-backdrop {
+  visibility: hidden !important;
+}
+
+html[data-fptu-ui="active"] body.authentication-bg .account-pages,
+html[data-fptu-ui="active"] body.authentication-bg .login-auth-backdrop {
+  display: none !important;
+}
