@@ -52,3 +52,4 @@ describe("ProfileMenu component", () => {
     expect(screen.getByText("ID000")).toBeDefined();
   });
 });
+

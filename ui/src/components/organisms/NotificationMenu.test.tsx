@@ -129,3 +129,4 @@ describe("NotificationMenu component", () => {
     });
   });
 });
+

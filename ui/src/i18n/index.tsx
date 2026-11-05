@@ -63,3 +63,4 @@ export function useT(): (key: string, params?: Record<string, string | number>) 
 export function useLang(): Lang {
   return useContext(I18nContext).lang;
 }
+

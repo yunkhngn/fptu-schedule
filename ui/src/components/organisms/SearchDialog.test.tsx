@@ -97,3 +97,4 @@ describe("TopNavigation search triggering", () => {
     expect(screen.getByPlaceholderText(/Tìm chức năng, trang…/i)).toBeDefined();
   });
 });
+

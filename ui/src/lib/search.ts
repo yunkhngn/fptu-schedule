@@ -88,3 +88,4 @@ export function filterTargets(query: string, targets: SearchTarget[]): SearchTar
   scored.sort((a, b) => a.score - b.score);
   return scored.map((item) => item.target);
 }
+

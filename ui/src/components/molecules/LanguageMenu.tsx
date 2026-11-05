@@ -67,3 +67,4 @@ export function LanguageMenu({ language, onSelect, className }: LanguageMenuProp
     </Popover>
   );
 }
+

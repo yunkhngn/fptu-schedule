@@ -61,3 +61,4 @@ export function CampusMenu({ campus, className }: CampusMenuProps) {
     </Popover>
   );
 }
+
