@@ -15,6 +15,7 @@ import {
   ChevronRight,
   CircleDashed,
   Clock3,
+  Loader2,
   MapPin,
   UserRound,
   Video,
@@ -61,16 +62,26 @@ const attendanceMeta: Record<
   },
 };
 
+export type ScheduleStatus = "idle" | "loading" | "error" | "login-required";
+
 export interface ScheduleCalendarProps {
   sessions: ClassSession[];
   initialWeekStart?: string;
   className?: string;
+  /** Called with the Monday (yyyy-MM-dd) of the week the student moved to, so the page can load it. */
+  onWeekChange?: (weekStartIso: string) => void;
+  /** State of loading the shown week. */
+  status?: ScheduleStatus;
+  onRetry?: () => void;
 }
 
 export function ScheduleCalendar({
   sessions,
   initialWeekStart = "2026-11-02",
   className,
+  onWeekChange,
+  status = "idle",
+  onRetry,
 }: ScheduleCalendarProps) {
   const [today, setToday] = useState<Date | null>(null);
   const [weekStart, setWeekStart] = useState<Date>(() => parseISO(initialWeekStart));
@@ -99,9 +110,14 @@ export function ScheduleCalendar({
   const dayHas = (day: Date) => weekSessions.some((s) => isSameDay(s.day, day));
   const slotTime = (slot: number) => weekSessions.find((s) => s.slot === slot)?.time;
 
+  const showWeek = (start: Date) => {
+    setWeekStart(start);
+    onWeekChange?.(format(start, "yyyy-MM-dd"));
+  };
+
   const goToday = () => {
     const now = today ?? new Date();
-    setWeekStart(startOfWeek(now, { weekStartsOn: 1 }));
+    showWeek(startOfWeek(now, { weekStartsOn: 1 }));
     setSelectedDay((now.getDay() + 6) % 7);
   };
 
@@ -137,7 +153,7 @@ export function ScheduleCalendar({
             variant="outline"
             size="sm"
             aria-label="Tuần trước"
-            onClick={() => setWeekStart(addWeeks(weekStart, -1))}
+            onClick={() => showWeek(addWeeks(weekStart, -1))}
           >
             <ChevronLeft className="size-4" />{" "}
             <span className="hidden sm:inline">Tuần trước</span>
@@ -149,7 +165,7 @@ export function ScheduleCalendar({
             variant="outline"
             size="sm"
             aria-label="Tuần sau"
-            onClick={() => setWeekStart(addWeeks(weekStart, 1))}
+            onClick={() => showWeek(addWeeks(weekStart, 1))}
           >
             <span className="hidden sm:inline">Tuần sau</span>{" "}
             <ChevronRight className="size-4" />
@@ -192,7 +208,25 @@ export function ScheduleCalendar({
         })}
       </div>
 
-      {weekSessions.length === 0 ? (
+      {status === "loading" ? (
+        <div role="status" className="flex items-center justify-center gap-2 px-6 py-16 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          Đang tải thời khóa biểu tuần này…
+        </div>
+      ) : status === "error" || status === "login-required" ? (
+        <div role="alert" className="flex flex-col items-center gap-3 px-6 py-14 text-center">
+          <p className="text-sm font-medium">
+            {status === "login-required"
+              ? "Phiên đăng nhập FAP đã hết hạn. Hãy đăng nhập lại rồi thử lại."
+              : "Không tải được thời khóa biểu tuần này."}
+          </p>
+          {onRetry && (
+            <Button variant="outline" size="sm" onClick={onRetry}>
+              Thử lại
+            </Button>
+          )}
+        </div>
+      ) : weekSessions.length === 0 ? (
         <EmptyState
           icon={CalendarDays}
           title="Chưa có lịch học"

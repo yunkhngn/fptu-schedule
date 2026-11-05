@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { Info, MapPinned } from "lucide-react";
 import { PageHeader } from "@/components/templates/PageHeader";
 import { ScheduleCalendar } from "@/components/organisms/ScheduleCalendar";
 import { DashboardCard } from "@/components/molecules/DashboardCard";
 import type { ClassSession } from "@/data/types";
+import { createFapWeekLoader, type WeekLoader } from "@/data/weekLoader";
+import { useWeekSessions } from "@/hooks/useWeekSessions";
 
 export interface TimetablePageProps {
   sessions: ClassSession[];
   weekStart: string;
+  /** Loads another week from FAP. Defaults to the extension's own fetcher on the real page. */
+  loadWeek?: WeekLoader;
 }
 
 const ROOM_LEGEND = [
@@ -21,7 +26,10 @@ const ROOM_LEGEND = [
   { code: "VOV3", place: "Nhà võ số 3", detail: "Cạnh hồ Delta · 4 sân tập R01-VOV3 đến R04-VOV3" },
 ];
 
-export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
+export function TimetablePage({ sessions, weekStart, loadWeek }: TimetablePageProps) {
+  const [loader] = useState<WeekLoader | undefined>(() => loadWeek ?? createFapWeekLoader());
+  const week = useWeekSessions(sessions, weekStart, loader);
+
   return (
     <div className="space-y-6 pt-2">
       <PageHeader
@@ -30,7 +38,13 @@ export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
         description="Xem lịch học, phòng học và tình trạng điểm danh theo từng tuần."
       />
 
-      <ScheduleCalendar sessions={sessions} initialWeekStart={weekStart} />
+      <ScheduleCalendar
+        sessions={week.sessions}
+        initialWeekStart={weekStart}
+        onWeekChange={loader ? week.requestWeek : undefined}
+        status={week.status}
+        onRetry={week.retry}
+      />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
         <DashboardCard
