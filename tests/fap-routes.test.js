@@ -79,10 +79,10 @@ describe("fap-routes", () => {
     assert.equal(payment.kind, "wrapped");
   });
 
-  test("returns wrapped for pages without a dedicated reader yet", () => {
+  test("the student profile is a form page, and unknown pages are wrapped", () => {
     const profile = matchRoute("/StudentProfile");
     assert.ok(profile);
-    assert.equal(profile.kind, "wrapped");
+    assert.equal(profile.kind, "form");
 
     const arbitrary = matchRoute("/Whatever/Page");
     assert.ok(arbitrary);

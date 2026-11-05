@@ -154,4 +154,7 @@ export const vi: Record<string, string> = {
   "forms.required": "(bắt buộc)",
   "forms.fill_required": "Điền các ô bắt buộc để lưu.",
   "forms.submitting": "Đang gửi…",
+  "profile.edit_title": "Cập nhật hồ sơ",
+  "profile.edit_description": "Chỉ các ô có thể sửa mới mở khóa; thông tin còn lại do nhà trường quản lý.",
+  "profile.back": "Quay lại tài khoản",
 };

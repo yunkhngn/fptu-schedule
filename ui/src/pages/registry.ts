@@ -24,6 +24,7 @@ import { StartupGroupEmpty } from "./StartupGroupEmpty";
 import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
 import { Article } from "./Article";
 import { Account } from "./Account";
+import { StudentProfileEdit } from "./StudentProfileEdit";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -313,6 +314,20 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(Article, { data, shell, lang }),
+  },
+  "student-profile": {
+    id: "student-profile",
+    ready: (doc: Document) => Boolean(doc.querySelector('form[action$="/StudentProfile"]')),
+    read: (doc: Document, win: Window) => {
+      const selector = 'form[action$="/StudentProfile"]';
+      // @ts-expect-error global reader check
+      const reader = win.FapPageData?.forms || (win as any).FapFormReader || (typeof window !== "undefined" && ((window as any).FapPageData?.forms || (window as any).FapFormReader));
+      const form = reader && typeof reader.readForm === "function" ? reader.readForm(doc, selector) : null;
+      // A form we cannot drive safely (file input, password...) stays FAP's own page inside the new frame.
+      if (!form || form.unsupported) return null;
+      return { form, selector };
+    },
+    Component: ({ data, shell, lang }) => React.createElement(StudentProfileEdit, { data, shell, lang }),
   },
   account: {
     id: "account",

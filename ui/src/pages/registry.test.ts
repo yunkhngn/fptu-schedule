@@ -25,6 +25,7 @@ describe("page registry", () => {
       "report-thesis-conditions",
       "report-transcript",
       "startup-group",
+      "student-profile",
       "subject",
       "timetable",
       "transaction",

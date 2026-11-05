@@ -154,4 +154,7 @@ export const en: Record<string, string> = {
   "forms.required": "(required)",
   "forms.fill_required": "Fill in the required fields to save.",
   "forms.submitting": "Submitting…",
+  "profile.edit_title": "Update profile",
+  "profile.edit_description": "Only the editable fields are unlocked; the rest is managed by the university.",
+  "profile.back": "Back to account",
 };
