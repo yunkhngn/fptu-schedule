@@ -22,7 +22,7 @@ export function Account({ data }: AccountProps): React.JSX.Element {
           <div className="shrink-0">
             <a
               href={data.editHref}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
             >
               <Edit2 className="w-4 h-4" />
               <span>Cập nhật hồ sơ</span>

@@ -29,7 +29,7 @@ export function StartupGroupEmpty({
         {data.createHref && (
           <a
             href={data.createHref}
-            className="inline-flex h-9 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-accent/90"
+            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
           >
             {lang === "en" ? "Submit New Application" : "Gửi đơn mới"}
           </a>

@@ -52,7 +52,7 @@ export function ApplicationCatalog({
             <div className="mt-5 border-t border-border pt-4">
               <a
                 href={item.href}
-                className="inline-flex h-8 items-center justify-center rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+                className="inline-flex h-8 items-center justify-center rounded-lg bg-primary-soft px-3.5 text-xs font-semibold text-primary-strong border border-primary-strong/20 shadow-xs transition-all hover:bg-primary-muted hover:border-primary-strong/40"
               >
                 {lang === "en" ? "Submit Application" : "Làm đơn này"}
               </a>
