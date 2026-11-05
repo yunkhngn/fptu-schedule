@@ -4,6 +4,41 @@ export type ShellData = {
   unreadNotifications: number;
 };
 
+export type TopbarCampus = {
+  name: string;
+  code: string;
+  isMain: boolean;
+};
+
+export type TopbarLanguageOption = {
+  culture: string;
+  label: string;
+};
+
+export type TopbarLanguage = {
+  current: string;
+  options: TopbarLanguageOption[];
+};
+
+export type TopbarNotifications = {
+  unread: number;
+  available: boolean;
+};
+
+export type TopbarProfile = {
+  name: string;
+  studentId: string;
+  accountHref: string;
+  canLogout: boolean;
+};
+
+export type TopbarData = {
+  campus: TopbarCampus | null;
+  language: TopbarLanguage | null;
+  notifications: TopbarNotifications | null;
+  profile: TopbarProfile | null;
+};
+
 export type HomeData = {
   metrics: {
     status?: string;

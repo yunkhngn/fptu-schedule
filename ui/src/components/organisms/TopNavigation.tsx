@@ -14,12 +14,16 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
 import { Mascot } from "@/components/atoms/Brand";
 import { ThemeToggle } from "@/components/molecules/ThemeToggle";
+import { CampusMenu } from "@/components/molecules/CampusMenu";
+import { LanguageMenu } from "@/components/molecules/LanguageMenu";
 import { SearchDialog } from "./SearchDialog";
 import type { ThemePreference } from "@/theme/theme";
-import type { ShellData } from "@/data/types";
+import type { ShellData, TopbarData } from "@/data/types";
 
 export interface TopNavigationProps {
   shell: ShellData;
+  topbar?: TopbarData | null;
+  onSelectLanguage?: (culture: string) => void;
   onToggleSidebar?: () => void;
   className?: string;
   themePreference?: ThemePreference;
@@ -31,6 +35,8 @@ const pill =
 
 export function TopNavigation({
   shell,
+  topbar,
+  onSelectLanguage,
   onToggleSidebar,
   className,
   themePreference,
@@ -38,6 +44,24 @@ export function TopNavigation({
 }: TopNavigationProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const campusData =
+    topbar !== undefined
+      ? topbar?.campus ?? null
+      : shell.campus
+      ? { name: shell.campus, code: "", isMain: false }
+      : null;
+
+  const languageData =
+    topbar !== undefined
+      ? topbar?.language ?? null
+      : {
+          current: "vi",
+          options: [
+            { culture: "vi", label: "Tiếng Việt" },
+            { culture: "en", label: "English" },
+          ],
+        };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -102,18 +126,14 @@ export function TopNavigation({
         {/* Actions & Profile */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Campus Selector */}
-          <div className={cn(pill, "hidden xl:inline-flex")}>
-            <MapPin className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
-            <span>{shell.campus || "Cơ sở Hà Nội (HN)"}</span>
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          </div>
+          <CampusMenu campus={campusData} className="hidden xl:inline-flex" />
 
           {/* Language Selector */}
-          <div className={cn(pill, "hidden lg:inline-flex")}>
-            <Languages className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
-            <span>Tiếng Việt</span>
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          </div>
+          <LanguageMenu
+            language={languageData}
+            onSelect={onSelectLanguage}
+            className="hidden lg:inline-flex"
+          />
 
           {/* Theme Toggle */}
           {onThemeChange && (
