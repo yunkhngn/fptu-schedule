@@ -134,8 +134,13 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const matched = matchRoute(pathname);
   if (!matched) return;
 
-  // Auth pages will be mounted in Task 15
-  if (matched.kind === "auth") return;
+  // The login page gets its own interface in Task 15. Until then there is nothing to show, and the early script
+  // has already hidden the page behind the splash, so hand the original page back right away rather than
+  // leaving the student staring at the splash until the 10 second safety timer fires.
+  if (matched.kind === "auth") {
+    cleanupFallback(win.document, win, "login-not-built");
+    return;
+  }
 
   const chromeApi = options?.chromeApi || (win as any).chrome;
   const enabled = await isFapUiEnabled(chromeApi);
