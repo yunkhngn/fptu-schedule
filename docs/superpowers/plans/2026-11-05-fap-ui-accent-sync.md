@@ -116,7 +116,8 @@ export function watchAccent(host: HTMLElement, chromeApi: typeof chrome | undefi
   - `watchAccent`: phát `onChanged` với `{ accentColor: { newValue: "teal" } }` ở vùng `"local"` thì host đổi `--primary`; vùng `"sync"` hoặc khóa khác thì không đổi; `stop()` gỡ listener.
   - `boot`: với storage trả `"pink"`, host có `--primary` ngay sau khi mount (trước khi ẩn FAP gốc); với storage không trả kịp, vẫn mount bằng lavender và không treo.
 - [ ] **Step 2:** `cd ui && npx vitest run src/accent src/boot.test.tsx`; FAIL.
-- [ ] **Step 3:** Cài đặt ba hàm; trong `boot`, `await readAccent(...)` trước `mountShadow`, gọi `applyAccent` ngay sau mount, gọi `watchAccent` và `stop()` trong `unmount`.
+- [ ] **Step 3:** Cài đặt ba hàm. Cập nhật theo `boot.tsx` hiện tại (sau các sửa lỗi 2026-11-05): trong `bootInner`, `await readAccent(...)` sau khi đã có `pageData` và **trước** `mountShadow`; gọi `applyAccent(host, id)` ngay sau `mountShadow`; gọi `watchAccent(host, chromeApi)` ngay sau đó và gọi `stop()` của nó **trong `giveBack`** (hàm duy nhất gỡ giao diện; công tắc chung có thể gỡ rồi dựng lại giao diện nhiều lần trong một trang, nên mỗi lần dựng phải gỡ listener của lần trước để không bị lặp). `watchAccent` phải chịu được `chrome.storage.onChanged.removeListener` không tồn tại (bộ giả trong test chỉ có `addListener`).
+- [ ] **Step 3b: Test thêm cho tích hợp:** dùng `makeChrome` trong `ui/src/boot.test.tsx` (đã có `onChanged`); (a) bật rồi tắt rồi bật công tắc `fapUiEnabled` ba lần, sau đó phát `{ accentColor: { newValue: "teal" } }` một lần: `--primary` đổi đúng một lần và số listener `accentColor` đang hoạt động bằng 1; (b) khi giao diện đang tắt (`fapUiEnabled: false`) không có host nên không có lỗi khi nhận `accentColor`.
 - [ ] **Step 4:** `cd ui && npm test`; PASS. **Step 5: Commit** `feat(ui): follow the extension accent colour in the FAP interface`
 
 ---
