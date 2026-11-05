@@ -72,11 +72,56 @@ describe("fap-readers-reports", () => {
 
       const course = res.courses[0];
       assert.ok(course.components.length >= 1);
+      assert.equal(course.selected, true);
+      assert.equal(course.className, "SE1961-NJ");
+      assert.ok(course.status);
       for (const comp of course.components) {
         assert.ok(typeof comp.name === "string");
         assert.ok(typeof comp.weight === "string");
         assert.ok(typeof comp.value === "string");
       }
+    });
+
+    test("extracts average, status and calculates result on modern FAP mark sheet", () => {
+      const html = `
+        <div id="grade-report" class="academic-report" data-report-url="/Report/Grade">
+          <div class="card fap-result-card">
+            <div class="card-header">
+              <h5 class="fap-result-card__title">Philosophy of Marxism – Leninism <span class="fap-result-card__code">MLN111</span></h5>
+              <p class="fap-result-card__meta">
+                <span>SE1938-NJ</span>
+                <span>Fall2026</span>
+              </p>
+            </div>
+            <table class="student-mark-sheet">
+              <tbody>
+                <tr><td>Assignment 2</td><td>20%</td><td>9,5</td><td>-</td></tr>
+                <tr><td>Assignment 1</td><td>20%</td><td>9,6</td><td>-</td></tr>
+                <tr><td>Participation</td><td>10%</td><td>9,2</td><td>-</td></tr>
+                <tr><td>Progress tests</td><td>20%</td><td>6,0</td><td>-</td></tr>
+                <tr><td>Final exam</td><td>30%</td><td>5,8</td><td>-</td></tr>
+                <tr><td>Final exam (Resit)</td><td>30%</td><td>-</td><td>-</td></tr>
+                <tr class="sheet-grand-total">
+                  <td>Tổng môn</td>
+                  <td>Điểm trung bình</td>
+                  <td><span class="grade-average">7,7</span></td>
+                  <td><span class="grade-status">Trạng thái: Passed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      const doc = new JSDOM(html).window.document;
+      const res = readGradeReport(doc);
+      assert.ok(res);
+      assert.equal(res.courses.length, 1);
+      const c = res.courses[0];
+      assert.equal(c.code, "MLN111");
+      assert.equal(c.className, "SE1938-NJ");
+      assert.equal(c.total, "7,7");
+      assert.equal(c.status, "Passed");
+      assert.equal(c.components.length, 6);
     });
 
     test("returns null for empty document", () => {

@@ -115,7 +115,15 @@ export type GradeReportData = {
     id?: string;
     code: string;
     name: string;
-    components: Array<{ name: string; weight: string; value: string }>;
+    className?: string;
+    termName?: string;
+    components: Array<{
+      group?: string;
+      name: string;
+      weight: string;
+      value: string;
+      note?: string;
+    }>;
     total: string;
     status: string;
     href?: string | null;

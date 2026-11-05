@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { I18nProvider } from "@/i18n";
 import { AttendanceReport } from "./AttendanceReport";
 import { GradeReport } from "./GradeReport";
 import { Transcript } from "./Transcript";
@@ -95,9 +96,36 @@ describe("Report Pages", () => {
       render(<GradeReport data={data} shell={dummyShell} lang="vi" />);
 
       expect(screen.getByText("Báo cáo điểm")).toBeTruthy();
-      expect(screen.getByText("PRJ301")).toBeTruthy();
+      expect(screen.getAllByText("PRJ301").length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText("Progress Test 1")).toBeTruthy();
       expect(screen.getByText("8.5")).toBeTruthy();
+      expect(screen.getAllByText("Đạt (Passed)").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("7.8").length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("renders English labels and status when lang is en", () => {
+      const data = {
+        term: null,
+        courses: [
+          {
+            code: "MLN111",
+            name: "Marxism Philosophy",
+            className: "SE1938-NJ",
+            components: [{ name: "Final exam", weight: "30%", value: "5.8" }],
+            total: "7.7",
+            status: "Passed",
+          },
+        ],
+      };
+
+      render(
+        <I18nProvider lang="en">
+          <GradeReport data={data} shell={dummyShell} lang="en" />
+        </I18nProvider>
+      );
+      expect(screen.getByText("Grade Report")).toBeTruthy();
+      expect(screen.getByText("SE1938-NJ")).toBeTruthy();
+      expect(screen.getAllByText("Passed").length).toBeGreaterThanOrEqual(1);
     });
   });
 

@@ -152,14 +152,51 @@ export function GradeReport({
     data.courses?.find((c) => c.components && c.components.length > 0) ||
     data.courses?.[0];
 
+  const formatStatus = (st?: string) => {
+    if (!st) return "—";
+    if (/passed|đạt/i.test(st) && !/not|không/i.test(st)) {
+      return lang === "en" ? "Passed" : "Đạt (Passed)";
+    }
+    if (/not\s*passed|không\s*đạt|failed|trượt/i.test(st)) {
+      return lang === "en" ? "Not passed" : "Không đạt (Failed)";
+    }
+    if (/in\s*progress|đang\s*học/i.test(st)) {
+      return lang === "en" ? "In Progress" : "Đang học";
+    }
+    return st;
+  };
+
+  const statusTone: "success" | "danger" | "warning" | "default" =
+    /passed|đạt/i.test(currentCourse?.status || "") && !/not|không/i.test(currentCourse?.status || "")
+      ? "success"
+      : /not\s*passed|không\s*đạt|failed|trượt/i.test(currentCourse?.status || "")
+      ? "danger"
+      : /in\s*progress|đang\s*học/i.test(currentCourse?.status || "")
+      ? "warning"
+      : "default";
+
+  const numTotal = currentCourse?.total ? parseFloat(currentCourse.total.replace(",", ".")) : null;
+  const finalScoreTone: "success" | "danger" | "default" =
+    numTotal !== null && !isNaN(numTotal)
+      ? numTotal >= 5.0
+        ? "success"
+        : "danger"
+      : "default";
+
+  const statusLabel = formatStatus(currentCourse?.status);
+
+  const hasGroups = (currentCourse?.components || []).some((c) => Boolean(c.group));
   const columns: RichTableColumn[] = [
+    ...(hasGroups
+      ? [{ key: "group", header: lang === "en" ? "Category" : "Nhóm điểm" }]
+      : []),
     { key: "name", header: lang === "en" ? "Component Name" : "Tên cột điểm" },
-    { key: "weight", header: lang === "en" ? "Weight (%)" : "Trọng số (%)", align: "center" },
+    { key: "weight", header: lang === "en" ? "Weight (%)" : "Trọng số (%)", align: "center" as const },
     {
       key: "value",
       header: lang === "en" ? "Score" : "Điểm",
-      align: "center",
-      tone: (val) => {
+      align: "center" as const,
+      tone: (val: string) => {
         const num = parseFloat(val.replace(",", "."));
         if (!isNaN(num)) {
           if (num >= 5) return "success";
@@ -168,13 +205,26 @@ export function GradeReport({
         return undefined;
       },
     },
+    { key: "note", header: lang === "en" ? "Note" : "Ghi chú" },
   ];
 
   const rows: Array<Record<string, string>> = (currentCourse?.components || []).map((c) => ({
+    group: c.group || "—",
     name: c.name || "",
-    weight: c.weight || "",
+    weight: c.weight ? c.weight.replace("%", "") : "—",
     value: c.value || "—",
+    note: c.note || "—",
   }));
+
+  if (currentCourse?.total) {
+    rows.push({
+      group: "—",
+      name: t("reports.course_total"),
+      weight: "100",
+      value: currentCourse.total,
+      note: statusLabel,
+    });
+  }
 
   const courseOptions = (data.courses || [])
     .filter((c) => c.code || c.name)
@@ -190,7 +240,7 @@ export function GradeReport({
         title={t("reports.grade_title")}
         description={
           currentCourse?.name
-            ? `${currentCourse.code} · ${currentCourse.name}`
+            ? `${currentCourse.code} · ${currentCourse.name}${currentCourse.className ? ` (${currentCourse.className})` : ""}`
             : t("reports.grade_desc")
         }
       />
@@ -214,20 +264,24 @@ export function GradeReport({
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatTile
-          label={lang === "en" ? "Course Code" : "Mã môn"}
-          value={currentCourse?.code || "—"}
-        />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatTile
           label={t("reports.final_score")}
           value={currentCourse?.total || "—"}
-          tone="success"
+          tone={finalScoreTone}
         />
         <StatTile
-          label={t("reports.status")}
-          value={currentCourse?.status || "—"}
-          tone={currentCourse?.status === "Passed" || currentCourse?.status === "Đạt" ? "success" : "default"}
+          label={t("reports.result")}
+          value={statusLabel}
+          tone={statusTone}
+        />
+        <StatTile
+          label={t("reports.class")}
+          value={currentCourse?.className || "—"}
+        />
+        <StatTile
+          label={t("reports.course_code")}
+          value={currentCourse?.code || "—"}
         />
       </div>
 
