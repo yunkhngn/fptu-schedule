@@ -152,7 +152,14 @@ async function bootInner(options?: BootOptions): Promise<void> {
 
   const timeoutMs = options?.timeoutMs !== undefined ? options.timeoutMs : 8000;
   const extractor = getExtractor(win);
-  const shell: ShellData = (extractor && extractor.readShell(win.document)) || {
+  const readShellData: ShellData | null = extractor ? extractor.readShell(win.document) : null;
+  if (extractor && !readShellData) {
+    // No FAP top bar or sidebar: the student is signed out, or this is an error page. There is nothing to wrap and
+    // no data to wait for, so give the page back now instead of keeping it behind the splash.
+    cleanupFallback(win.document, win, "no-shell");
+    return;
+  }
+  const shell: ShellData = readShellData || {
     student: { name: "", initials: "", studentId: "" },
     campus: "",
     unreadNotifications: 0,

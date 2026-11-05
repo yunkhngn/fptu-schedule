@@ -349,7 +349,8 @@ describe("boot lifecycle and fallback", () => {
   `;
 
   it("offers a floating switch on pages while the new interface is switched off", async () => {
-    document.body.innerHTML = `<div class="wrapper">original FAP page</div>`;
+    // A real FAP page always has its own top bar; without it the interface would give the page back at once.
+    document.body.innerHTML = `<div class="wrapper"><div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>original FAP page</div>`;
     const store: Record<string, unknown> = { fapUiEnabled: false };
     const mockChrome = makeChrome(store);
     const mockWin = { location: { pathname: "/", reload: vi.fn() }, document: window.document } as unknown as Window;
@@ -669,7 +670,7 @@ describe("boot lifecycle and fallback", () => {
     const subjectHtml = fs.readFileSync(path.resolve(__dirname, "../../tests/fixtures/pages/subject.html"), "utf8");
     const wrapper = document.createElement("div");
     wrapper.className = "wrapper";
-    wrapper.innerHTML = subjectHtml;
+    wrapper.innerHTML = `<div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>` + subjectHtml;
     document.body.appendChild(wrapper);
 
     const mockWin = {
@@ -796,7 +797,7 @@ describe("boot lifecycle and fallback", () => {
     const cartHtml = fs.readFileSync(path.resolve(__dirname, "../../tests/fixtures/pages/shopping-cart.html"), "utf8");
     const wrapper = document.createElement("div");
     wrapper.className = "wrapper";
-    wrapper.innerHTML = cartHtml;
+    wrapper.innerHTML = `<div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>` + cartHtml;
     document.body.appendChild(wrapper);
 
     const payBtn = wrapper.querySelector(".js-confirm-wallet-payment");
