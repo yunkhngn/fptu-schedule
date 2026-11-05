@@ -1,4 +1,35 @@
 ================================================================================
+CHROME WEB STORE - WHAT'S NEW IN VERSION 5.0.0 (ENGLISH)
+[Ready to paste into Chrome Web Store Description / Release Notes]
+================================================================================
+
+WHAT'S NEW IN VERSION 5.0.0:
+
+• A MODERN INTERFACE FOR FAP
+FAP now has a rebuilt interface with a sidebar, a top bar, global search, light, dark and system themes, and Vietnamese or English that follows the FAP language setting. Overview, timetable, exams, news, attendance and grade reports, transcript, subjects, curriculum, certificates, transactions, documents, applications, account and login are redrawn from FAP's own data.
+
+• EVERY OTHER PAGE STAYS INSIDE THE NEW FRAME
+Pages that are not redrawn, including all forms and the payment pages, appear as FAP's own content inside the new sidebar and top bar, so nothing falls back to the old full-page look.
+
+• ONE SWITCH TO TURN IT OFF
+A single switch in the popup and the sidebar turns the new interface on or off in every open FAP tab, with no reload. A floating button on original pages brings it back.
+
+• A NEW LOGIN PAGE
+A clean layout for staff, student and parent sign-in. FAP's own login card is kept as it is, so your browser's password manager, autofill and reCAPTCHA keep working. The extension never reads or stores your password.
+
+• STUDENT PROFILE EDITING
+The profile form is redrawn with the same fields. It fills in FAP's own form and presses FAP's own submit button once, only after you click. Nothing is ever submitted automatically.
+
+• YOUR ACCENT COLOR, EVERYWHERE
+The accent color you pick in the popup now recolors the FAP interface too. Two new presets, lavender and orange, bring the total to nine.
+
+• IMPROVEMENTS
+A refreshed popup, a more reliable survey auto-fill, other timetable weeks loading correctly, working attendance and grade report selectors, higher contrast for links and buttons, and no console errors after the extension is reloaded.
+
+PRIVACY AND SAFETY: Everything runs on your device and is bundled in the extension. No remote code, no external requests, and the payment pages are never modified.
+
+
+================================================================================
 CHROME WEB STORE - WHAT'S NEW IN VERSION 4.1.0 (ENGLISH)
 [Ready to paste into Chrome Web Store Description / Release Notes]
 ================================================================================

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FPTU Schedule",
   "description": "A modern FAP interface for FPT University students, plus timetable export to .ics, schedule alerts and session keep-alive.",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "permissions": [
     "scripting",
     "tabs",

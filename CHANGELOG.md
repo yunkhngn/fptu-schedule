@@ -5,6 +5,43 @@ All notable changes to the **FPTU Schedule** extension are documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2026-11-06
+
+A major update. FAP now has a rebuilt interface: the pages students use every day are redrawn from FAP's own data in a modern layout, and every other page keeps working inside the same frame. One master switch turns it off at any time.
+
+### Added
+- **Modern FAP Interface (React UI)**: A rebuilt interface for fap.fpt.edu.vn with a sidebar, a top bar, global search (Ctrl/Cmd+K), light, dark and system themes, and a Vietnamese and English language that follows the FAP language setting. It is built with React and Tailwind and runs inside an isolated Shadow DOM so it never conflicts with FAP styles.
+- **Rebuilt Pages**: Overview, weekly timetable, exam schedule, news and news detail, attendance report, grade report, transcript, OJT and thesis conditions, subjects, curriculum, certificates, transactions, documents and document detail, wishlist, FYE check-in and mentor feedback, applications and application catalog, cross-class change and startup group lists, account, student profile editing and the login page.
+- **Wrapped Frame for Every Other Page**: Any FAP page without its own rebuilt version, including every write page and the payment pages, is shown as FAP's own content inside the new sidebar and top bar. Nothing falls back to the old full-page interface.
+- **Login Page**: A new layout with the FPT University logo, tabs for staff and students and for parents, and the Google and FeID buttons. FAP's own login card is placed in the layout as it is, so the browser password manager, autofill, reCAPTCHA and FAP's anti-forgery token keep working. The extension never reads or stores a password.
+- **Student Profile Editing**: The profile form is redrawn with the same fields. Values are written into FAP's own controls and FAP's own submit button is pressed once, only after the student clicks the extension's button. Fields FAP locks stay locked and FAP's validation messages are shown.
+- **Master Switch**: One switch in the popup and the sidebar turns the new interface on or off in every open FAP tab at once, without reloading. A floating button on original pages brings it back.
+- **Top Bar Controls**: Working search across pages, campus information, language switching, notifications read from FAP's own bell with their titles and a load-more row, a profile menu with logout, and a theme toggle.
+- **Splash Screen**: A short mascot splash while the new interface waits for its data. Signed-out and error pages are given back immediately instead of waiting behind it.
+- **Accent Colors in the FAP Interface**: The accent color chosen in the popup now recolors the FAP interface as well, and two more presets were added (lavender and orange), for nine in total.
+- **Popup Refresh**: A glassmorphic popup and a switch for the new FAP interface in settings.
+- **Page Tests and Fixtures**: Sanitized fixtures for every surveyed FAP page, a single route table (`lib/fap-routes.js`), coverage tests that keep routes, readers, fixtures and sidebar entries consistent, and a smoke test that runs the built bundle.
+
+### Changed
+- **Single Route Table**: The list of FAP pages that the extension handles now lives in one file instead of three places.
+- **Survey Auto-Fill**: The feedback tool selects the highest rating option more reliably and keeps its toolbar in sync.
+- **Documentation**: The documentation site, the README and `ui/README.md` describe the new interface, the route kinds and how to add a page.
+
+### Fixed
+- **Timetable Weeks**: Other weeks of the timetable now load from FAP when navigating in the new interface, and the first valid session date is used to resolve the week start.
+- **Attendance and Grade Reports**: Course and term selection works, and the grade report shows the final score, the pass status and class details.
+- **Accent Colors in the Built Bundle**: Accent colors were ignored in the built bundle and now apply.
+- **Login Page**: The login page is no longer held behind the splash screen, and the session keep-alive no longer pings the login routes.
+- **Readable Controls**: Higher contrast for hyperlinks, application action buttons and the mascot avatar background.
+- **Extension Reload**: Reloading or updating the extension while a FAP tab is open no longer prints errors in the console; the page is simply given back.
+
+### Security & Compliance
+- The interface never submits a form on its own. Rebuilt forms drive FAP's own fields and press FAP's own submit button once, after the student's click, and never handle password, token or file fields. Pages with file uploads, dynamically loaded fields or no readable form stay in FAP's own content.
+- The payment pages (shopping cart and pending course payment) are never rebuilt, so the payment QR code and the pay button stay exactly as FAP serves them.
+- Everything is bundled in the package. No remote code, CDN or external font is loaded, and all processing stays on the student's device.
+
+---
+
 ## [4.1.0] - 2026-11-03
 
 ### Added
