@@ -35,6 +35,40 @@ describe("Report Pages", () => {
       expect(screen.getByText("07:30 - 09:50")).toBeTruthy();
       expect(screen.getByText("AL-101")).toBeTruthy();
     });
+
+    it("triggers onCourseChange when course filter changes", () => {
+      const data = {
+        courses: [
+          { id: "c1", code: "MLN122", name: "Kinh tế chính trị", attended: 10, absent: 2, total: 12, rate: 10 / 12 },
+          { id: "c2", code: "EXE201g", name: "Khởi nghiệp", attended: 0, absent: 0, total: 0, rate: null },
+        ],
+        filter: null,
+        sessions: [],
+      };
+
+      const onCourseChange = vi.fn();
+      render(<AttendanceReport data={data} shell={dummyShell} lang="vi" onCourseChange={onCourseChange} />);
+
+      const courseSelect = screen.getByRole("combobox");
+      fireEvent.change(courseSelect, { target: { value: "c2" } });
+      expect(onCourseChange).toHaveBeenCalledWith("c2");
+    });
+
+    it("respects selected flag when choosing the current course", () => {
+      const data = {
+        courses: [
+          { id: "c1", code: "MLN122", name: "Kinh tế chính trị", attended: 0, absent: 0, total: 0, rate: null, selected: false },
+          { id: "c2", code: "EXE201g", name: "Khởi nghiệp", attended: 18, absent: 2, total: 20, rate: 0.9, selected: true },
+        ],
+        filter: null,
+        sessions: [],
+      };
+
+      render(<AttendanceReport data={data} shell={dummyShell} lang="vi" />);
+      const select = screen.getByRole("combobox") as HTMLSelectElement;
+      expect(select.value).toBe("c2");
+      expect(screen.getByText("90%")).toBeTruthy();
+    });
   });
 
   describe("GradeReport", () => {

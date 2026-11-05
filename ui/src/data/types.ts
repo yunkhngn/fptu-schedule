@@ -85,15 +85,19 @@ export type ExamItem = {
 
 export type AttendanceReportData = {
   courses: Array<{
+    id?: string;
     code: string;
     name: string;
     attended: number;
     absent: number;
     total: number;
     rate: number | null;
+    href?: string | null;
+    selected?: boolean;
   }>;
   selectedCourse?: string;
-  filter: { value: string; options: Array<{ value: string; label: string }> } | null;
+  filter: { value: string; options: Array<{ value: string; label: string; href?: string | null }> } | null;
+  courseFilter?: { value: string; options: Array<{ value: string; label: string; href?: string | null }> } | null;
   sessions: Array<{
     index: string;
     date: string;
@@ -105,13 +109,17 @@ export type AttendanceReportData = {
 };
 
 export type GradeReportData = {
-  term: { value: string; options: Array<{ value: string; label: string }> } | null;
+  term: { value: string; options: Array<{ value: string; label: string; href?: string | null }> } | null;
+  courseFilter?: { value: string; options: Array<{ value: string; label: string; href?: string | null }> } | null;
   courses: Array<{
+    id?: string;
     code: string;
     name: string;
     components: Array<{ name: string; weight: string; value: string }>;
     total: string;
     status: string;
+    href?: string | null;
+    selected?: boolean;
   }>;
 };
 

@@ -32,13 +32,47 @@ export function GradeReport({
       return;
     }
     if (typeof document !== "undefined") {
-      const sel = document.querySelector("#grade-report-term") as HTMLSelectElement | null;
+      const sel = document.querySelector(
+        "#grade-report-term, select.academic-report-term-select"
+      ) as HTMLSelectElement | null;
+
+      let targetHref: string | null | undefined = null;
+
       if (sel) {
-        sel.value = val;
-        sel.dispatchEvent(new Event("change", { bubbles: true }));
-        const opt = sel.querySelector(`option[value="${val}"]`) as HTMLElement | null;
-        const href = opt?.getAttribute("data-fallback-href");
-        if (href) window.location.href = href;
+        let opt = sel.querySelector(
+          `option[value="${val}"]`
+        ) as HTMLOptionElement | null;
+        if (!opt) {
+          opt =
+            Array.from(sel.options).find(
+              (o) => o.textContent?.trim() === val || o.value === val
+            ) || null;
+        }
+        if (opt) {
+          sel.value = opt.value;
+          targetHref = opt.getAttribute("data-fallback-href");
+          sel.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+
+      if (!targetHref && data.term?.options) {
+        const fOpt = data.term.options.find(
+          (o) => o.value === val || o.label === val
+        );
+        targetHref = (fOpt as any)?.href;
+      }
+
+      if (!targetHref && sel) {
+        const container = document.querySelector("#grade-report, .academic-report");
+        const reportUrl = container?.getAttribute("data-report-url") || "/Report/Grade";
+        const termParam = container?.getAttribute("data-report-term-param") || "termId";
+        if (val) {
+          targetHref = `${reportUrl}?${termParam}=${encodeURIComponent(val)}`;
+        }
+      }
+
+      if (targetHref) {
+        window.location.href = targetHref;
       }
     }
   };
@@ -49,18 +83,74 @@ export function GradeReport({
       return;
     }
     if (typeof document !== "undefined") {
-      const sel = document.querySelector("#grade-report-course") as HTMLSelectElement | null;
+      const course = data.courses?.find(
+        (c) => (c.id && c.id === val) || c.code === val || c.href === val
+      );
+      const sel = document.querySelector(
+        "#grade-report-course, select.academic-report-course-select"
+      ) as HTMLSelectElement | null;
+
+      let targetHref = course?.href;
+
       if (sel) {
-        sel.value = val;
-        sel.dispatchEvent(new Event("change", { bubbles: true }));
-        const opt = sel.querySelector(`option[value="${val}"]`) as HTMLElement | null;
-        const href = opt?.getAttribute("data-fallback-href");
-        if (href) window.location.href = href;
+        let targetOpt = sel.querySelector(
+          `option[value="${val}"]`
+        ) as HTMLOptionElement | null;
+
+        if (!targetOpt && course?.id) {
+          targetOpt = sel.querySelector(
+            `option[value="${course.id}"]`
+          ) as HTMLOptionElement | null;
+        }
+
+        if (!targetOpt && course?.code) {
+          targetOpt =
+            Array.from(sel.options).find(
+              (o) =>
+                o.value === course.code ||
+                o.textContent?.includes(`(${course.code})`) ||
+                o.textContent?.includes(course.code)
+            ) || null;
+        }
+
+        if (targetOpt) {
+          sel.value = targetOpt.value;
+          targetHref =
+            targetOpt.getAttribute("data-fallback-href") || targetHref;
+          sel.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+
+      if (!targetHref && sel) {
+        const container = document.querySelector("#grade-report, .academic-report");
+        const reportUrl = container?.getAttribute("data-report-url") || "/Report/Grade";
+        const termParam = container?.getAttribute("data-report-term-param") || "termId";
+        const courseParam = container?.getAttribute("data-report-course-param") || "courseId";
+        const termSel = document.querySelector(
+          "#grade-report-term, select.academic-report-term-select"
+        ) as HTMLSelectElement | null;
+        const termVal = termSel ? termSel.value : (data.term?.value || "");
+        const courseVal = sel.value || course?.id || val;
+        if (termVal && courseVal) {
+          targetHref = `${reportUrl}?${termParam}=${encodeURIComponent(termVal)}&${courseParam}=${encodeURIComponent(courseVal)}`;
+        } else if (courseVal) {
+          targetHref = `${reportUrl}?${courseParam}=${encodeURIComponent(courseVal)}`;
+        }
+      }
+
+      if (targetHref) {
+        window.location.href = targetHref;
       }
     }
   };
 
-  const currentCourse = data.courses?.[0];
+  const currentCourse =
+    data.courses?.find((c) => c.selected) ||
+    (data.courseFilter?.value
+      ? data.courses?.find((c) => c.id === data.courseFilter?.value)
+      : undefined) ||
+    data.courses?.find((c) => c.components && c.components.length > 0) ||
+    data.courses?.[0];
 
   const columns: RichTableColumn[] = [
     { key: "name", header: lang === "en" ? "Component Name" : "Tên cột điểm" },
@@ -89,7 +179,7 @@ export function GradeReport({
   const courseOptions = (data.courses || [])
     .filter((c) => c.code || c.name)
     .map((c) => ({
-      value: c.code,
+      value: c.id || c.code,
       label: c.name ? `${c.code} - ${c.name}` : c.code,
     }));
 
@@ -117,7 +207,7 @@ export function GradeReport({
         {courseOptions.length > 1 && (
           <FilterBar
             label={t("reports.course")}
-            value={currentCourse?.code || ""}
+            value={currentCourse?.id || currentCourse?.code || ""}
             options={courseOptions}
             onChange={handleCourseChange}
           />
@@ -151,3 +241,4 @@ export function GradeReport({
     </div>
   );
 }
+

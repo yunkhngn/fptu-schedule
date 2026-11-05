@@ -31,6 +31,15 @@ describe("fap-readers-reports", () => {
       // Filter has options
       assert.ok(res.filter);
       assert.ok(res.filter.options.length >= 1);
+      assert.ok(res.filter.options[0].href);
+
+      // Courses preserve id, href, and selected status
+      assert.ok(res.courses[0].id);
+      assert.ok(res.courses[0].href);
+      assert.equal(res.courses[0].selected, true);
+      if (res.courses.length > 1) {
+        assert.equal(res.courses[1].selected, false);
+      }
 
       // Rate is a number between 0 and 1 (or null if total is 0)
       const current = res.courses[0];
@@ -55,8 +64,11 @@ describe("fap-readers-reports", () => {
       assert.ok(res);
       assert.ok(res.term);
       assert.ok(res.term.options.length >= 1);
+      assert.ok(res.term.options[0].href);
       assert.ok(Array.isArray(res.courses));
       assert.ok(res.courses.length >= 1);
+      assert.ok(res.courses[0].id);
+      assert.ok(res.courses[0].href);
 
       const course = res.courses[0];
       assert.ok(course.components.length >= 1);
@@ -97,3 +109,4 @@ describe("fap-readers-reports", () => {
     });
   });
 });
+
