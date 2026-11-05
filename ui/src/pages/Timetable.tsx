@@ -10,10 +10,15 @@ export interface TimetablePageProps {
 }
 
 const ROOM_LEGEND = [
-  { code: "BE", place: "Tòa nhà Beta", detail: "Phòng học lý thuyết và hội trường" },
-  { code: "DE", place: "Tòa nhà Gamma / Delta", detail: "Phòng học lý thuyết và lab thực hành" },
-  { code: "AL", place: "Giảng đường Alpha", detail: "Khu vực sảnh đón và giảng đường lớn" },
-  { code: "LA", place: "Phòng Lab chuyên dụng", detail: "Phòng máy tính và thực hành kỹ thuật" },
+  { code: "AL", place: "Tòa nhà Alpha" },
+  { code: "BE", place: "Tòa nhà Beta" },
+  { code: "GA", place: "Tòa nhà Gamma", detail: "VD: G201" },
+  { code: "DE", place: "Tòa nhà Delta" },
+  { code: "LUK", place: "Little UK", detail: "Tầng 5 tòa nhà Delta" },
+  { code: "R", place: "Khu vực sân tập Vovinam" },
+  { code: "VOV1", place: "Nhà võ số 1", detail: "Cuối tòa nhà Alpha · 6 sân tập R01-VOV1 đến R06-VOV1" },
+  { code: "VOV2", place: "Nhà võ số 2", detail: "Cạnh cổng trường · 8 sân tập R01-VOV2 đến R08-VOV2" },
+  { code: "VOV3", place: "Nhà võ số 3", detail: "Cạnh hồ Delta · 4 sân tập R01-VOV3 đến R04-VOV3" },
 ];
 
 export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
@@ -35,10 +40,10 @@ export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
           bodyClassName="pt-4"
         >
           <p className="text-[13.5px] leading-relaxed">
-            ( - ) Chưa tới giờ học | (*) Điểm danh có mặt | (v) Điểm danh vắng | (p) Điểm danh có phép
+            Các hoạt động trong bảng dưới không bao gồm hoạt động ngoại khóa, ví dụ như hoạt động câu lạc bộ.
           </p>
           <p className="mt-2 text-[12.5px] leading-relaxed text-muted-foreground italic">
-            Các buổi học trực tuyến có biểu tượng wifi và liên kết Google Meet đính kèm.
+            These activities do not include extra-curriculum activities, such as club activities.
           </p>
         </DashboardCard>
 
@@ -60,7 +65,7 @@ export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
                 </span>
                 <div className="min-w-0">
                   <p className="text-[13px] font-medium">{r.place}</p>
-                  <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{r.detail}</p>
+                  {r.detail && <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{r.detail}</p>}
                 </div>
               </li>
             ))}
@@ -70,3 +75,4 @@ export function TimetablePage({ sessions, weekStart }: TimetablePageProps) {
     </div>
   );
 }
+

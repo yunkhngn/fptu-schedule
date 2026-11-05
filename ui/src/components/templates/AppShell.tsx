@@ -7,7 +7,7 @@ export interface AppShellProps {
   shell: ShellData;
   activePath: string;
   children: ReactNode;
-  onShowOriginal: () => void;
+  onShowOriginal?: () => void;
 }
 
 export function AppShell({
@@ -38,7 +38,7 @@ export function AppShell({
           onShowOriginal={onShowOriginal}
           onToggleSidebar={toggleSidebar}
         />
-        <main className="page-enter flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="page-enter flex-1 px-4 pt-2 pb-10 sm:px-6 lg:px-8">
           <div className="mx-auto w-full max-w-[1440px]">
             {children}
           </div>
@@ -47,3 +47,4 @@ export function AppShell({
     </div>
   );
 }
+

@@ -86,3 +86,4 @@ export function useReadNews(chromeApi?: typeof chrome) {
     unreadCount,
   };
 }
+

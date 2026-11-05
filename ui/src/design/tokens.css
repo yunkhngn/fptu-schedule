@@ -11,7 +11,7 @@
  */
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-feature: "cv11", "ss01";
 
   --radius-sm: calc(var(--radius) - 8px);
@@ -158,6 +158,14 @@
 
 @utility bg-lavender {
   background-image: var(--gradient-lavender-glow), var(--gradient-lavender);
+}
+
+:host {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-feature);
+  letter-spacing: -0.006em;
 }
 
 @utility bg-surface-gradient {

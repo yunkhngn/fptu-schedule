@@ -112,3 +112,4 @@ test("fap-ui-early removes pending attribute after 10s safety timeout if not act
   timerCb();
   assert.strictEqual(doc.documentElement.getAttribute("data-fptu-ui"), null);
 });
+

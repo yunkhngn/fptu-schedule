@@ -95,3 +95,4 @@ describe("molecules component suite", () => {
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
   });
 });
+

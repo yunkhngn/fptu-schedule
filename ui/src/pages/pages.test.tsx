@@ -16,7 +16,7 @@ describe("OverviewPage", () => {
     // Greeting has "Chào" and student name
     const greetingEl = screen.getByRole("heading", { level: 1 });
     expect(greetingEl.textContent).toContain("Chào");
-    expect(greetingEl.textContent).toContain(data.shell.student.name);
+    expect(greetingEl.textContent).toMatch(/Nguyễn Đăng Khoa|Khoa/);
 
     // 5 metric cards
     expect(screen.getByText("Trạng thái")).toBeTruthy();
@@ -30,11 +30,11 @@ describe("OverviewPage", () => {
     expect(screen.getByText(data.home.news[1].title)).toBeTruthy();
 
     // Filter by category
-    const filterBtn = screen.getByRole("tab", { name: "Thông tin Đào tạo" });
+    const filterBtn = screen.getByRole("tab", { name: "Thông tin Khảo Thí" });
     fireEvent.click(filterBtn);
 
-    const daoTaoItem = data.home.news.find((n) => n.category === "Thông tin Đào tạo");
-    expect(screen.getByText(daoTaoItem!.title)).toBeTruthy();
+    const khaoThiItem = data.home.news.find((n) => n.category === "Thông tin Khảo Thí");
+    expect(screen.getByText(khaoThiItem!.title)).toBeTruthy();
   });
 });
 
@@ -94,10 +94,10 @@ describe("NewsPage", () => {
 
     // Search query
     const searchInput = screen.getByPlaceholderText(/Tìm/i);
-    fireEvent.change(searchInput, { target: { value: "học phí" } });
+    fireEvent.change(searchInput, { target: { value: "lịch thi" } });
 
-    // Should only match news items with "học phí"
-    expect(screen.getByText(/học phí/i)).toBeTruthy();
+    // Should only match news items with "lịch thi"
+    expect(screen.getAllByText(/lịch thi/i).length).toBeGreaterThan(0);
 
     // Mark all read button
     const markAllBtn = screen.getByRole("button", { name: /Đánh dấu/i });

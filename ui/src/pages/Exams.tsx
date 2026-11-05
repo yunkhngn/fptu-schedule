@@ -51,3 +51,4 @@ export function ExamsPage({ exams }: ExamsPageProps) {
     </div>
   );
 }
+

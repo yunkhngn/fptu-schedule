@@ -19,3 +19,4 @@ export function SkeletonRows({ rows = 4 }: SkeletonRowsProps) {
     </div>
   );
 }
+

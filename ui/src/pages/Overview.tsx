@@ -1,18 +1,33 @@
 import { useState, useMemo } from "react";
 import {
   CalendarDays,
+  CalendarClock,
   FilePlus2,
   Hash,
   Mail,
   ShieldCheck,
   Wallet,
+  Newspaper,
+  ArrowRight,
+  ArrowUpRight,
+  LayoutGrid,
+  BookOpen,
+  ClipboardCheck,
+  BarChart3,
+  Table2,
+  Briefcase,
   GraduationCap,
+  BookMarked,
+  ListOrdered,
 } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
+import { IconTile } from "@/components/atoms/IconTile";
 import { StatCard } from "@/components/molecules/StatCard";
+import { DashboardCard } from "@/components/molecules/DashboardCard";
 import { CategoryFilter } from "@/components/molecules/CategoryFilter";
 import { AnnouncementList } from "@/components/organisms/AnnouncementList";
-import { FAP_URLS } from "@/data/nav";
+import { MiniCalendar } from "@/components/organisms/MiniCalendar";
+import { navHref } from "@/data/nav";
 import type { HomeData, ShellData } from "@/data/types";
 
 export interface OverviewPageProps {
@@ -20,11 +35,24 @@ export interface OverviewPageProps {
   shell: ShellData;
 }
 
+const QUICK_MENU = [
+  { title: "Thời khóa biểu", to: "/thoi-khoa-bieu", icon: CalendarDays },
+  { title: "Lịch thi", to: "/lich-thi", icon: CalendarClock },
+  { title: "Báo cáo điểm danh", to: "/bao-cao-diem-danh", icon: ClipboardCheck },
+  { title: "Báo cáo điểm", to: "/bao-cao-diem", icon: BarChart3 },
+  { title: "Bảng điểm", to: "/bang-diem", icon: Table2 },
+  { title: "Điều kiện OJT", to: "/dieu-kien-ojt", icon: Briefcase },
+  { title: "Điều kiện KLTN", to: "/dieu-kien-kltn", icon: GraduationCap },
+  { title: "Môn học", to: "/mon-hoc", icon: BookMarked },
+  { title: "Khung chương trình", to: "/khung-chuong-trinh", icon: ListOrdered },
+];
+
 export function OverviewPage({ home, shell }: OverviewPageProps) {
   const [category, setCategory] = useState("Tất cả");
 
-  const greeting = useMemo(() => {
-    const h = new Date().getHours();
+  const { greeting, dateStr, firstName } = useMemo(() => {
+    const now = new Date();
+    const h = now.getHours();
     const timeGreeting =
       h < 11
         ? "Chào buổi sáng"
@@ -33,7 +61,19 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
         : h < 18
         ? "Chào buổi chiều"
         : "Chào buổi tối";
-    return `${timeGreeting}, ${shell.student.name}`;
+    const rawDate = new Intl.DateTimeFormat("vi-VN", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(now);
+    const dateFormatted = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
+    const fName = shell.student.name.split(" ").pop() || shell.student.name;
+    return {
+      greeting: timeGreeting,
+      dateStr: dateFormatted,
+      firstName: fName,
+    };
   }, [shell.student.name]);
 
   const filteredNews = useMemo(() => {
@@ -46,27 +86,20 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
       {/* Greeting and Quick Actions */}
       <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[13px] text-muted-foreground">
-            {new Intl.DateTimeFormat("vi-VN", {
-              weekday: "long",
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            }).format(new Date())}
-          </p>
+          <p className="text-[13px] text-muted-foreground">{dateStr}</p>
           <h1 className="mt-1 text-[28px] leading-tight font-semibold tracking-[-0.025em] sm:text-[32px]">
-            {greeting}
+            {greeting}, {firstName}
           </h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <a href={FAP_URLS.sendApplication}>
+          <Button variant="outline" asChild>
+            <a href={navHref("/gui-don")}>
               <FilePlus2 className="size-4" />
               <span>Gửi đơn</span>
             </a>
           </Button>
-          <Button variant="primary" size="sm" asChild>
-            <a href={FAP_URLS.weeklyTimetable}>
+          <Button asChild>
+            <a href={navHref("/thoi-khoa-bieu")}>
               <CalendarDays className="size-4" />
               <span>Thời khóa biểu</span>
             </a>
@@ -92,7 +125,7 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
                 <h2 className="truncate text-[22px] font-semibold tracking-tight sm:text-2xl">
                   {shell.student.name}
                 </h2>
-                <p className="mt-0.5 text-sm text-foreground/65">{shell.campus || "Trường Đại học FPT"}</p>
+                <p className="mt-0.5 text-sm text-foreground/65">Trường Đại học FPT</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -102,7 +135,7 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
               </div>
               <div className="rounded-2xl bg-surface/70 p-3.5 backdrop-blur-sm">
                 <p className="text-xs text-foreground/55">Khóa</p>
-                <p className="mt-1 text-sm font-semibold">{home.metrics.cohort || "—"}</p>
+                <p className="mt-1 text-sm font-semibold">K{home.metrics.cohort || "19"}</p>
               </div>
             </div>
           </div>
@@ -126,39 +159,104 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
         <StatCard
           icon={Mail}
           label="Email"
-          value={home.metrics.email}
+          value={<span title={home.metrics.email}>{home.metrics.email}</span>}
           tone="lavender"
           className="col-span-2 md:col-span-1 xl:col-span-4"
         />
         <StatCard
           icon={Wallet}
           label="Số dư"
-          value={home.metrics.balance}
+          value={
+            <span>
+              {(home.metrics.balance || "0").replace(/ VNĐ| VND/gi, "")}{" "}
+              <span className="text-xs font-medium text-muted-foreground">VND</span>
+            </span>
+          }
           tone="warning"
           className="col-span-2 md:col-span-1 xl:col-span-3"
-        />
+        >
+          <a
+            href={navHref("/thanh-toan")}
+            className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary-strong hover:underline"
+          >
+            <span>Thanh toán</span>
+            <ArrowUpRight className="size-3" />
+          </a>
+        </StatCard>
       </div>
 
-      {/* Announcements Section */}
-      <section className="surface-card p-5 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold tracking-tight">Tin tức mới nhất</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Cập nhật thông báo học vụ, đào tạo và hoạt động sinh viên
-            </p>
-          </div>
+      {/* Main Bento */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+        <DashboardCard
+          className="xl:col-span-8"
+          icon={Newspaper}
+          title="Tin tức mới nhất"
+          description="6 tin chưa đọc"
+          action={
+            <Button variant="soft" size="sm" asChild>
+              <a href={navHref("/tin-tuc")}>
+                <span>Xem tất cả</span>
+                <ArrowRight className="size-3.5" />
+              </a>
+            </Button>
+          }
+          bodyClassName="pt-4"
+        >
           <CategoryFilter
             categories={home.categories}
             value={category}
             onChange={setCategory}
           />
-        </div>
+          <div className="mt-3">
+            <AnnouncementList items={filteredNews} />
+          </div>
+        </DashboardCard>
 
-        <div className="mt-5">
-          <AnnouncementList items={filteredNews} />
+        <div className="flex flex-col gap-4 xl:col-span-4">
+          <DashboardCard
+            icon={LayoutGrid}
+            title="Menu nhanh"
+            description="Truy cập nhanh các chức năng thường dùng"
+            bodyClassName="pt-4"
+          >
+            <div>
+              <p className="mb-2.5 flex items-center gap-2 text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+                <BookOpen className="size-3.5" /> Học tập
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {QUICK_MENU.map((item) => (
+                  <a
+                    key={item.to}
+                    href={navHref(item.to)}
+                    className="group flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-surface p-3 transition-all duration-200 ease-natural hover:border-primary-muted hover:bg-primary-soft/40"
+                  >
+                    <span className="flex items-center justify-between">
+                      <IconTile
+                        icon={item.icon}
+                        tone="neutral"
+                        size="sm"
+                        className="transition-colors duration-200 group-hover:bg-surface group-hover:text-primary-strong"
+                      />
+                      <ArrowUpRight className="size-3.5 text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                    </span>
+                    <span className="truncate text-[13px] font-medium">{item.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </DashboardCard>
+
+          <DashboardCard>
+            <MiniCalendar />
+            <Button variant="secondary" className="mt-4 w-full" asChild>
+              <a href={navHref("/thoi-khoa-bieu")}>
+                <span>Mở thời khóa biểu</span>
+                <ArrowRight className="size-3.5" />
+              </a>
+            </Button>
+          </DashboardCard>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

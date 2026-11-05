@@ -1,15 +1,29 @@
-import React from "react";
-import { Bell, Languages, MapPin, PanelLeft, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import {
+  Bell,
+  Check,
+  ChevronDown,
+  ExternalLink,
+  Languages,
+  MapPin,
+  Maximize2,
+  Minimize2,
+  PanelLeft,
+  Search,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
 import type { ShellData } from "@/data/types";
 
 export interface TopNavigationProps {
   shell: ShellData;
-  onShowOriginal: () => void;
+  onShowOriginal?: () => void;
   onToggleSidebar?: () => void;
   className?: string;
 }
+
+const pill =
+  "inline-flex h-10 items-center gap-2 rounded-full px-3 text-[13px] font-medium text-foreground transition-colors duration-200 hover:bg-surface-2 outline-none focus-visible:ring-3 focus-visible:ring-primary/30";
 
 export function TopNavigation({
   shell,
@@ -17,75 +31,125 @@ export function TopNavigation({
   onToggleSidebar,
   className,
 }: TopNavigationProps) {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen().catch(() => {});
+      setIsFullscreen(false);
+    }
+  };
+
   return (
     <header
       className={cn(
-        "glass sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border/80 px-4 sm:px-6 lg:px-8",
+        "glass sticky top-0 z-30 border-b border-border/70 lg:border-none lg:bg-transparent lg:backdrop-blur-none",
         className
       )}
     >
-      <div className="flex items-center gap-3">
-        {onToggleSidebar && (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={onToggleSidebar}
-            aria-label="Thu gọn thanh điều hướng"
-            className="lg:hidden"
+      <div className="grid h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 lg:px-8">
+        {/* Toggle Sidebar Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onToggleSidebar}
+          aria-label="Thu gọn / mở rộng thanh điều hướng"
+        >
+          <PanelLeft className="size-4" strokeWidth={1.75} />
+        </Button>
+
+        {/* Global Search Bar */}
+        <div className="flex min-w-0 items-center">
+          <button
+            type="button"
+            className="hidden h-10 w-full max-w-[360px] items-center gap-2.5 rounded-full border border-border bg-surface px-4 text-[13px] text-muted-foreground shadow-soft transition-colors duration-200 hover:border-primary-muted md:flex"
           >
-            <PanelLeft className="size-5" />
-          </Button>
-        )}
-
-        {/* Campus selector - static display per spec */}
-        <div
-          title={shell.campus}
-          className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground shadow-soft"
-        >
-          <MapPin className="size-3.5 text-primary-strong" />
-          <span className="max-w-[180px] truncate sm:max-w-[280px]">
-            {shell.campus}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Language selector - static display per spec */}
-        <div
-          title="Ngôn ngữ"
-          className="hidden sm:flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-soft"
-        >
-          <Languages className="size-3.5" />
-          <span>Tiếng Việt</span>
+            <Search className="size-4" strokeWidth={1.75} />
+            <span className="flex-1 text-left">Tìm chức năng, trang…</span>
+            <kbd className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-sans text-[11px]">
+              ⌘K
+            </kbd>
+          </button>
         </div>
 
-        {/* Notification bell */}
-        <div className="relative">
+        {/* Actions & Profile */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Switch back to original FAP */}
+          {onShowOriginal && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onShowOriginal}
+              className="text-xs font-semibold gap-1.5"
+            >
+              <ExternalLink className="size-3.5" />
+              <span>Xem bản FAP gốc</span>
+            </Button>
+          )}
+
+          {/* Campus Selector */}
+          <div className={cn(pill, "hidden xl:inline-flex")}>
+            <MapPin className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
+            <span>{shell.campus || "Cơ sở Hà Nội (HN)"}</span>
+            <ChevronDown className="size-3.5 text-muted-foreground" />
+          </div>
+
+          {/* Language Selector */}
+          <div className={cn(pill, "hidden lg:inline-flex")}>
+            <Languages className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
+            <span>Tiếng Việt</span>
+            <ChevronDown className="size-3.5 text-muted-foreground" />
+          </div>
+
+          {/* Notifications */}
           <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Thông báo"
+            variant="outline"
+            size="icon"
             className="relative"
+            aria-label="Thông báo"
           >
-            <Bell className="size-4" />
+            <Bell className="size-4" strokeWidth={1.75} />
             {shell.unreadNotifications > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground shadow-soft">
-                {shell.unreadNotifications}
+              <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-danger ring-2 ring-surface">
+                <span className="sr-only">{shell.unreadNotifications}</span>
               </span>
             )}
           </Button>
-        </div>
 
-        {/* Switch back to original FAP */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onShowOriginal}
-          className="text-xs font-semibold gap-1.5"
-        >
-          <ExternalLink className="size-3.5" />
-          <span>Xem bản FAP gốc</span>
-        </Button>
+          {/* Fullscreen Toggle */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleFullscreen}
+            aria-label="Toàn màn hình"
+            className="hidden sm:inline-flex"
+          >
+            {isFullscreen ? (
+              <Minimize2 className="size-4" strokeWidth={1.75} />
+            ) : (
+              <Maximize2 className="size-4" strokeWidth={1.75} />
+            )}
+          </Button>
+
+          {/* User Profile Pill */}
+          <div className="ml-1 flex items-center gap-3 rounded-full py-1 pr-1 pl-1 transition-colors duration-200 outline-none hover:bg-surface-2 focus-visible:ring-3 focus-visible:ring-primary/30 sm:pr-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender text-[13px] font-semibold text-foreground">
+              {shell.student.initials || "SV"}
+            </span>
+            <span className="hidden min-w-0 text-left leading-tight sm:block">
+              <span className="block truncate text-[13px] font-semibold">
+                {shell.student.name}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                {shell.student.studentId}
+              </span>
+            </span>
+            <ChevronDown className="hidden size-3.5 text-muted-foreground sm:block" />
+          </div>
+        </div>
       </div>
     </header>
   );

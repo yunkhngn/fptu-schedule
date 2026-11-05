@@ -30,3 +30,4 @@ describe("navigation mapping and FAP URLs", () => {
     }
   });
 });
+

@@ -54,3 +54,4 @@ export type PageData = { shell: ShellData } & (
   | { page: "exams"; exams: ExamItem[] }
   | { page: "news"; news: NewsItemData[]; categories: string[] }
 );
+

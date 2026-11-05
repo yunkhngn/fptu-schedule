@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi" data-fptu-ui="active">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAP Parity Harness</title>
+  <link rel="stylesheet" href="/node_modules/@fontsource-variable/inter/index.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f7f9fd;
+      font-family: 'Inter Variable', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="fptu-ui-host"></div>
+  <script type="module">
+    import React from "react";
+    import { createRoot } from "react-dom/client";
+    import { mountShadow } from "../src/shadow/mount";
+    import { renderPage } from "../src/pages/index";
+    import { mockPageData } from "../src/data/mock";
+    import { AppShell } from "../src/components/templates/AppShell";
+    import cssText from "../src/design/tokens.css?inline";
+
+    // Freeze date to match the reference capture time (14:00 ngày 05/11/2026)
+    const fixedTime = new Date("2026-11-05T14:00:00").getTime();
+    const OriginalDate = Date;
+    // @ts-ignore
+    globalThis.Date = class extends OriginalDate {
+      constructor(...args) {
+        if (args.length === 0) {
+          super(fixedTime);
+        } else {
+          // @ts-ignore
+          super(...args);
+        }
+      }
+      static now() {
+        return fixedTime;
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get("page") || "overview";
+
+    const pageData = mockPageData(page);
+    // In Lovable reference, exams is an empty list showing EmptyState
+    if (page === "exams") {
+      pageData.exams = [];
+    }
+
+    const host = document.getElementById("fptu-ui-host");
+    const { root } = mountShadow({
+      css: cssText,
+      documentCss: "",
+    });
+
+    const reactRoot = createRoot(root);
+    const activePath = page === "overview" ? "/" : page === "timetable" ? "/thoi-khoa-bieu" : page === "exams" ? "/lich-thi" : "/tin-tuc";
+
+    reactRoot.render(
+      React.createElement(
+        AppShell,
+        {
+          shell: pageData.shell,
+          activePath,
+        },
+        renderPage(pageData)
+      )
+    );
+  </script>
+</body>
+</html>
+

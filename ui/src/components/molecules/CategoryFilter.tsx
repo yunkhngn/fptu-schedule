@@ -10,10 +10,10 @@ export interface CategoryFilterProps {
 
 const DEFAULT_CATEGORIES = [
   "Tất cả",
-  "Thông tin Khảo Thí",
-  "Thông tin Đào tạo",
   "Thông báo tài chính",
   "Thông tin chung",
+  "Thông tin Đào tạo",
+  "Thông tin Khảo Thí",
 ];
 
 export function CategoryFilter({
@@ -51,3 +51,4 @@ export function CategoryFilter({
     </div>
   );
 }
+

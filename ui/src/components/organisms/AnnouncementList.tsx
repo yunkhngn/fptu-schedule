@@ -28,7 +28,7 @@ export function AnnouncementList({
   }
 
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <ul className={cn("-mx-2 space-y-1", className)}>
       {items.map((item) => (
         <NewsItem
           key={item.id}
@@ -37,6 +37,7 @@ export function AnnouncementList({
           onToggle={() => onToggleRead?.(item.id)}
         />
       ))}
-    </div>
+    </ul>
   );
 }
+

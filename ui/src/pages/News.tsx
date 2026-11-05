@@ -43,12 +43,11 @@ export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
         actions={
           <Button
             variant="outline"
-            size="sm"
             disabled={unreadCount === 0}
             onClick={() => markAllRead(allIds)}
           >
             <CheckCheck className="size-4" />
-            <span>Đánh dấu đã đọc tất cả</span>
+            <span>Đánh dấu tất cả đã đọc</span>
           </Button>
         }
       />
@@ -84,3 +83,4 @@ export function NewsPage({ news, categories, chromeApi }: NewsPageProps) {
     </div>
   );
 }
+

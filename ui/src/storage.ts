@@ -53,3 +53,4 @@ export async function setFapUiEnabled(
     } catch (_) {}
   }
 }
+

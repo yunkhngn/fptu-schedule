@@ -46,7 +46,7 @@ export function MiniCalendar({
   }, [month]);
 
   return (
-    <div className={cn("surface-card p-4 sm:p-5", className)}>
+    <div className={cn("p-1", className)}>
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm font-semibold tracking-tight">
           {`Tháng ${format(month, "M, yyyy")}`}
@@ -103,3 +103,4 @@ export function MiniCalendar({
     </div>
   );
 }
+
