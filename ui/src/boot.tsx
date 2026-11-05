@@ -41,7 +41,7 @@ function getExtractor(win: Window) {
 function cleanupFallback(doc: Document, win: Window, reason: string) {
   doc.documentElement.removeAttribute("data-fptu-ui");
   doc.documentElement.setAttribute("data-fptu-ui-reason", reason);
-  if (reason !== "user-choice" && reason !== "disabled") {
+  if (reason !== "user-choice" && reason !== "disabled" && reason !== "extension-reloaded") {
     try {
       console.warn("[FPTU UI] showing the original FAP page:", reason);
     } catch (_) {}
@@ -104,6 +104,14 @@ async function waitForReady(
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Chrome throws this from every extension API once the extension has been reloaded or updated while a FAP tab was
+ * open. The old script is orphaned and cannot do anything; the page just needs handing back, quietly.
+ */
+function isContextInvalidated(error: unknown): boolean {
+  return /extension context invalidated/i.test(errorMessage(error));
 }
 
 class RenderBoundary extends React.Component<
@@ -365,6 +373,10 @@ export async function boot(options?: BootOptions): Promise<void> {
   } catch (error) {
     const win = options?.win || (typeof window !== "undefined" ? window : null);
     if (win && win.document) {
+      if (isContextInvalidated(error)) {
+        cleanupFallback(win.document, win, "extension-reloaded");
+        return;
+      }
       console.error("[FPTU UI] boot failed", error);
       cleanupFallback(win.document, win, `error: ${errorMessage(error)}`);
     }
