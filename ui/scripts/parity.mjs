@@ -29,6 +29,23 @@ const PORT = 5199;
 const PAGES = ["overview", "timetable", "exams", "news"];
 const MAX_ALLOWED_DIFF_PERCENT = 5.0;
 
+let accent = null;
+for (let i = 2; i < process.argv.length; i++) {
+  const arg = process.argv[i];
+  if (arg.startsWith("--accent=")) {
+    accent = arg.slice("--accent=".length).trim();
+  } else if (arg === "--accent" && i + 1 < process.argv.length) {
+    accent = process.argv[i + 1].trim();
+    i++;
+  }
+}
+
+const isVisualInspection = Boolean(accent && accent !== "lavender");
+const outDir = path.resolve(parityDir, "out");
+if (isVisualInspection) {
+  fs.mkdirSync(outDir, { recursive: true });
+}
+
 async function main() {
   console.log("Starting local Vite server (no HMR) on port", PORT, "...");
   const server = await createServer({
@@ -48,16 +65,13 @@ async function main() {
 
   try {
     for (const page of PAGES) {
-      const url = `http://127.0.0.1:${PORT}/parity/harness.html?page=${page}`;
-      const actualPath = path.join(parityDir, `actual-${page}.png`);
+      const accentParam = accent ? `&accent=${encodeURIComponent(accent)}` : "";
+      const url = `http://127.0.0.1:${PORT}/parity/harness.html?page=${page}${accentParam}`;
+      const actualPath = isVisualInspection
+        ? path.join(outDir, `actual-${page}.png`)
+        : path.join(parityDir, `actual-${page}.png`);
       const refPath = path.join(refDir, `${page}.png`);
       const diffPath = path.join(parityDir, `diff-${page}.png`);
-
-      if (!fs.existsSync(refPath)) {
-        console.error(`Reference image missing: ${refPath}`);
-        hasFailure = true;
-        continue;
-      }
 
       console.log(`Rendering ${page} -> ${actualPath}...`);
       const cmd = `"${CHROME_PATH}" --headless --disable-gpu --no-sandbox --user-data-dir=/tmp/fap-chrome-profile --hide-scrollbars --window-size=1440,900 --virtual-time-budget=3000 --screenshot="${actualPath}" "${url}"`;
@@ -65,6 +79,18 @@ async function main() {
 
       if (!fs.existsSync(actualPath)) {
         console.error(`Failed to generate screenshot for ${page}`);
+        hasFailure = true;
+        continue;
+      }
+
+      if (isVisualInspection) {
+        console.log(`Saved screenshot for visual inspection: ${actualPath}`);
+        results.push({ page, savedPath: actualPath });
+        continue;
+      }
+
+      if (!fs.existsSync(refPath)) {
+        console.error(`Reference image missing: ${refPath}`);
         hasFailure = true;
         continue;
       }
@@ -103,6 +129,22 @@ async function main() {
     }
   } finally {
     await server.close();
+  }
+
+  if (isVisualInspection) {
+    console.log(
+      `\nVisual inspection screenshots saved to ui/parity/out/ for accent "${accent}":`
+    );
+    for (const r of results) {
+      console.log(`- ${r.page}: ${r.savedPath}`);
+    }
+    if (hasFailure) {
+      console.error("\nVisual inspection screenshot generation failed for one or more pages.");
+      process.exit(1);
+    } else {
+      console.log("\nAll visual inspection screenshots generated successfully.");
+      return;
+    }
   }
 
   console.log("\nSummary of Parity Check:");

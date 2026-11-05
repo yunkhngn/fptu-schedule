@@ -25,6 +25,7 @@
     import { renderPage } from "../src/pages/index";
     import { mockPageData } from "../src/data/mock";
     import { AppShell } from "../src/components/templates/AppShell";
+    import { applyAccent } from "../src/accent/apply";
     import cssText from "../src/design/tokens.css?inline";
 
     // Freeze date to match the reference capture time (14:00 ngày 05/11/2026)
@@ -55,6 +56,11 @@
     }
 
     const host = document.getElementById("fptu-ui-host");
+    const accent = params.get("accent");
+    if (accent) {
+      applyAccent(host, accent);
+    }
+
     const { root } = mountShadow({
       css: cssText,
       documentCss: "",

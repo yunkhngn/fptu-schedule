@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { execSync } from "node:child_process";
+import { ACCENT_PRESETS } from "../accent/palette";
 
 export function parseTokens(cssText: string): Record<string, string> {
   const blockMatch = cssText.match(/(?::root|:host)\s*\{([\s\S]*?)\}/);
@@ -97,6 +98,34 @@ describe("design tokens parity and specifications", () => {
       encoding: "utf8"
     });
     expect(result).toContain("DESIGN.md is up-to-date");
+  });
+
+  it("documents accent colors (Màu nhấn), presets, default behavior, and derivation formula in DESIGN.md", () => {
+    expect(existsSync(DESIGN_MD_PATH)).toBe(true);
+    const designMd = readFileSync(DESIGN_MD_PATH, "utf8");
+
+    // Section "Màu nhấn"
+    expect(designMd).toContain("Màu nhấn");
+
+    // All presets from ACCENT_PRESETS are listed
+    expect(ACCENT_PRESETS.length).toBeGreaterThan(0);
+    for (const preset of ACCENT_PRESETS) {
+      expect(
+        designMd.includes(preset.id),
+        `DESIGN.md must document accent preset ID: ${preset.id}`
+      ).toBe(true);
+    }
+
+    // Default behavior description
+    expect(designMd).toMatch(/lavender/i);
+    expect(designMd).toMatch(/mặc định|default/i);
+
+    // Derivation formula description
+    expect(designMd).toContain("OKLCH");
+    expect(designMd).toMatch(/hue|hueDelta|283\.1/i);
+    expect(designMd).toMatch(/chroma/i);
+    expect(designMd).toMatch(/4\.5\s*:\s*1|WCAG/i);
+    expect(designMd).toContain("--primary-strong");
   });
 
   it("contains zero emojis across all design specification and token files", () => {

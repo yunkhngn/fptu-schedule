@@ -174,3 +174,54 @@ The user interface follows atomic design hierarchy across four structured levels
 
 - **Zero Emojis in Interface:** In strict compliance with extension guidelines, character emojis are never rendered in user-facing components, toasts, badges, or dialogs.
 - **Vector Iconography:** All visual icons are rendered exclusively through inline SVG elements (Lucide icons in the React UI, and SVG symbol references in the extension popup).
+
+---
+
+## 8. Màu nhấn (Accent Colors)
+
+Hệ thống giao diện hỗ trợ các màu nhấn (accent presets) đồng bộ giữa tiện ích mở rộng và giao diện FAP mới. Mỗi preset cung cấp giá trị màu tương ứng cho cả giao diện sáng (light) và tối (dark).
+
+### Danh sách Preset
+
+| Preset ID | Nhãn hiển thị | Màu Light | Màu Dark |
+| :--- | :--- | :--- | :--- |
+| `blue` | Xanh dương | `#2563eb` | `#3b82f6` |
+| `indigo` | Chàm | `#4f46e5` | `#6366f1` |
+| `violet` | Tím | `#7c3aed` | `#8b5cf6` |
+| `lavender` | Tím lavender | `#6d5fd6` | `#7c6fe0` |
+| `pink` | Hồng | `#db2777` | `#ec4899` |
+| `orange` | Cam | `#e0510a` | `#ea580c` |
+| `teal` | Xanh ngọc | `#0f766e` | `#0d9488` |
+| `green` | Xanh lá | `#15803d` | `#059669` |
+| `graphite` | Xám than | `#475569` | `#64748b` |
+
+### Quy tắc mặc định (Default Behavior)
+
+- Khi giá trị màu nhấn chưa được thiết lập (unset), rỗng (empty), không hợp lệ (unknown ID), hoặc chọn `"lavender"` (màu mặc định của giao diện FAP UI):
+  - Giao diện giữ nguyên toàn bộ token màu tím lavender mặc định của Lovable (`tokens.css`) mà không áp dụng bất kỳ thuộc tính ghi đè nào. Hàm `applyAccent` trả về đối tượng rỗng `{}` và gỡ bỏ các biến style inline trên host.
+  - Điều này đảm bảo tính ổn định và bảo toàn độ tương phản chuẩn của giao diện gốc khi người dùng không tùy biến màu sắc.
+
+### Công thức suy biến toán học trong không gian OKLCH (Derivation Formula)
+
+Các token biến thể được tính toán động từ màu nhấn của preset thông qua mô hình không gian màu cảm nhận trực quan OKLCH:
+
+1. **Điểm quy chiếu (Base Lavender):**
+   - Màu gốc tím lavender có tọa độ sắc độ quy chiếu `hue = 283.1` ($h_{base}$) và chroma quy chiếu $C_{base}$ trích xuất từ mã màu light base (`#6d5fd6`).
+
+2. **Độ lệch sắc độ và tỉ lệ bão hòa:**
+   - Chuyển đổi mã màu light của preset sang OKLCH để lấy tọa độ $(L_{preset}, C_{preset}, h_{preset})$.
+   - Độ lệch sắc độ: `hueDelta` $\Delta h = h_{preset} - 283.1$.
+   - Tỉ lệ điều chỉnh chroma: $k = C_{preset} / C_{base}$ (nếu $C_{base} > 0$, ngược lại $k = 1$).
+
+3. **Quy tắc chuyển đổi từng token:**
+   - **Giữ nguyên độ sáng (Lightness L):** Mọi token màu kế thừa giá trị $L$ từ token cơ sở để bảo toàn phân tầng thị giác của thiết kế.
+   - **Dịch chuyển sắc độ (Hue h):** $h_{new} = (h_{base} + \text{hueDelta}) \pmod{360}$.
+   - **Nhân tỉ lệ bão hòa (Chroma c):** $c_{new} = c_{base} \times k$.
+
+4. **Đảm bảo độ tương phản WCAG (Contrast Enforcement):**
+   - Đối với `--primary-strong`, hệ thống kiểm tra tỉ số tương phản độ chói tương đối (relative luminance) theo chuẩn WCAG 2.1.
+   - Tỉ số tương phản phải đạt ít nhất **4.5:1** đối với cả nền trắng (`#ffffff`) và nền `--primary-soft`.
+   - Nếu tỉ số tương phản chưa đạt 4.5:1, độ sáng $L$ của `--primary-strong` được giảm từng bước (step 0.02) cho đến khi đạt hoặc chạm ngưỡng chặn an toàn $L = 0.40$.
+
+5. **Token chuyển màu (Gradients):**
+   - `--gradient-lavender` và `--gradient-lavender-glow` được tạo lại với các điểm dừng màu (color stops) đã áp dụng cùng độ lệch `hueDelta` và hệ số $k$.
