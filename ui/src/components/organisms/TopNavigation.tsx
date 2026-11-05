@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Bell,
   Check,
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
 import { Mascot } from "@/components/atoms/Brand";
 import { ThemeToggle } from "@/components/molecules/ThemeToggle";
+import { SearchDialog } from "./SearchDialog";
 import type { ThemePreference } from "@/theme/theme";
 import type { ShellData } from "@/data/types";
 
@@ -36,6 +37,18 @@ export function TopNavigation({
   onThemeChange,
 }: TopNavigationProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -75,6 +88,7 @@ export function TopNavigation({
         <div className="flex min-w-0 items-center">
           <button
             type="button"
+            onClick={() => setIsSearchOpen(true)}
             className="hidden h-10 w-full max-w-[360px] items-center gap-2.5 rounded-full border border-border bg-surface px-4 text-[13px] text-muted-foreground shadow-soft transition-colors duration-200 hover:border-primary-muted md:flex"
           >
             <Search className="size-4" strokeWidth={1.75} />
@@ -156,6 +170,7 @@ export function TopNavigation({
           </div>
         </div>
       </div>
+      <SearchDialog open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </header>
   );
 }
