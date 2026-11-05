@@ -1,5 +1,7 @@
 # FAP UI: chế độ tối Implementation Plan
 
+> **Đã được thay thế** bởi `docs/superpowers/plans/2026-11-05-fap-ui-theme-and-accent.md` (plan gộp chế độ tối và màu nhấn). Không chạy plan này riêng nữa.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Giao diện FAP React có chế độ tối theo lựa chọn Tự động/Sáng/Tối của extension, đổi ngay trên mọi tab, chế độ sáng không đổi.
