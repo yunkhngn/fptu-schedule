@@ -86,6 +86,8 @@ describe("mountShadow", () => {
     const styleEl = document.getElementById("fptu-ui-document-styles");
     expect(styleEl).not.toBeNull();
     expect(styleEl?.textContent).toContain("chrome-extension://mock-id/dist/fonts/inter-latin-wght-normal.woff2");
+    expect(styleEl?.textContent).toContain("chrome-extension://mock-id/dist/fonts/inter-vietnamese-wght-normal.woff2");
+    expect(styleEl?.textContent).toContain("unicode-range");
 
     unmount();
     expect(document.getElementById("fptu-ui-document-styles")).toBeNull();

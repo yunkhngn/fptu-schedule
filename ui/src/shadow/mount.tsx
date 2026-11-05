@@ -1,3 +1,5 @@
+import { buildFontFaceCss } from "./css";
+
 export interface MountOptions {
   css: string;
   documentCss: string;
@@ -10,20 +12,6 @@ export interface MountResult {
   unmount: () => void;
 }
 
-function generateFontFace(fontBaseUrl: string): string {
-  const cleanBase = fontBaseUrl.replace(/\/+$/, "");
-  return `
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('${cleanBase}/inter-latin-wght-normal.woff2') format('woff2-variations'),
-       url('${cleanBase}/inter-vietnamese-wght-normal.woff2') format('woff2-variations');
-}
-`.trim();
-}
-
 export function mountShadow(opts: MountOptions): MountResult {
   const HOST_ID = "fptu-ui-host";
   const DOC_STYLE_ID = "fptu-ui-document-styles";
@@ -31,7 +19,7 @@ export function mountShadow(opts: MountOptions): MountResult {
   // Document-level styles (@property, @font-face)
   let fullDocCss = opts.documentCss || "";
   if (opts.fontBaseUrl) {
-    const fontCss = generateFontFace(opts.fontBaseUrl);
+    const fontCss = buildFontFaceCss(opts.fontBaseUrl);
     fullDocCss = fullDocCss ? `${fontCss}\n\n${fullDocCss}` : fontCss;
   }
 
