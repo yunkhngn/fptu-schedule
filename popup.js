@@ -203,6 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           localStorage.setItem("accentColor", preset.id);
         } catch (_) {}
+        if (locStorage) {
+          try {
+            locStorage.set({ accentColor: preset.id });
+          } catch (_) {}
+        }
         applyAccent(document, preset.id);
         accentPicker.querySelectorAll(".accent-swatch").forEach((el) => {
           el.setAttribute("aria-checked", el === btn ? "true" : "false");
@@ -212,6 +217,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   renderAccentPicker();
+  if (locStorage) {
+    try {
+      locStorage.get(["accentColor"], (res) => {
+        if (!res || !res.accentColor) {
+          try {
+            const stored = localStorage.getItem("accentColor");
+            if (stored) {
+              locStorage.set({ accentColor: stored });
+            }
+          } catch (_) {}
+        }
+      });
+    } catch (_) {}
+  }
 
   // Theme management
   const themeToggleBtn = document.getElementById("themeToggleBtn");

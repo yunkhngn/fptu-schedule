@@ -14,7 +14,8 @@ function popupDocument() {
   );
 }
 
-function chromeStub(calls) {
+function chromeStub(calls, initialStorage = {}) {
+  const storageData = { ...initialStorage };
   const noop = () => {};
   return {
     runtime: {
@@ -25,9 +26,32 @@ function chromeStub(calls) {
     },
     storage: {
       local: {
-        get: (_keys, cb) => cb && cb({}),
-        set: (items, cb) => { calls.storageSet.push(items); cb && cb(); },
-        remove: (keys, cb) => { (calls.storageRemove = calls.storageRemove || []).push(keys); cb && cb(); },
+        get: (keys, cb) => {
+          if (typeof keys === "function") {
+            cb = keys;
+            keys = null;
+          }
+          if (!keys) return cb && cb({ ...storageData });
+          const res = {};
+          const keyList = Array.isArray(keys) ? keys : (typeof keys === "string" ? [keys] : Object.keys(keys));
+          for (const k of keyList) {
+            if (storageData[k] !== undefined) {
+              res[k] = storageData[k];
+            }
+          }
+          cb && cb(res);
+        },
+        set: (items, cb) => {
+          Object.assign(storageData, items);
+          calls.storageSet.push(items);
+          cb && cb();
+        },
+        remove: (keys, cb) => {
+          (calls.storageRemove = calls.storageRemove || []).push(keys);
+          const keyList = Array.isArray(keys) ? keys : [keys];
+          for (const k of keyList) delete storageData[k];
+          cb && cb();
+        },
       },
     },
     tabs: {
@@ -42,15 +66,18 @@ function chromeStub(calls) {
 }
 
 /** jsdom fires DOMContentLoaded asynchronously, so wait for popup.js to wire itself up. */
-async function boot() {
+async function boot(options = {}) {
   const calls = { storageSet: [], tabsCreated: [], errors: [] };
   const dom = new JSDOM(popupDocument(), {
     runScripts: "dangerously",
     url: "https://localhost/popup.html",
     beforeParse(window) {
-      window.chrome = chromeStub(calls);
+      window.chrome = chromeStub(calls, options.storage);
       window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       window.addEventListener("error", (e) => calls.errors.push(e.error || e.message));
+      if (typeof options.beforeParse === "function") {
+        options.beforeParse(window);
+      }
     },
   });
   await new Promise((resolve) => {
@@ -1114,5 +1141,36 @@ test("fapUiToggle switch exists in notification modal, defaults to checked, and 
     (item) => item.fapUiEnabled === false
   );
   assert.ok(hasUiEnabledUpdate, "changing fapUiToggle persists to storage");
+});
+
+test("clicking an accent swatch mirrors the selection to chrome.storage.local", async () => {
+  const { window, calls } = await boot();
+  const doc = window.document;
+  calls.storageSet.length = 0;
+
+  doc.querySelector('.accent-swatch[data-accent="teal"]').dispatchEvent(new window.Event("click"));
+  const setCall = calls.storageSet.find((item) => item && item.accentColor === "teal");
+  assert.ok(setCall, "chrome.storage.local.set was called with teal preset id");
+});
+
+test("opening popup copies localStorage.accentColor to chrome.storage.local if missing", async () => {
+  const { calls } = await boot({
+    beforeParse(win) {
+      win.localStorage.setItem("accentColor", "orange");
+    },
+  });
+  const setCall = calls.storageSet.find((item) => item && item.accentColor === "orange");
+  assert.ok(setCall, "chrome.storage.local.set was called with orange from localStorage");
+});
+
+test("opening popup does not overwrite existing chrome.storage.local.accentColor with localStorage", async () => {
+  const { calls } = await boot({
+    storage: { accentColor: "emerald" },
+    beforeParse(win) {
+      win.localStorage.setItem("accentColor", "orange");
+    },
+  });
+  const overwritten = calls.storageSet.some((item) => item && item.accentColor === "orange");
+  assert.strictEqual(overwritten, false, "existing accentColor in chrome.storage.local is preserved");
 });
 
