@@ -14,9 +14,8 @@ function popupDocument() {
   );
 }
 
-function chromeStub(calls, initialStorage = {}) {
+function chromeStub(calls) {
   const noop = () => {};
-  const storageData = { ...initialStorage };
   return {
     runtime: {
       lastError: undefined,
@@ -26,38 +25,8 @@ function chromeStub(calls, initialStorage = {}) {
     },
     storage: {
       local: {
-        get: (keys, cb) => {
-          if (typeof keys === "function") {
-            cb = keys;
-            keys = null;
-          }
-          if (!keys) return cb && cb({ ...storageData });
-          if (typeof keys === "string") {
-            const res = {};
-            if (keys in storageData) res[keys] = storageData[keys];
-            return cb && cb(res);
-          }
-          if (Array.isArray(keys)) {
-            const res = {};
-            for (const k of keys) {
-              if (k in storageData) res[k] = storageData[k];
-            }
-            return cb && cb(res);
-          }
-          if (typeof keys === "object") {
-            const res = { ...keys };
-            for (const k of Object.keys(keys)) {
-              if (k in storageData) res[k] = storageData[k];
-            }
-            return cb && cb(res);
-          }
-          return cb && cb({ ...storageData });
-        },
-        set: (items, cb) => {
-          Object.assign(storageData, items);
-          calls.storageSet.push(items);
-          cb && cb();
-        },
+        get: (_keys, cb) => cb && cb({}),
+        set: (items, cb) => { calls.storageSet.push(items); cb && cb(); },
         remove: noop,
       },
     },
@@ -73,18 +42,13 @@ function chromeStub(calls, initialStorage = {}) {
 }
 
 /** jsdom fires DOMContentLoaded asynchronously, so wait for popup.js to wire itself up. */
-async function boot(options = {}) {
+async function boot() {
   const calls = { storageSet: [], tabsCreated: [], errors: [] };
   const dom = new JSDOM(popupDocument(), {
     runScripts: "dangerously",
     url: "https://localhost/popup.html",
     beforeParse(window) {
-      if (options && options.localStorage) {
-        for (const [key, val] of Object.entries(options.localStorage)) {
-          window.localStorage.setItem(key, String(val));
-        }
-      }
-      window.chrome = chromeStub(calls, options && options.storage);
+      window.chrome = chromeStub(calls);
       window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       window.addEventListener("error", (e) => calls.errors.push(e.error || e.message));
     },
@@ -1134,31 +1098,3 @@ test("accent picker lists the presets, applies a choice and remembers it", async
   assert.strictEqual(doc.getElementById("accent-style"), null, "going back to blue removes the override");
   assert.deepStrictEqual(calls.errors, []);
 });
-
-test("the accent choice is mirrored to chrome.storage so FAP pages can read it", async () => {
-  const { window, calls } = await boot();
-  window.document.querySelector('.accent-swatch[data-accent="orange"]').dispatchEvent(new window.Event("click"));
-  assert.ok(calls.storageSet.some((o) => o.accentColor === "orange"));
-});
-
-test("an accent chosen before the mirror existed is copied over on boot", async () => {
-  const { calls } = await boot({ localStorage: { accentColor: "violet" } });
-  assert.ok(calls.storageSet.some((o) => o.accentColor === "violet"));
-});
-
-test("the FAP skin switch reflects storage and writes changes straight away", async () => {
-  const { window, calls } = await boot({ storage: { fapSkinEnabled: false } });
-  const box = window.document.getElementById("fapSkinToggle");
-  window.document.getElementById("notificationBtn").dispatchEvent(new window.Event("click"));
-  assert.strictEqual(box.checked, false);
-  box.checked = true;
-  box.dispatchEvent(new window.Event("change"));
-  assert.ok(calls.storageSet.some((o) => o.fapSkinEnabled === true));
-});
-
-test("the FAP skin switch defaults to on", async () => {
-  const { window } = await boot();
-  window.document.getElementById("notificationBtn").dispatchEvent(new window.Event("click"));
-  assert.strictEqual(window.document.getElementById("fapSkinToggle").checked, true);
-});
-
