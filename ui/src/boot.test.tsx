@@ -138,6 +138,33 @@ describe("boot lifecycle and fallback", () => {
     expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
   });
 
+  it("applies the stylesheet to the shadow root, so the interface is not rendered unstyled", async () => {
+    document.body.innerHTML = `
+      <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+      <div class="fap-home-student-card">
+        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+      </div>
+      <div class="fap-home-news-item">
+        <span class="fap-home-news-item__title">Title 1</span>
+        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+      </div>
+    `;
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      customElements: window.customElements,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, css: ".fptu-style-marker{color:rgb(1,2,3)}" });
+
+    const root = document.getElementById("fptu-ui-host")!.shadowRoot!;
+    const sheets = (root as ShadowRoot & { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets || [];
+    const styleEl = root.querySelector("style");
+    const hasAdopted = sheets.some((s) => Array.from(s.cssRules).some((r) => r.cssText.includes("fptu-style-marker")));
+    const hasStyleEl = !!styleEl && (styleEl.textContent || "").includes("fptu-style-marker");
+    expect(hasAdopted || hasStyleEl).toBe(true);
+  });
+
   it("falls back to original FAP if overview [data-home-slot] never populates within timeoutMs", async () => {
     document.body.innerHTML = `
       <div class="fap-topbar">

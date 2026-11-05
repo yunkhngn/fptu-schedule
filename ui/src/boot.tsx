@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { matchPage, type PageId } from "./routes";
 import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled } from "./storage";
 import { mountShadow } from "./shadow/mount";
+import { splitDocumentCss } from "./shadow/css";
+import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage } from "./pages";
 import type { ShellData, PageData } from "./data/types";
@@ -12,6 +14,8 @@ export interface BootOptions {
   chromeApi?: typeof chrome;
   timeoutMs?: number;
   renderContent?: (pageData: PageData) => React.ReactNode;
+  /** Stylesheet for the shadow tree; defaults to the bundled Tailwind build. Mainly for tests. */
+  css?: string;
 }
 
 function getExtractor(win: Window) {
@@ -168,9 +172,12 @@ export async function boot(options?: BootOptions): Promise<void> {
 
   const fontBaseUrl = chromeApi?.runtime?.getURL ? chromeApi.runtime.getURL("dist/fonts/") : undefined;
 
+  // @property and @font-face rules only work in the main document, everything else goes into the shadow root.
+  const { shadowCss, documentCss } = splitDocumentCss(options?.css ?? appCss);
+
   const { host, root, unmount: unmountShadow } = mountShadow({
-    css: "",
-    documentCss: "",
+    css: shadowCss,
+    documentCss,
     fontBaseUrl,
   });
 

@@ -23,6 +23,10 @@ describe("ui build pipeline", () => {
       const content = fs.readFileSync(outFile, "utf-8");
       expect(content).toContain("__fptuUi");
 
+      // The stylesheet must be embedded in the bundle; without it the interface renders unstyled.
+      expect(content).toContain("--color-primary");
+      expect(content).toContain(":host");
+
       const lineBreaks = (content.match(/\n/g) || []).length;
       expect(lineBreaks).toBeGreaterThanOrEqual(50);
     } finally {
