@@ -67,12 +67,12 @@ test("manifest includes early hide document_start content script", () => {
   assert.ok(startScript, "Must have a document_start content script block");
   assert.ok(startScript.css && startScript.css.includes("lib/fap-ui-early.css"));
   assert.ok(startScript.js && startScript.js.includes("lib/fap-ui-early.js"));
+  assert.ok(startScript.js && startScript.js.includes("lib/fap-routes.js"));
 
-  // Must not match /Auth/Login or /News/Detail
-  for (const m of startScript.matches) {
-    assert.strictEqual(m.includes("/Auth"), false, "Matches must not include /Auth");
-    assert.strictEqual(m.includes("/News/Detail"), false, "Matches must not include /News/Detail");
-  }
+  const routesIndex = startScript.js.indexOf("lib/fap-routes.js");
+  const earlyIndex = startScript.js.indexOf("lib/fap-ui-early.js");
+  assert.ok(routesIndex < earlyIndex, "lib/fap-routes.js must come before lib/fap-ui-early.js");
+  assert.deepStrictEqual(startScript.matches, ["*://fap.fpt.edu.vn/*"]);
 });
 
 test("manifest includes document_idle content script with fap-ui.js after content.js", () => {
@@ -82,6 +82,12 @@ test("manifest includes document_idle content script with fap-ui.js after conten
   );
 
   assert.ok(idleScripts.length >= 2, "Must have existing content.js block and new fap-ui block");
+
+  const fapUiScript = manifest.content_scripts.find(
+    (cs) => cs.js && cs.js.includes("dist/fap-ui.js")
+  );
+  assert.ok(fapUiScript, "Must have a block containing dist/fap-ui.js");
+  assert.deepStrictEqual(fapUiScript.matches, ["*://fap.fpt.edu.vn/*"]);
 
   let contentJsIndex = -1;
   let fapUiIndex = -1;

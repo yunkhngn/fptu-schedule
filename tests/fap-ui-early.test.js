@@ -64,7 +64,19 @@ test("fap-ui-early sets data-fptu-ui='pending' on matching page with default ena
   assert.strictEqual(doc.documentElement.getAttribute("data-fptu-ui"), "pending");
 });
 
-test("fap-ui-early does not set attribute on unhandled page /Auth/Login", async () => {
+test("fap-ui-early does not set attribute on unhandled page /Auth/Logout", async () => {
+  const { win, doc, chromeApi } = setupEnvironment({
+    pathname: "/Auth/Logout",
+    storage: {}
+  });
+
+  const { initEarlyHide } = require("../lib/fap-ui-early.js");
+  await initEarlyHide(win, chromeApi);
+
+  assert.strictEqual(doc.documentElement.getAttribute("data-fptu-ui"), null);
+});
+
+test("fap-ui-early sets data-fptu-ui='pending' on auth page /Auth/Login", async () => {
   const { win, doc, chromeApi } = setupEnvironment({
     pathname: "/Auth/Login",
     storage: {}
@@ -73,7 +85,7 @@ test("fap-ui-early does not set attribute on unhandled page /Auth/Login", async 
   const { initEarlyHide } = require("../lib/fap-ui-early.js");
   await initEarlyHide(win, chromeApi);
 
-  assert.strictEqual(doc.documentElement.getAttribute("data-fptu-ui"), null);
+  assert.strictEqual(doc.documentElement.getAttribute("data-fptu-ui"), "pending");
 });
 
 test("fap-ui-early does not set attribute when fapUiOriginal preference is true for the page", async () => {

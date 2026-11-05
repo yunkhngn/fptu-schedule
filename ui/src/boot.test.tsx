@@ -651,6 +651,176 @@ describe("boot lifecycle and fallback", () => {
     const host = document.getElementById("fptu-ui-host");
     expect(host).not.toBe(null);
   });
+
+  it("does not mount on /Auth/Logout", async () => {
+    document.body.innerHTML = `<div>some content</div>`;
+    const mockWin = {
+      location: { pathname: "/Auth/Logout" },
+      document: window.document,
+    } as unknown as Window;
+    await boot({ win: mockWin });
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+  });
+
+  it("mounts WrappedPage on /Subject adopting native content into host", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    const subjectHtml = fs.readFileSync(path.resolve(__dirname, "../../tests/fixtures/pages/subject.html"), "utf8");
+    const wrapper = document.createElement("div");
+    wrapper.className = "wrapper";
+    wrapper.innerHTML = subjectHtml;
+    document.body.appendChild(wrapper);
+
+    const mockWin = {
+      location: { pathname: "/Subject" },
+      document: window.document,
+      chrome: mockChrome,
+      customElements: window.customElements,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+
+    const contentPage = host?.querySelector(".content-page");
+    expect(contentPage).not.toBe(null);
+    expect(contentPage?.getAttribute("slot")).toBe("fap-content");
+
+    const shadowRoot = host!.shadowRoot!;
+    await waitFor(() => {
+      expect(shadowRoot.querySelector('slot[name="fap-content"]')).not.toBe(null);
+    });
+  });
+
+  it("falls back to WrappedPage when reader returns null", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = `
+      <div class="wrapper">
+        <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+        <div class="content-page">
+          <p>Native content</p>
+        </div>
+      </div>
+    `;
+
+    const mockWin = {
+      location: { pathname: "/News" },
+      document: window.document,
+      chrome: mockChrome,
+      customElements: window.customElements,
+      FapPageData: {
+        ...(window as any).FapPageData,
+        readNews: vi.fn(() => null),
+      },
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+    expect(host?.querySelector(".content-page")).not.toBe(null);
+  });
+
+  it("falls back to WrappedPage when data timeout occurs and .content-page is present", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = `
+      <div class="wrapper">
+        <div class="fap-topbar-user"><h5>Nguyễn Văn A</h5><h6>SE000000</h6></div>
+        <div class="content-page">
+          <div data-home-slot="student"></div>
+        </div>
+      </div>
+    `;
+
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      chrome: mockChrome,
+      customElements: window.customElements,
+      MutationObserver: window.MutationObserver,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome, timeoutMs: 50 });
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+    expect(host?.querySelector(".content-page")).not.toBe(null);
+  });
+
+  it("restores adopted content to exact DOM position and node equality when master switch is disabled", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    const subjectHtml = fs.readFileSync(path.resolve(__dirname, "../../tests/fixtures/pages/subject.html"), "utf8");
+    const wrapper = document.createElement("div");
+    wrapper.className = "wrapper";
+    wrapper.innerHTML = subjectHtml;
+    const siblingAfter = document.createElement("div");
+    siblingAfter.className = "sibling-after";
+    wrapper.appendChild(siblingAfter);
+    document.body.appendChild(wrapper);
+
+    const originalContent = wrapper.querySelector(".content-page")!;
+    const cloneBefore = originalContent.cloneNode(true);
+
+    const mockWin = {
+      location: { pathname: "/Subject" },
+      document: window.document,
+      chrome: mockChrome,
+      customElements: window.customElements,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+
+    await act(async () => {
+      await setFapUiEnabled(false, mockChrome);
+    });
+
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+    expect(wrapper.contains(originalContent)).toBe(true);
+    expect(originalContent.nextSibling).toBe(siblingAfter);
+    expect(originalContent.isEqualNode(cloneBefore)).toBe(true);
+  });
+
+  it("displays /ShoppingCart wrapped, keeping the native payment button and QR node intact", async () => {
+    document.body.innerHTML = "";
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    const cartHtml = fs.readFileSync(path.resolve(__dirname, "../../tests/fixtures/pages/shopping-cart.html"), "utf8");
+    const wrapper = document.createElement("div");
+    wrapper.className = "wrapper";
+    wrapper.innerHTML = cartHtml;
+    document.body.appendChild(wrapper);
+
+    const payBtn = wrapper.querySelector(".js-confirm-wallet-payment");
+    const origQr = wrapper.querySelector(".content-page img, .content-page canvas, .content-page svg");
+
+    const mockWin = {
+      location: { pathname: "/ShoppingCart" },
+      document: window.document,
+      chrome: mockChrome,
+      customElements: window.customElements,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+
+    if (payBtn) {
+      expect(host?.querySelector(".js-confirm-wallet-payment")).toBe(payBtn);
+    }
+    if (origQr) {
+      expect(host?.querySelector(".content-page img, .content-page canvas, .content-page svg")).toBe(origQr);
+    }
+  });
 });
 
 describe("content.js parser globals in VM", () => {

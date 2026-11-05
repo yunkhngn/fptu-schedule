@@ -4,8 +4,10 @@ import { OverviewPage } from "./Overview";
 import { TimetablePage } from "./Timetable";
 import { ExamsPage } from "./Exams";
 import { NewsPage } from "./News";
+import { WrappedPage } from "./Wrapped";
+import { registry, type PageDefinition } from "./registry";
 
-export { OverviewPage, TimetablePage, ExamsPage, NewsPage };
+export { OverviewPage, TimetablePage, ExamsPage, NewsPage, WrappedPage, registry, type PageDefinition };
 
 export function renderPage(
   data: PageData,
@@ -35,4 +37,3 @@ export function renderPage(
       return null;
   }
 }
-

@@ -1,13 +1,14 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import { matchPage, type PageId } from "./routes";
+import { createRoot, type Root } from "react-dom/client";
+import { matchRoute } from "./routes";
 import { isFapUiEnabled, setFapUiEnabled, clearLegacyOriginalPreferences } from "./storage";
 import { mountShadow } from "./shadow/mount";
 import { splitDocumentCss } from "./shadow/css";
 import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
 import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
-import { renderPage } from "./pages";
+import { renderPage, registry, WrappedPage } from "./pages";
+import { adoptContent, resolveWrappedTitle, type AdoptResult } from "./shadow/wrapped";
 import { I18nProvider, normalizeLang } from "./i18n";
 import { logout, submitLanguage } from "./topbar/actions";
 import {
@@ -61,34 +62,22 @@ function showReturnPill(win: Window, chromeApi: typeof chrome | undefined) {
   });
 }
 
-async function waitForData(doc: Document, page: PageId, timeoutMs: number): Promise<boolean> {
-  const checkReady = () => {
-    if (page === "overview") {
-      const student = doc.querySelector(".fap-home-student-card");
-      const news = doc.querySelectorAll(".fap-home-news-item");
-      const slots = doc.querySelectorAll("[data-home-slot]");
-      if (slots.length > 0) {
-        return Boolean(student || news.length > 0);
-      }
-      return Boolean(student || news.length > 0);
-    }
-    if (page === "timetable") {
-      // FAP fetches the week from /WeeklyTimetable/WeekPartial after the page is idle; until then the
-      // container only holds a loading message and the parser would see an empty week.
-      return Boolean(doc.querySelector("#weekly-timetable-container table, .weekly-timetable-grid table"));
-    }
-    return true;
-  };
+async function waitForReady(
+  doc: Document,
+  isReady: (doc: Document) => boolean,
+  timeoutMs: number
+): Promise<boolean> {
+  if (isReady(doc)) return true;
 
-  if (checkReady()) return true;
-
-  const Observer = doc.defaultView?.MutationObserver || (typeof MutationObserver !== "undefined" ? MutationObserver : null);
-  if (!Observer) return checkReady();
+  const Observer =
+    doc.defaultView?.MutationObserver ||
+    (typeof MutationObserver !== "undefined" ? MutationObserver : null);
+  if (!Observer) return isReady(doc);
 
   return new Promise((resolve) => {
     let resolved = false;
     const observer = new Observer(() => {
-      if (checkReady()) {
+      if (isReady(doc)) {
         if (!resolved) {
           resolved = true;
           observer.disconnect();
@@ -106,7 +95,7 @@ async function waitForData(doc: Document, page: PageId, timeoutMs: number): Prom
       if (!resolved) {
         resolved = true;
         observer.disconnect();
-        resolve(checkReady());
+        resolve(isReady(doc));
       }
     }, timeoutMs);
   });
@@ -142,8 +131,11 @@ async function bootInner(options?: BootOptions): Promise<void> {
   if (win.document.getElementById("fptu-ui-host")) return;
 
   const pathname = win.location ? win.location.pathname : "";
-  const page = matchPage(pathname);
-  if (!page) return;
+  const matched = matchRoute(pathname);
+  if (!matched) return;
+
+  // Auth pages will be mounted in Task 15
+  if (matched.kind === "auth") return;
 
   const chromeApi = options?.chromeApi || (win as any).chrome;
   const enabled = await isFapUiEnabled(chromeApi);
@@ -154,77 +146,50 @@ async function bootInner(options?: BootOptions): Promise<void> {
   }
 
   const timeoutMs = options?.timeoutMs !== undefined ? options.timeoutMs : 8000;
-  const dataReady = await waitForData(win.document, page, timeoutMs);
-  if (!dataReady) {
-    cleanupFallback(win.document, win, "data-timeout");
-    return;
-  }
-
   const extractor = getExtractor(win);
-  if (!extractor) {
-    cleanupFallback(win.document, win, "no-extractor");
-    return;
-  }
+  const shell: ShellData = (extractor && extractor.readShell(win.document)) || {
+    student: { name: "", initials: "", studentId: "" },
+    campus: "",
+    unreadNotifications: 0,
+  };
 
-  const shell = extractor.readShell(win.document);
-  if (!shell) {
-    cleanupFallback(win.document, win, "no-shell");
-    return;
-  }
+  const topbar = typeof extractor?.readTopbar === "function" ? extractor.readTopbar(win.document) : null;
+  const lang = normalizeLang(topbar?.language?.current);
 
-  const hasRows = extractor.hasOriginalRows(win.document, page);
+  const pageDef = registry[matched.id];
+  let content: React.ReactNode = null;
+  let adopted: AdoptResult | null = null;
+  let useWrapped = false;
   let pageData: PageData | null = null;
 
-  if (page === "overview") {
-    const home = extractor.readHome(win.document);
-    if (!home) {
-      cleanupFallback(win.document, win, "no-home-data");
-      return;
+  if (pageDef) {
+    let ready = true;
+    if (pageDef.ready) {
+      ready = await waitForReady(win.document, pageDef.ready, timeoutMs);
     }
-    pageData = { shell, page: "overview", home };
-  } else if (page === "timetable") {
-    // @ts-expect-error parser on window
-    const getWeekly = win.extractWeeklyScheduleFromTable || (typeof window !== "undefined" ? (window as any).extractWeeklyScheduleFromTable : undefined);
-    const raw = getWeekly ? getWeekly(win.document) : { schedule: [] };
-    const tt = extractor.toTimetable(raw.schedule);
-    if (hasRows && tt.sessions.length === 0) {
-      cleanupFallback(win.document, win, "timetable-parser-empty");
-      return;
+    if (ready) {
+      const data = pageDef.read(win.document, win);
+      if (data !== null) {
+        if (matched.id === "overview") pageData = { shell, page: "overview", home: data };
+        else if (matched.id === "timetable") pageData = { shell, page: "timetable", sessions: data.sessions, weekStart: data.weekStart };
+        else if (matched.id === "exams") pageData = { shell, page: "exams", exams: data };
+        else if (matched.id === "news") pageData = { shell, page: "news", news: data.news, categories: data.categories };
+
+        content = pageDef.Component({ data, shell, lang });
+      } else {
+        useWrapped = true;
+      }
+    } else {
+      useWrapped = true;
     }
-    pageData = { shell, page: "timetable", sessions: tt.sessions, weekStart: tt.weekStart };
-  } else if (page === "exams") {
-    // @ts-expect-error parser on window
-    const getExams = win.extractExamScheduleFromPage || (typeof window !== "undefined" ? (window as any).extractExamScheduleFromPage : undefined);
-    const raw = getExams ? getExams(win.document) : [];
-    const ex = extractor.toExams(raw);
-    if (hasRows && ex.length === 0) {
-      cleanupFallback(win.document, win, "exams-parser-empty");
-      return;
-    }
-    pageData = { shell, page: "exams", exams: ex };
-  } else if (page === "news") {
-    const newsData = extractor.readNews(win.document);
-    if (!newsData) {
-      cleanupFallback(win.document, win, "no-news-data");
-      return;
-    }
-    pageData = { shell, page: "news", news: newsData.news, categories: newsData.categories };
+  } else {
+    useWrapped = true;
   }
 
-  if (!pageData) {
-    cleanupFallback(win.document, win, "no-page-data");
-    return;
-  }
-
-  // Set flag so duplicate calls bail early
-  // @ts-expect-error flag assign
   win.__fptuUi = true;
 
   const fontBaseUrl = chromeApi?.runtime?.getURL ? chromeApi.runtime.getURL("dist/fonts/") : undefined;
-
-  // @property and @font-face rules only work in the main document, everything else goes into the shadow root.
   const { shadowCss, documentCss } = splitDocumentCss(options?.css ?? appCss);
-
   const appearance = await readAppearance(chromeApi);
 
   const { host, root, unmount: unmountShadow } = mountShadow({
@@ -233,17 +198,20 @@ async function bootInner(options?: BootOptions): Promise<void> {
     fontBaseUrl,
   });
 
-  const reactRoot = createRoot(root as unknown as HTMLElement);
-
+  const reactRoot: Root = createRoot(root as unknown as HTMLElement);
   removeReturnPill(win.document);
 
   let appearanceWatcher: { stop(): void } | null = null;
-
   let givenBack = false;
+
   const giveBack = (reason: string) => {
     if (givenBack) return;
     givenBack = true;
     appearanceWatcher?.stop();
+    if (adopted) {
+      adopted.restore();
+      adopted = null;
+    }
     try {
       reactRoot.unmount();
     } catch (_) {}
@@ -251,11 +219,31 @@ async function bootInner(options?: BootOptions): Promise<void> {
     cleanupFallback(win.document, win, reason);
     if (reason === "user-choice" || reason === "disabled") showReturnPill(win, chromeApi);
   };
+
   // @ts-expect-error handle for the storage listener
   win.__fptuUiGiveBack = giveBack;
 
+  if (useWrapped) {
+    adopted = adoptContent(win.document, host);
+    if (!adopted) {
+      giveBack(pageDef ? "data-timeout" : "no-content-page");
+      return;
+    }
+    const title = resolveWrappedTitle(win.document);
+    content = <WrappedPage title={title} />;
+  }
+
+  if (options?.renderContent) {
+    try {
+      content = options.renderContent(pageData!);
+    } catch (error) {
+      console.error("[FPTU UI] render failed", error);
+      giveBack(`render-error: ${errorMessage(error)}`);
+      return;
+    }
+  }
+
   const handleShowOriginal = async () => {
-    // One switch for every page and tab; the storage listener hands the other open tabs back too.
     await setFapUiEnabled(false, chromeApi);
     giveBack("user-choice");
   };
@@ -265,18 +253,6 @@ async function bootInner(options?: BootOptions): Promise<void> {
       chromeApi?.storage?.local?.set?.({ theme: next });
     } catch (_) {}
   };
-
-  let content: React.ReactNode;
-  try {
-    content = options?.renderContent ? options.renderContent(pageData) : renderPage(pageData, chromeApi);
-  } catch (error) {
-    console.error("[FPTU UI] render failed", error);
-    giveBack(`render-error: ${errorMessage(error)}`);
-    return;
-  }
-
-  const topbar = typeof extractor?.readTopbar === "function" ? extractor.readTopbar(win.document) : null;
-  const lang = normalizeLang(topbar?.language?.current);
 
   const handleLogout = () => {
     logout(win.document);
@@ -291,7 +267,6 @@ async function bootInner(options?: BootOptions): Promise<void> {
       <RenderBoundary
         onError={(error) => {
           console.error("[FPTU UI] render failed", error);
-          // Unmounting while React is still handling the error is unsafe, so wait a tick.
           setTimeout(() => giveBack(`render-error: ${errorMessage(error)}`), 0);
         }}
       >
@@ -325,7 +300,6 @@ async function bootInner(options?: BootOptions): Promise<void> {
   );
 
   renderTree(appearance.theme);
-
   win.document.documentElement.setAttribute("data-fptu-ui", "active");
 }
 
@@ -363,10 +337,14 @@ function watchMasterSwitch(win: Window, chromeApi: typeof chrome | undefined, op
 export async function boot(options?: BootOptions): Promise<void> {
   try {
     const win = options?.win || (typeof window !== "undefined" ? window : null);
-    if (win && win.document && matchPage(win.location ? win.location.pathname : "")) {
-      const chromeApi = options?.chromeApi || (win as any).chrome;
-      void clearLegacyOriginalPreferences(chromeApi);
-      watchMasterSwitch(win, chromeApi, options);
+    if (win && win.document) {
+      const pathname = win.location ? win.location.pathname : "";
+      const matched = matchRoute(pathname);
+      if (matched) {
+        const chromeApi = options?.chromeApi || (win as any).chrome;
+        void clearLegacyOriginalPreferences(chromeApi);
+        watchMasterSwitch(win, chromeApi, options);
+      }
     }
     await bootInner(options);
   } catch (error) {
