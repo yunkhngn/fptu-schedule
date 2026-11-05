@@ -23,6 +23,7 @@ import { ApplicationCatalog } from "./ApplicationCatalog";
 import { StartupGroupEmpty } from "./StartupGroupEmpty";
 import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
 import { Article } from "./Article";
+import { Account } from "./Account";
 
 export type PageDefinition<T = any> = {
   id: string;
@@ -312,6 +313,18 @@ export const registry: Record<string, PageDefinition<any>> = {
     },
     Component: ({ data, shell, lang }) =>
       React.createElement(Article, { data, shell, lang }),
+  },
+  account: {
+    id: "account",
+    ready: (doc: Document) => Boolean(doc.querySelector(".student-profile, .account-page, .card")),
+    read: (doc: Document, win: Window) => {
+      // @ts-expect-error global reader check
+      const reader = win.FapReadersAccount || (win.FapPageData && win.FapPageData.account) || (typeof window !== "undefined" && ((window as any).FapReadersAccount || (window as any).FapPageData?.account));
+      if (!reader || typeof reader.readAccount !== "function") return null;
+      return reader.readAccount(doc);
+    },
+    Component: ({ data, shell, lang }) =>
+      React.createElement(Account, { data, shell, lang }),
   },
   "document-detail": {
     id: "document-detail",

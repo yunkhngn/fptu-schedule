@@ -20,6 +20,7 @@ import type {
   ApplicationCatalogData,
   ListOrEmptyData,
   ArticleData,
+  AccountData,
 } from "./types";
 
 export const mockShell: ShellData = {
@@ -477,6 +478,37 @@ export const mockDocumentDetail: ArticleData = {
   backHref: "/Document",
 };
 
+export const mockAccount: AccountData = {
+  sections: [
+    {
+      title: "Định danh",
+      items: [
+        { label: "Họ và tên", value: "Nguyễn Đăng Khoa" },
+        { label: "Mã sinh viên", value: "HE190183" },
+        { label: "Giới tính", value: "Nam" },
+      ],
+    },
+    {
+      title: "Học thuật",
+      items: [
+        { label: "Ngành", value: "Công nghệ thông tin" },
+        { label: "Chuyên ngành", value: "Kỹ thuật phần mềm" },
+        { label: "Khóa", value: "K19" },
+        { label: "Trạng thái", value: "Đang học" },
+      ],
+    },
+    {
+      title: "Cá nhân & liên hệ",
+      items: [
+        { label: "Email", value: "khoandhe190183@fpt.edu.vn" },
+        { label: "Số điện thoại", value: "0912 345 678" },
+        { label: "Địa chỉ", value: "Hà Nội" },
+      ],
+    },
+  ],
+  editHref: "/StudentProfile",
+};
+
 export function mockPageData(
   page:
     | "overview"
@@ -502,6 +534,7 @@ export function mockPageData(
     | "cross-class-change"
     | "news-detail"
     | "document-detail"
+    | "account"
 ): PageData {
   switch (page) {
     case "overview":
@@ -643,6 +676,12 @@ export function mockPageData(
         shell: mockShell,
         page: "document-detail",
         article: mockDocumentDetail,
+      };
+    case "account":
+      return {
+        shell: mockShell,
+        page: "account",
+        account: mockAccount,
       };
   }
 }

@@ -5,6 +5,7 @@ describe("page registry", () => {
   it("contains the registered page definitions", () => {
     const keys = Object.keys(registry).sort();
     expect(keys).toEqual([
+      "account",
       "application",
       "application-catalog",
       "cross-class-change",

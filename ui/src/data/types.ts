@@ -241,6 +241,14 @@ export type ArticleData = {
   backHref?: string;
 };
 
+export type AccountData = {
+  sections: Array<{
+    title: string;
+    items: Array<{ label: string; value: string }>;
+  }>;
+  editHref: string | null;
+};
+
 export type PageData = {
   shell: ShellData;
   topbar?: TopbarData | null;
@@ -268,5 +276,6 @@ export type PageData = {
   | { page: "cross-class-change"; crossClass: ListOrEmptyData }
   | { page: "news-detail"; article: ArticleData }
   | { page: "document-detail"; article: ArticleData }
+  | { page: "account"; account: AccountData }
 );
 

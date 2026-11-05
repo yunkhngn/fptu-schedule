@@ -23,6 +23,7 @@ import { ApplicationCatalog } from "./ApplicationCatalog";
 import { StartupGroupEmpty } from "./StartupGroupEmpty";
 import { CrossClassChangeEmpty } from "./CrossClassChangeEmpty";
 import { Article } from "./Article";
+import { Account } from "./Account";
 import { registry, type PageDefinition } from "./registry";
 
 export {
@@ -49,6 +50,7 @@ export {
   StartupGroupEmpty,
   CrossClassChangeEmpty,
   Article,
+  Account,
   registry,
   type PageDefinition,
 };
@@ -115,6 +117,8 @@ export function renderPage(
       return <Article data={data.article} shell={data.shell} />;
     case "document-detail":
       return <Article data={data.article} shell={data.shell} />;
+    case "account":
+      return <Account data={data.account} shell={data.shell} />;
     default:
       return null;
   }
