@@ -1,0 +1,12 @@
+/* Early hide to prevent flash of unstyled original FAP content before React UI mounts */
+html[data-fptu-ui="pending"] .wrapper,
+html[data-fptu-ui="pending"] .footer,
+html[data-fptu-ui="pending"] footer {
+  visibility: hidden !important;
+}
+
+html[data-fptu-ui="active"] .wrapper,
+html[data-fptu-ui="active"] .footer,
+html[data-fptu-ui="active"] footer {
+  display: none !important;
+}

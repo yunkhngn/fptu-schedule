@@ -1,0 +1,297 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { waitFor, act } from "@testing-library/react";
+import { matchPage } from "./routes";
+import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled, setFapUiEnabled } from "./storage";
+import { boot } from "./boot";
+import fs from "node:fs";
+import path from "node:path";
+import vm from "node:vm";
+
+describe("matchPage router", () => {
+  it("matches root path to overview", () => {
+    expect(matchPage("/")).toBe("overview");
+    expect(matchPage("")).toBe("overview");
+  });
+
+  it("matches timetable, exams and news pages", () => {
+    expect(matchPage("/WeeklyTimetable")).toBe("timetable");
+    expect(matchPage("/WeeklyTimetable/")).toBe("timetable");
+    expect(matchPage("/ExamSchedule")).toBe("exams");
+    expect(matchPage("/News")).toBe("news");
+    expect(matchPage("/News/Index")).toBe("news");
+  });
+
+  it("returns null for detail, auth and unsupported routes", () => {
+    expect(matchPage("/News/Detail/abc")).toBe(null);
+    expect(matchPage("/News/Detail")).toBe(null);
+    expect(matchPage("/Auth/Login")).toBe(null);
+    expect(matchPage("/Application/Create")).toBe(null);
+  });
+});
+
+describe("storage preferences", () => {
+  it("reads and writes fapUiOriginal per page", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = {
+      storage: {
+        local: {
+          get: vi.fn(async (keys: string[]) => {
+            const res: Record<string, unknown> = {};
+            keys.forEach((k) => { res[k] = store[k]; });
+            return res;
+          }),
+          set: vi.fn(async (items: Record<string, unknown>) => {
+            Object.assign(store, items);
+          }),
+        },
+      },
+    } as unknown as typeof chrome;
+
+    expect(await readOriginalPreference("timetable", mockChrome)).toBe(false);
+    await saveOriginalPreference("timetable", true, mockChrome);
+    expect(await readOriginalPreference("timetable", mockChrome)).toBe(true);
+    expect(store["fapUiOriginal:timetable"]).toBe(true);
+  });
+
+  it("reads and writes fapUiEnabled master toggle (default true)", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = {
+      storage: {
+        local: {
+          get: vi.fn(async (keys: string[]) => {
+            const res: Record<string, unknown> = {};
+            keys.forEach((k) => { res[k] = store[k]; });
+            return res;
+          }),
+          set: vi.fn(async (items: Record<string, unknown>) => {
+            Object.assign(store, items);
+          }),
+        },
+      },
+    } as unknown as typeof chrome;
+
+    expect(await isFapUiEnabled(mockChrome)).toBe(true);
+    await setFapUiEnabled(false, mockChrome);
+    expect(await isFapUiEnabled(mockChrome)).toBe(false);
+    expect(store["fapUiEnabled"]).toBe(false);
+  });
+});
+
+describe("boot lifecycle and fallback", () => {
+  let container: HTMLElement;
+
+  beforeEach(() => {
+    document.documentElement.removeAttribute("data-fptu-ui");
+    const oldHost = document.getElementById("fptu-ui-host");
+    if (oldHost) oldHost.remove();
+    // @ts-expect-error test flag cleanup
+    delete window.__fptuUi;
+  });
+
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-fptu-ui");
+    const oldHost = document.getElementById("fptu-ui-host");
+    if (oldHost) oldHost.remove();
+    // @ts-expect-error test flag cleanup
+    delete window.__fptuUi;
+  });
+
+  it("does nothing on /Auth/Login", async () => {
+    const mockWin = {
+      location: { pathname: "/Auth/Login" },
+      document: window.document,
+    } as unknown as Window;
+
+    await boot({ win: mockWin });
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+  });
+
+  it("is idempotent when called twice on the same window", async () => {
+    const fixtureHtml = `
+      <div class="fap-topbar">
+        <div class="fap-topbar-user">
+          <h5>Nguyễn Văn A</h5>
+          <h6>SE000000</h6>
+        </div>
+      </div>
+      <div class="fap-home-student-card">
+        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+      </div>
+      <div class="fap-home-news-item">
+        <span class="fap-home-news-item__title">Title 1</span>
+        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+      </div>
+    `;
+    document.body.innerHTML = fixtureHtml;
+
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      customElements: window.customElements,
+    } as unknown as Window;
+
+    await boot({ win: mockWin });
+    await boot({ win: mockWin });
+
+    expect(document.querySelectorAll("#fptu-ui-host").length).toBe(1);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+  });
+
+  it("falls back to original FAP if overview [data-home-slot] never populates within timeoutMs", async () => {
+    document.body.innerHTML = `
+      <div class="fap-topbar">
+        <div class="fap-topbar-user">
+          <h5>Nguyễn Văn A</h5>
+          <h6>SE000000</h6>
+        </div>
+      </div>
+      <div data-home-slot="student"></div>
+      <div data-home-slot="news"></div>
+    `;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      MutationObserver: window.MutationObserver,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, timeoutMs: 50 });
+
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+  });
+
+  it("falls back to original FAP if timetable hasOriginalRows is true but parser yields empty", async () => {
+    // Has table rows with text, but parser returns empty
+    document.body.innerHTML = `
+      <div class="fap-topbar">
+        <div class="fap-topbar-user">
+          <h5>Nguyễn Văn A</h5>
+          <h6>SE000000</h6>
+        </div>
+      </div>
+      <div class="weekly-timetable-grid">
+        <table>
+          <tbody>
+            <tr><td><span class="weekly-timetable-cell-title">Some Course</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+    document.documentElement.setAttribute("data-fptu-ui", "pending");
+
+    // Stub window.extractWeeklyScheduleFromTable to return empty
+    // @ts-expect-error test stub
+    window.extractWeeklyScheduleFromTable = () => ({ schedule: [], skipped: 0 });
+
+    const mockWin = {
+      location: { pathname: "/WeeklyTimetable" },
+      document: window.document,
+      extractWeeklyScheduleFromTable: () => ({ schedule: [], skipped: 0 }),
+    } as unknown as Window;
+
+    await boot({ win: mockWin });
+
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+  });
+
+  it("unmounts and saves preference when student clicks 'Xem bản FAP gốc'", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = {
+      storage: {
+        local: {
+          get: vi.fn(async (keys: string[]) => {
+            const res: Record<string, unknown> = {};
+            keys.forEach((k) => { res[k] = store[k]; });
+            return res;
+          }),
+          set: vi.fn(async (items: Record<string, unknown>) => {
+            Object.assign(store, items);
+          }),
+        },
+      },
+    } as unknown as typeof chrome;
+
+    document.body.innerHTML = `
+      <div class="fap-topbar">
+        <div class="fap-topbar-user">
+          <h5>Nguyễn Văn A</h5>
+          <h6>SE000000</h6>
+        </div>
+      </div>
+      <div class="fap-home-student-card">
+        <div class="fap-home-student-card__metric"><div class="fap-home-student-card__value">HD</div></div>
+      </div>
+      <div class="fap-home-news-item">
+        <span class="fap-home-news-item__title">Title 1</span>
+        <span class="fap-home-news-item__meta"><span>Category</span><span>Date</span></span>
+      </div>
+    `;
+
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      chrome: mockChrome,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+
+    expect(document.getElementById("fptu-ui-host")).not.toBe(null);
+    expect(document.documentElement.getAttribute("data-fptu-ui")).toBe("active");
+
+    // Click 'Xem bản FAP gốc' inside Shadow DOM
+    const host = document.getElementById("fptu-ui-host");
+    const shadowRoot = host?.shadowRoot;
+
+    let button: HTMLButtonElement | undefined;
+    await waitFor(() => {
+      button = Array.from(shadowRoot?.querySelectorAll("button") || []).find((b) =>
+        b.textContent?.includes("Xem bản FAP gốc")
+      ) as HTMLButtonElement | undefined;
+      expect(button).toBeTruthy();
+    });
+
+    await act(async () => {
+      button?.click();
+    });
+
+    // Verify host unmounted and attribute removed
+    await waitFor(() => {
+      expect(document.getElementById("fptu-ui-host")).toBe(null);
+      expect(document.documentElement.getAttribute("data-fptu-ui")).toBe(null);
+      expect(store["fapUiOriginal:overview"]).toBe(true);
+    });
+
+    // Subsequent boot sees preference and does not mount
+    // @ts-expect-error test flag cleanup
+    delete window.__fptuUi;
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+  });
+});
+
+describe("content.js parser globals in VM", () => {
+  it("exposes extractWeeklyScheduleFromTable and extractExamScheduleFromPage on context", () => {
+    const contentScriptPath = path.resolve(__dirname, "../../content.js");
+    const code = fs.readFileSync(contentScriptPath, "utf8");
+
+    const context = vm.createContext({
+      document: { querySelector: () => null, querySelectorAll: () => [] },
+      window: { location: { pathname: "/" } },
+      location: { pathname: "/" },
+      console: { log: () => {}, warn: () => {}, error: () => {} },
+      setTimeout: () => {},
+      clearTimeout: () => {},
+      setInterval: () => {},
+      clearInterval: () => {},
+    });
+
+    vm.runInContext(code, context);
+
+    expect(typeof context.extractWeeklyScheduleFromTable).toBe("function");
+    expect(typeof context.extractExamScheduleFromPage).toBe("function");
+  });
+});
