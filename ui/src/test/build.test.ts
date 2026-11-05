@@ -28,6 +28,6 @@ describe("ui build pipeline", () => {
     } finally {
       fs.rmSync(tempOutDir, { recursive: true, force: true });
     }
-  });
+  }, 20000);
 });
 

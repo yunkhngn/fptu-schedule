@@ -4,6 +4,7 @@ import { matchPage, type PageId } from "./routes";
 import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled } from "./storage";
 import { mountShadow } from "./shadow/mount";
 import { AppShell } from "./components/templates/AppShell";
+import { renderPage } from "./pages";
 import type { ShellData, PageData } from "./data/types";
 
 export interface BootOptions {
@@ -111,10 +112,23 @@ export async function boot(options?: BootOptions): Promise<void> {
     return;
   }
 
-  const hasRows = extractor.hasOriginalRows(win.document, page);
+  const shell = extractor.readShell(win.document);
+  if (!shell) {
+    cleanupFallback(win.document, win);
+    return;
+  }
 
-  // Parse page specific data and check for parser fallback condition
-  if (page === "timetable") {
+  const hasRows = extractor.hasOriginalRows(win.document, page);
+  let pageData: PageData | null = null;
+
+  if (page === "overview") {
+    const home = extractor.readHome(win.document);
+    if (!home) {
+      cleanupFallback(win.document, win);
+      return;
+    }
+    pageData = { shell, page: "overview", home };
+  } else if (page === "timetable") {
     // @ts-expect-error parser on window
     const getWeekly = win.extractWeeklyScheduleFromTable || (typeof window !== "undefined" ? (window as any).extractWeeklyScheduleFromTable : undefined);
     const raw = getWeekly ? getWeekly(win.document) : { schedule: [] };
@@ -123,6 +137,7 @@ export async function boot(options?: BootOptions): Promise<void> {
       cleanupFallback(win.document, win);
       return;
     }
+    pageData = { shell, page: "timetable", sessions: tt.sessions, weekStart: tt.weekStart };
   } else if (page === "exams") {
     // @ts-expect-error parser on window
     const getExams = win.extractExamScheduleFromPage || (typeof window !== "undefined" ? (window as any).extractExamScheduleFromPage : undefined);
@@ -132,10 +147,17 @@ export async function boot(options?: BootOptions): Promise<void> {
       cleanupFallback(win.document, win);
       return;
     }
+    pageData = { shell, page: "exams", exams: ex };
+  } else if (page === "news") {
+    const newsData = extractor.readNews(win.document);
+    if (!newsData) {
+      cleanupFallback(win.document, win);
+      return;
+    }
+    pageData = { shell, page: "news", news: newsData.news, categories: newsData.categories };
   }
 
-  const shell = extractor.readShell(win.document);
-  if (!shell) {
+  if (!pageData) {
     cleanupFallback(win.document, win);
     return;
   }
@@ -167,9 +189,7 @@ export async function boot(options?: BootOptions): Promise<void> {
       activePath={pathname}
       onShowOriginal={handleShowOriginal}
     >
-      <div data-testid="page-container" className="p-4">
-        {/* Page content rendered here; full page integration in Task 10 */}
-      </div>
+      {options?.renderContent ? options.renderContent(pageData) : renderPage(pageData, chromeApi)}
     </AppShell>
   );
 
