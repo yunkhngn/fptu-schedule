@@ -29,8 +29,13 @@ const mod = accentModule as unknown as {
   ACCENT_PRESETS?: AccentPreset[];
 };
 
+// lib/accent.js is a UMD file written for the popup's <script> tag and for Node. Inside the bundle there is no
+// CommonJS `module`, so the import above is empty and the file instead publishes its API on the global object
+// (`Object.assign(root, api)`). Read it from there when the import has nothing, or the presets silently vanish.
+const published = (globalThis as unknown as { ACCENT_PRESETS?: AccentPreset[] }).ACCENT_PRESETS;
+
 export const ACCENT_PRESETS: AccentPreset[] =
-  mod.ACCENT_PRESETS ?? mod.default?.ACCENT_PRESETS ?? [];
+  mod.ACCENT_PRESETS ?? mod.default?.ACCENT_PRESETS ?? published ?? [];
 
 export const ACCENT_VARS = [
   "--primary",
