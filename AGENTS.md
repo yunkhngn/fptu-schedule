@@ -11,6 +11,7 @@ This file defines the project-specific rules, architectural constraints, and eng
 - **Zero External Dependencies:**
   - Do NOT introduce build tools (Webpack, Vite, Rollup), transpilers, or CSS frameworks (Tailwind, Bootstrap).
   - Do NOT load external scripts or CDNs (`chrome.runtime` and Chrome Web Store policies forbid remote code).
+- **Approved exception (2026-11-05) — React UI layer:** The rebuilt FAP interface under `ui/` (React, TypeScript, Tailwind, Vite) may use build tools and third-party libraries, because the user approved it explicitly. Everything else (popup, background, content bootstrap, `lib/`) keeps the rules above. Built code must still ship inside the package: no CDN, no remote code. See `docs/superpowers/specs/2026-11-05-fap-react-ui-design.md`.
 - **Core Library Pattern:**
   - Logic must be modularized into standalone files under `lib/` (e.g., `lib/schedule.js`, `lib/qrcode.js`, `lib/grades.js`, `lib/fap-keepalive.js`, `lib/fap-feedback.js`).
   - Libraries must use UMD/dual-export wrappers so they run in browser content scripts, background workers, and Node.js test environments without modification.
