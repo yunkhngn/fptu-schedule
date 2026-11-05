@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, GraduationCap, LayoutGrid, Sparkles, Settings2, LogOut } from "lucide-react";
+import { ChevronDown, GraduationCap, LayoutGrid, LayoutTemplate, Settings2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS, navHref, isParent, type NavItem as NavItemType } from "@/data/nav";
 import { NavItem } from "@/components/molecules/NavItem";
@@ -218,7 +218,7 @@ export function AppSidebar({
           {!collapsed ? (
             <div className="flex w-full items-center gap-3 rounded-2xl bg-lavender p-3 text-left">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-surface/80 text-primary-strong">
-                <Sparkles className="size-4" strokeWidth={1.75} />
+                <LayoutTemplate className="size-4" strokeWidth={1.75} />
               </span>
               <div className="min-w-0 flex-1">
                 <span className="block truncate text-[13px] font-semibold">
@@ -238,7 +238,7 @@ export function AppSidebar({
             </div>
           ) : (
             <div className="flex justify-center p-2">
-              <Sparkles className="size-4 text-primary-strong" />
+              <LayoutTemplate className="size-4 text-primary-strong" />
             </div>
           )}
           <NavItem

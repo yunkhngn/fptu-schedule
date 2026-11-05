@@ -47,6 +47,16 @@ describe("organisms and templates suite", () => {
     expect(onShowOriginal).toHaveBeenCalledTimes(1);
   });
 
+  it("shows a layout icon on the 'Giao diện FAP mới' card, not the sparkle", () => {
+    const { container } = render(
+      <AppShell shell={mockShell} activePath="/" onShowOriginal={() => {}}>
+        <div>Content</div>
+      </AppShell>
+    );
+    expect(container.querySelector("svg.lucide-layout-template")).not.toBeNull();
+    expect(container.querySelector("svg.lucide-sparkles")).toBeNull();
+  });
+
   it("does not repeat the switch as a button in the top bar, and shows no switch without a handler", () => {
     const { queryByRole, rerender } = render(
       <AppShell shell={mockShell} activePath="/" onShowOriginal={() => {}}>
