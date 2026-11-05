@@ -154,6 +154,9 @@
   --shadow-soft: 0 1px 2px oklch(0.21 0.01 276.6 / 0.03), 0 4px 16px -6px oklch(0.3 0.04 280 / 0.06);
   --shadow-float: 0 2px 4px oklch(0.21 0.01 276.6 / 0.03), 0 16px 40px -16px oklch(0.35 0.08 283 / 0.16);
   --shadow-pop: 0 12px 40px -12px oklch(0.25 0.04 280 / 0.22), 0 2px 6px oklch(0.21 0.01 276.6 / 0.05);
+
+  --glass: oklch(1 0 0 / 0.72);
+  --scrollbar: oklch(0.88 0.015 280);
 }
 
 :host([data-theme="dark"]) {
@@ -231,6 +234,9 @@
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.2), 0 4px 16px -6px oklch(0 0 0 / 0.35);
   --shadow-float: 0 2px 4px oklch(0 0 0 / 0.25), 0 16px 40px -16px oklch(0 0 0 / 0.5);
   --shadow-pop: 0 12px 40px -12px oklch(0 0 0 / 0.6), 0 2px 6px oklch(0 0 0 / 0.3);
+
+  --glass: oklch(0.2 0.014 277 / 0.72);
+  --scrollbar: oklch(0.35 0.015 276);
 }
 
 @utility bg-lavender {
@@ -257,13 +263,13 @@
 }
 
 @utility glass {
-  background-color: oklch(1 0 0 / 0.72);
+  background-color: var(--glass);
   backdrop-filter: blur(18px) saturate(160%);
 }
 
 @utility scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: oklch(0.88 0.015 280) transparent;
+  scrollbar-color: var(--scrollbar) transparent;
 }
 
 @utility page-enter {

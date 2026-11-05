@@ -150,4 +150,34 @@ describe("dark color tokens and color utilities", () => {
       expect(borderOnBg, `border on background: ${borderOnBg.toFixed(2)}`).toBeGreaterThanOrEqual(1.15);
     });
   });
+
+  describe("glass and scrollbar tokenization", () => {
+    it("defines --glass and --scrollbar in both light and dark host blocks with expected values", () => {
+      const css = readFileSync(TOKENS_PATH, "utf8");
+      const light = parseBlockTokens(css, /:host\s*\{([\s\S]*?)\}/);
+      const dark = parseBlockTokens(css, /:host\(\[data-theme="dark"\]\)\s*\{([\s\S]*?)\}/);
+
+      expect(light["--glass"]).toBe("oklch(1 0 0 / 0.72)");
+      expect(light["--scrollbar"]).toBe("oklch(0.88 0.015 280)");
+
+      expect(dark["--glass"]).toBe("oklch(0.2 0.014 277 / 0.72)");
+      expect(dark["--scrollbar"]).toBe("oklch(0.35 0.015 276)");
+    });
+
+    it("@utility glass and @utility scrollbar-thin use CSS tokens and do not contain oklch()", () => {
+      const css = readFileSync(TOKENS_PATH, "utf8");
+
+      const glassMatch = css.match(/@utility\s+glass\s*\{([\s\S]*?)\}/);
+      expect(glassMatch, "@utility glass block must exist").toBeTruthy();
+      const glassBody = glassMatch![1];
+      expect(glassBody).toContain("var(--glass)");
+      expect(glassBody).not.toContain("oklch(");
+
+      const scrollbarMatch = css.match(/@utility\s+scrollbar-thin\s*\{([\s\S]*?)\}/);
+      expect(scrollbarMatch, "@utility scrollbar-thin block must exist").toBeTruthy();
+      const scrollbarBody = scrollbarMatch![1];
+      expect(scrollbarBody).toContain("var(--scrollbar)");
+      expect(scrollbarBody).not.toContain("oklch(");
+    });
+  });
 });
