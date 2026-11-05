@@ -27,7 +27,7 @@ function chromeStub(calls) {
       local: {
         get: (_keys, cb) => cb && cb({}),
         set: (items, cb) => { calls.storageSet.push(items); cb && cb(); },
-        remove: noop,
+        remove: (keys, cb) => { (calls.storageRemove = calls.storageRemove || []).push(keys); cb && cb(); },
       },
     },
     tabs: {
@@ -1097,6 +1097,22 @@ test("accent picker lists the presets, applies a choice and remembers it", async
   doc.querySelector('.accent-swatch[data-accent="blue"]').dispatchEvent(new window.Event("click"));
   assert.strictEqual(doc.getElementById("accent-style"), null, "going back to blue removes the override");
   assert.deepStrictEqual(calls.errors, []);
+});
+
+test("turning the new FAP interface back on clears the per-page choices to see the original page", async () => {
+  const { dom, calls } = await boot();
+  const toggle = dom.window.document.getElementById("fapUiToggle");
+
+  toggle.checked = false;
+  toggle.dispatchEvent(new dom.window.Event("change"));
+  assert.deepStrictEqual(calls.storageRemove || [], [], "switching it off keeps the choices");
+
+  toggle.checked = true;
+  toggle.dispatchEvent(new dom.window.Event("change"));
+  const removed = (calls.storageRemove || []).flat();
+  ["overview", "timetable", "exams", "news"].forEach((page) => {
+    assert.ok(removed.includes(`fapUiOriginal:${page}`), `clears the original-page choice for ${page}`);
+  });
 });
 
 test("fapUiToggle switch exists in notification modal, defaults to checked, and updates storage on change", async () => {

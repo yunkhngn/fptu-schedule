@@ -4,6 +4,7 @@ import { matchPage, type PageId } from "./routes";
 import { readOriginalPreference, saveOriginalPreference, isFapUiEnabled } from "./storage";
 import { mountShadow } from "./shadow/mount";
 import { splitDocumentCss } from "./shadow/css";
+import { mountReturnPill, removeReturnPill } from "./shadow/returnPill";
 import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage } from "./pages";
@@ -135,6 +136,10 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const originalPref = await readOriginalPreference(page, chromeApi);
   if (originalPref) {
     cleanupFallback(win.document, win, "original-preference");
+    mountReturnPill(win.document, async () => {
+      await saveOriginalPreference(page, false, chromeApi);
+      win.location.reload();
+    });
     return;
   }
 
@@ -217,6 +222,8 @@ async function bootInner(options?: BootOptions): Promise<void> {
   });
 
   const reactRoot = createRoot(root as unknown as HTMLElement);
+
+  removeReturnPill(win.document);
 
   const giveBack = (reason: string) => {
     try {

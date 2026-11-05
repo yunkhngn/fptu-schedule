@@ -358,6 +358,38 @@ describe("boot lifecycle and fallback", () => {
     errorSpy.mockRestore();
   });
 
+  it("offers a way back to the new interface on a page the student chose to see in its original form", async () => {
+    document.body.innerHTML = `<div class="wrapper">original FAP page</div>`;
+    const store: Record<string, unknown> = { "fapUiOriginal:overview": true };
+    const mockChrome = {
+      storage: {
+        local: {
+          get: vi.fn(async (keys: string[]) => Object.fromEntries(keys.map((k) => [k, store[k]]))),
+          set: vi.fn(async (items: Record<string, unknown>) => {
+            Object.assign(store, items);
+          }),
+        },
+      },
+    } as unknown as typeof chrome;
+    const reload = vi.fn();
+    const mockWin = {
+      location: { pathname: "/", reload },
+      document: window.document,
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+
+    expect(document.getElementById("fptu-ui-host")).toBe(null);
+    const pill = document.getElementById("fptu-ui-return");
+    expect(pill).not.toBe(null);
+    const button = pill!.shadowRoot!.querySelector("button")!;
+    expect(button.textContent).toContain("Dùng giao diện mới");
+
+    button.click();
+    await waitFor(() => expect(reload).toHaveBeenCalled());
+    expect(store["fapUiOriginal:overview"]).toBe(false);
+  });
+
   it("unmounts and saves preference when student clicks 'Xem bản FAP gốc'", async () => {
     const store: Record<string, unknown> = {};
     const mockChrome = {
