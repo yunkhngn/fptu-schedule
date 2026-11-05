@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const notifStatus = document.getElementById("notifStatus");
   const saveNotificationBtn = document.getElementById("saveNotificationBtn");
   const fapKeepSessionToggle = document.getElementById("fapKeepSessionToggle");
+  const fapUiToggle = document.getElementById("fapUiToggle");
 
   const DEFAULT_SETTINGS = (typeof DEFAULT_NOTIFICATION_SETTINGS !== "undefined")
     ? DEFAULT_NOTIFICATION_SETTINGS
@@ -163,8 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const locStorage = getChromeStorageLocal();
   if (locStorage) {
-    locStorage.get(["notificationSettings"], (res) => {
+    locStorage.get(["notificationSettings", "fapKeepSessionEnabled", "fapUiEnabled"], (res) => {
       syncNotificationForm(res && res.notificationSettings);
+      if (fapKeepSessionToggle && res && res.fapKeepSessionEnabled !== undefined) {
+        fapKeepSessionToggle.checked = res.fapKeepSessionEnabled !== false;
+      }
+      if (fapUiToggle) {
+        fapUiToggle.checked = !res || res.fapUiEnabled !== false;
+      }
     });
   }
 
@@ -303,10 +310,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (notificationBtn && notificationModal) {
     notificationBtn.addEventListener("click", () => {
       if (locStorage) {
-        locStorage.get(["notificationSettings", "fapKeepSessionEnabled"], (res) => {
+        locStorage.get(["notificationSettings", "fapKeepSessionEnabled", "fapUiEnabled"], (res) => {
           syncNotificationForm(res && res.notificationSettings);
           if (fapKeepSessionToggle) {
             fapKeepSessionToggle.checked = res && res.fapKeepSessionEnabled !== false;
+          }
+          if (fapUiToggle) {
+            fapUiToggle.checked = res && res.fapUiEnabled !== false;
           }
           notificationModal.style.display = "block";
           refreshNotificationStatus();
@@ -321,6 +331,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fapKeepSessionToggle.addEventListener("change", () => {
       if (locStorage) {
         locStorage.set({ fapKeepSessionEnabled: fapKeepSessionToggle.checked });
+      }
+    });
+  }
+
+  if (fapUiToggle) {
+    fapUiToggle.addEventListener("change", () => {
+      if (locStorage) {
+        locStorage.set({ fapUiEnabled: fapUiToggle.checked });
       }
     });
   }
@@ -374,9 +392,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       const fapKeepSessionEnabled = fapKeepSessionToggle ? fapKeepSessionToggle.checked : true;
+      const fapUiEnabled = fapUiToggle ? fapUiToggle.checked : true;
 
       if (locStorage) {
-        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled }, () => {
+        locStorage.set({ notificationSettings: current, fapKeepSessionEnabled, fapUiEnabled }, () => {
           if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
             chrome.runtime.sendMessage({ type: "RESCHEDULE_ALARMS" }).catch(() => {});
           }

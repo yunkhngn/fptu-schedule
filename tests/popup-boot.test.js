@@ -1098,3 +1098,21 @@ test("accent picker lists the presets, applies a choice and remembers it", async
   assert.strictEqual(doc.getElementById("accent-style"), null, "going back to blue removes the override");
   assert.deepStrictEqual(calls.errors, []);
 });
+
+test("fapUiToggle switch exists in notification modal, defaults to checked, and updates storage on change", async () => {
+  const { dom, calls } = await boot();
+  const doc = dom.window.document;
+  const toggle = doc.getElementById("fapUiToggle");
+  assert.ok(toggle, "fapUiToggle should exist");
+  assert.strictEqual(toggle.checked, true, "fapUiToggle defaults to checked");
+
+  // Toggle switch off
+  toggle.checked = false;
+  toggle.dispatchEvent(new dom.window.Event("change"));
+
+  const hasUiEnabledUpdate = calls.storageSet.some(
+    (item) => item.fapUiEnabled === false
+  );
+  assert.ok(hasUiEnabledUpdate, "changing fapUiToggle persists to storage");
+});
+

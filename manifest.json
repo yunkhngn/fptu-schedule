@@ -41,6 +41,44 @@
         "content.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://fap.fpt.edu.vn/",
+        "*://fap.fpt.edu.vn/WeeklyTimetable*",
+        "*://fap.fpt.edu.vn/ExamSchedule*",
+        "*://fap.fpt.edu.vn/News*"
+      ],
+      "css": [
+        "lib/fap-ui-early.css"
+      ],
+      "js": [
+        "lib/fap-ui-early.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://fap.fpt.edu.vn/",
+        "*://fap.fpt.edu.vn/WeeklyTimetable*",
+        "*://fap.fpt.edu.vn/ExamSchedule*",
+        "*://fap.fpt.edu.vn/News*"
+      ],
+      "js": [
+        "lib/fap-page-data.js",
+        "dist/fap-ui.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dist/fonts/*"
+      ],
+      "matches": [
+        "*://fap.fpt.edu.vn/*"
+      ]
     }
   ]
 }
