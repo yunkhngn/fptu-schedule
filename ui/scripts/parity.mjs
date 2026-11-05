@@ -26,10 +26,12 @@ if (!fs.existsSync(CHROME_PATH)) {
 }
 
 const PORT = 5199;
-const PAGES = ["overview", "timetable", "exams", "news"];
 const MAX_ALLOWED_DIFF_PERCENT = 5.0;
 
 let accent = null;
+let theme = "light";
+let requestedPage = null;
+
 for (let i = 2; i < process.argv.length; i++) {
   const arg = process.argv[i];
   if (arg.startsWith("--accent=")) {
@@ -37,10 +39,24 @@ for (let i = 2; i < process.argv.length; i++) {
   } else if (arg === "--accent" && i + 1 < process.argv.length) {
     accent = process.argv[i + 1].trim();
     i++;
+  } else if (arg.startsWith("--theme=")) {
+    theme = arg.slice("--theme=".length).trim();
+  } else if (arg === "--theme" && i + 1 < process.argv.length) {
+    theme = process.argv[i + 1].trim();
+    i++;
+  } else if (arg.startsWith("--page=")) {
+    requestedPage = arg.slice("--page=".length).trim();
+  } else if (arg === "--page" && i + 1 < process.argv.length) {
+    requestedPage = process.argv[i + 1].trim();
+    i++;
   }
 }
 
-const isVisualInspection = Boolean(accent && accent !== "lavender");
+const ALL_PAGES = ["overview", "timetable", "exams", "news"];
+const PAGES = requestedPage ? [requestedPage] : ALL_PAGES;
+
+const isVisualInspection =
+  (theme && theme !== "light") || Boolean(accent && accent !== "lavender");
 const outDir = path.resolve(parityDir, "out");
 if (isVisualInspection) {
   fs.mkdirSync(outDir, { recursive: true });
@@ -65,17 +81,25 @@ async function main() {
 
   try {
     for (const page of PAGES) {
+      const themeParam = theme ? `&theme=${encodeURIComponent(theme)}` : "";
       const accentParam = accent ? `&accent=${encodeURIComponent(accent)}` : "";
-      const url = `http://127.0.0.1:${PORT}/parity/harness.html?page=${page}${accentParam}`;
+      const url = `http://127.0.0.1:${PORT}/parity/harness.html?page=${page}${themeParam}${accentParam}`;
+
+      const actualFilename = isVisualInspection
+        ? `actual-${theme}-${accent || "lavender"}-${page}.png`
+        : `actual-${page}.png`;
+
       const actualPath = isVisualInspection
-        ? path.join(outDir, `actual-${page}.png`)
-        : path.join(parityDir, `actual-${page}.png`);
+        ? path.join(outDir, actualFilename)
+        : path.join(parityDir, actualFilename);
       const refPath = path.join(refDir, `${page}.png`);
       const diffPath = path.join(parityDir, `diff-${page}.png`);
 
       console.log(`Rendering ${page} -> ${actualPath}...`);
       const cmd = `"${CHROME_PATH}" --headless --disable-gpu --no-sandbox --user-data-dir=/tmp/fap-chrome-profile --hide-scrollbars --window-size=1440,900 --virtual-time-budget=3000 --screenshot="${actualPath}" "${url}"`;
-      await execAsync(cmd);
+      try {
+        await execAsync(cmd);
+      } catch (_) {}
 
       if (!fs.existsSync(actualPath)) {
         console.error(`Failed to generate screenshot for ${page}`);
@@ -84,6 +108,13 @@ async function main() {
       }
 
       if (isVisualInspection) {
+        // Also provide convenient alias copies if dark lavender or accent
+        if (theme === "dark" && (!accent || accent === "lavender")) {
+          const darkAlias = path.join(outDir, `dark-${page}.png`);
+          try {
+            fs.copyFileSync(actualPath, darkAlias);
+          } catch (_) {}
+        }
         console.log(`Saved screenshot for visual inspection: ${actualPath}`);
         results.push({ page, savedPath: actualPath });
         continue;
@@ -133,7 +164,7 @@ async function main() {
 
   if (isVisualInspection) {
     console.log(
-      `\nVisual inspection screenshots saved to ui/parity/out/ for accent "${accent}":`
+      `\nVisual inspection screenshots saved to ui/parity/out/ for theme "${theme}" and accent "${accent || "lavender"}":`
     );
     for (const r of results) {
       console.log(`- ${r.page}: ${r.savedPath}`);

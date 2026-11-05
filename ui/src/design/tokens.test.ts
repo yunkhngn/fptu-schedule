@@ -128,6 +128,65 @@ describe("design tokens parity and specifications", () => {
     expect(designMd).toContain("--primary-strong");
   });
 
+  it("documents dark theme (Chế độ tối), dark tokens, contrast ratios, storage key theme, and system preference in DESIGN.md", () => {
+    expect(existsSync(DESIGN_MD_PATH)).toBe(true);
+    const designMd = readFileSync(DESIGN_MD_PATH, "utf8");
+    const tokensCss = readFileSync(TOKENS_PATH, "utf8");
+
+    // Section "Chế độ tối"
+    expect(designMd).toMatch(/Chế độ tối/i);
+
+    // Parse dark tokens from :host([data-theme="dark"])
+    const darkMatch = tokensCss.match(/:host\(\[data-theme="dark"\]\)\s*\{([\s\S]*?)\}/);
+    expect(darkMatch).toBeTruthy();
+    const darkBlock = darkMatch![1];
+    const regex = /(--[a-zA-Z0-9_-]+)\s*:\s*([^;]+);/g;
+    let m: RegExpExecArray | null;
+    const darkTokens: Record<string, string> = {};
+    while ((m = regex.exec(darkBlock)) !== null) {
+      darkTokens[m[1].trim()] = m[2].replace(/\/\*[\s\S]*?\*\//g, "").trim().replace(/\s+/g, " ");
+    }
+
+    // Every dark color token and its exact oklch value is in DESIGN.md
+    const darkColorTokens = Object.entries(darkTokens).filter(([name]) =>
+      /--(?:background|foreground|surface|card|popover|primary|ink|secondary|muted|accent|success|warning|danger|destructive|border|input|ring|chart-|sidebar)/.test(
+        name
+      )
+    );
+    expect(darkColorTokens.length).toBeGreaterThan(0);
+    for (const [name, val] of darkColorTokens) {
+      expect(
+        designMd.includes(name),
+        `DESIGN.md missing dark token name: ${name}`
+      ).toBe(true);
+      expect(
+        designMd.includes(val),
+        `DESIGN.md missing dark token value for ${name}: ${val}`
+      ).toBe(true);
+    }
+
+    // Calculated contrast ratios table / references
+    expect(designMd).toMatch(/tương phản|contrast/i);
+    expect(designMd).toMatch(/--foreground.*--(?:surface|background)/i);
+    expect(designMd).toMatch(/--primary-strong.*--(?:surface|primary-soft)/i);
+
+    // Source of truth: storage key theme ("auto" | "light" | "dark")
+    expect(designMd).toContain("theme");
+    expect(designMd).toMatch(/auto/);
+    expect(designMd).toMatch(/light/);
+    expect(designMd).toMatch(/dark/);
+
+    // System auto behavior (prefers-color-scheme: dark)
+    expect(designMd).toMatch(/prefers-color-scheme/);
+    expect(designMd).toMatch(/Tự động theo hệ thống|hệ thống/i);
+
+    // Accent section documents derivation rules for both light and dark themes
+    expect(designMd).toMatch(/chế độ sáng/i);
+    expect(designMd).toMatch(/chế độ tối/i);
+    expect(designMd).toMatch(/0\.95|trần/i); // dark contrast adjustment ceiling
+    expect(designMd).toMatch(/0\.40|sàn/i); // light contrast adjustment floor
+  });
+
   it("contains zero emojis across all design specification and token files", () => {
     const filesToCheck = [
       REFERENCE_PATH,

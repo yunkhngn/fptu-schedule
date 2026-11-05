@@ -25,7 +25,7 @@
     import { renderPage } from "../src/pages/index";
     import { mockPageData } from "../src/data/mock";
     import { AppShell } from "../src/components/templates/AppShell";
-    import { applyAccent } from "../src/accent/apply";
+    import { applyAppearance } from "../src/appearance/appearance";
     import cssText from "../src/design/tokens.css?inline";
 
     // Freeze date to match the reference capture time (14:00 ngày 05/11/2026)
@@ -55,16 +55,20 @@
       pageData.exams = [];
     }
 
-    const host = document.getElementById("fptu-ui-host");
-    const accent = params.get("accent");
-    if (accent) {
-      applyAccent(host, accent);
+    const theme = params.get("theme") || "light";
+    const accent = params.get("accent") || null;
+
+    if (theme === "dark") {
+      document.documentElement.style.backgroundColor = "oklch(0.16 0.012 276)";
+      document.body.style.backgroundColor = "oklch(0.16 0.012 276)";
     }
 
-    const { root } = mountShadow({
+    const { host, root } = mountShadow({
       css: cssText,
       documentCss: "",
     });
+
+    applyAppearance(host, { theme, accent }, window);
 
     const reactRoot = createRoot(root);
     const activePath = page === "overview" ? "/" : page === "timetable" ? "/thoi-khoa-bieu" : page === "exams" ? "/lich-thi" : "/tin-tuc";
