@@ -18,7 +18,7 @@ export function FilterBar({ label, value, options, onChange, className }: Filter
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-9 rounded-md border border-border bg-surface px-3 py-1.5 text-sm text-foreground shadow-xs transition-colors focus:border-accent focus:outline-hidden focus:ring-2 focus:ring-accent/20"
+        className="h-9 rounded-md border border-border bg-surface px-3 py-1.5 text-sm text-foreground shadow-xs transition-colors focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

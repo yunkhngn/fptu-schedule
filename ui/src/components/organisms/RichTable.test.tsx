@@ -47,4 +47,22 @@ describe("RichTable", () => {
     expect(container.querySelector("img")).toBeNull();
     expect(container.textContent).toContain(malicious);
   });
+
+  it("renders custom element when col.render is provided", () => {
+    const colsWithRender = [
+      {
+        key: "link",
+        header: "Link",
+        render: (val: string, row: Record<string, string>) => (
+          <a href={row.href} className="test-link">
+            {val}
+          </a>
+        ),
+      },
+    ];
+    render(<RichTable columns={colsWithRender} rows={[{ link: "Download", href: "https://example.com" }]} />);
+    const linkEl = screen.getByRole("link", { name: "Download" });
+    expect(linkEl.getAttribute("href")).toBe("https://example.com");
+    expect(linkEl.className).toContain("test-link");
+  });
 });

@@ -45,7 +45,7 @@ export function ArticleFrame({
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-black/5 dark:bg-white/5 text-muted-foreground"
               >
                 {item.label.toLowerCase().includes("mục") ? (
-                  <Tag className="w-3.5 h-3.5 text-accent" />
+                  <Tag className="w-3.5 h-3.5 text-primary-strong" />
                 ) : item.label.toLowerCase().includes("ngày") || item.label.toLowerCase().includes("gian") ? (
                   <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                 ) : (
@@ -71,7 +71,7 @@ export function ArticleFrame({
                   href={file.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors border border-accent/20"
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary-soft text-primary-strong hover:bg-primary-muted/40 transition-colors border border-primary-strong/20"
                 >
                   <FileText className="w-4 h-4" />
                   <span>{file.name}</span>

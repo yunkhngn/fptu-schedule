@@ -6,6 +6,7 @@ export interface RichTableColumn {
   header: string;
   align?: "left" | "right" | "center";
   tone?: (value: string) => "success" | "warning" | "danger" | "neutral" | undefined;
+  render?: (value: string, row: Record<string, string>) => ReactNode;
 }
 
 export interface RichTableProps {
@@ -70,6 +71,7 @@ export function RichTable({ columns, rows, empty, caption, className }: RichTabl
                 {columns.map((col) => {
                   const val = row[col.key] ?? "";
                   const tone = col.tone ? col.tone(val) : undefined;
+                  const content = col.render ? col.render(val, row) : val;
                   return (
                     <td
                       key={col.key}
@@ -79,7 +81,7 @@ export function RichTable({ columns, rows, empty, caption, className }: RichTabl
                         getToneClass(tone)
                       )}
                     >
-                      {val}
+                      {content}
                     </td>
                   );
                 })}

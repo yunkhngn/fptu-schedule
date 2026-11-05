@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { Download } from "lucide-react";
 import { PageHeader } from "@/components/templates/PageHeader";
 import { useLang, useT, type Lang } from "@/i18n";
 import type { CertificatesData, ShellData } from "@/data/types";
@@ -40,8 +41,8 @@ export function Certificates({
               className="surface-card flex flex-col justify-between p-5 transition-shadow hover:shadow-md"
             >
               <div>
-                <span className="inline-block rounded-md bg-accent-soft/30 px-2 py-0.5 text-xs font-medium text-accent">
-                  {item.status || "Valid"}
+                <span className="inline-block rounded-md bg-success-soft px-2.5 py-0.5 text-xs font-medium text-success-strong border border-success-strong/20">
+                  {item.status || (lang === "en" ? "Valid" : "Hợp lệ")}
                 </span>
                 <h3 className="mt-2 text-base font-semibold text-foreground tracking-tight">
                   {item.name}
@@ -64,8 +65,9 @@ export function Certificates({
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-strong hover:text-primary transition-colors hover:underline"
                   >
+                    <Download className="w-3.5 h-3.5 shrink-0" />
                     <span>{lang === "en" ? "Download certificate" : "Tải xuống chứng chỉ"}</span>
                   </a>
                 </div>

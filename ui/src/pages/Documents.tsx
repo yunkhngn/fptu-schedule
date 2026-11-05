@@ -21,7 +21,21 @@ export function Documents({
   const t = useT();
 
   const columns: RichTableColumn[] = [
-    { key: "title", header: lang === "en" ? "Document Title" : "Tên tài liệu" },
+    {
+      key: "title",
+      header: lang === "en" ? "Document Title" : "Tên tài liệu",
+      render: (val, row) =>
+        row.href ? (
+          <a
+            href={row.href}
+            className="text-primary-strong hover:text-primary transition-colors hover:underline font-medium"
+          >
+            {val}
+          </a>
+        ) : (
+          val
+        ),
+    },
     { key: "category", header: lang === "en" ? "Category" : "Loại tài liệu" },
     { key: "date", header: lang === "en" ? "Date" : "Ngày ban hành", align: "center" },
   ];
@@ -30,6 +44,7 @@ export function Documents({
     title: r.title || "",
     category: r.category || "—",
     date: r.date || "—",
+    href: r.href || "",
   }));
 
   return (

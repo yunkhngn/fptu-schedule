@@ -21,7 +21,21 @@ export function Applications({
   const t = useT();
 
   const columns: RichTableColumn[] = [
-    { key: "type", header: lang === "en" ? "Application Type" : "Loại đơn" },
+    {
+      key: "type",
+      header: lang === "en" ? "Application Type" : "Loại đơn",
+      render: (val, row) =>
+        row.href ? (
+          <a
+            href={row.href}
+            className="text-primary-strong hover:text-primary transition-colors hover:underline font-medium"
+          >
+            {val}
+          </a>
+        ) : (
+          val
+        ),
+    },
     { key: "created", header: lang === "en" ? "Submitted Date" : "Ngày gửi", align: "center" },
     {
       key: "status",
@@ -39,6 +53,7 @@ export function Applications({
     type: r.type || "",
     created: r.created || "—",
     status: r.status || (lang === "en" ? "Pending" : "Đang xử lý"),
+    href: r.href || "",
   }));
 
   return (

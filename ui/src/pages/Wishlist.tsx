@@ -47,7 +47,7 @@ export function Wishlist({
         {data.registerHref && (
           <a
             href={data.registerHref}
-            className="inline-flex h-9 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-accent/90 focus-visible:outline-hidden"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-hidden"
           >
             {lang === "en" ? "Register Wishlist" : "Đăng ký chờ lớp"}
           </a>
