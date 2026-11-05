@@ -10,4 +10,8 @@ export * from "./ThemeToggle";
 export * from "./Popover";
 export * from "./CampusMenu";
 export * from "./LanguageMenu";
+export * from "./FilterBar";
+export * from "./StatTile";
+export * from "./KeyValueList";
+export * from "./Section";
 

@@ -145,8 +145,12 @@ The user interface follows atomic design hierarchy across four structured levels
 2. **Molecules (`ui/src/components/molecules/`):**
    - `DashboardCard`: Standard card container with header, actions, and content area.
    - `StatCard`: Metric display card with icon tile, label, value, and hint.
+   - `StatTile`: Metric summary tile with label, value, hint, and tone support.
    - `NewsItem`: Announcement preview card with read/unread toggle and date badge.
    - `CategoryFilter`: Horizontal pill category switcher.
+   - `FilterBar`: Dropdown select filter with uppercase label.
+   - `KeyValueList`: Definition list for key-value property pairs.
+   - `Section`: Container section with title, description, and action button.
    - `NavItem`: Sidebar navigation row with active indicator.
    - `SearchField`: Compound search input with leading icon and clear button.
    - `EmptyState`: Illustration tile and message for empty views.
@@ -158,6 +162,7 @@ The user interface follows atomic design hierarchy across four structured levels
    - `ScheduleCalendar`: 7-day weekly timetable grid with slot positioning.
    - `MiniCalendar`: Compact monthly calendar widget.
    - `DataTable`: Structured data table for exam schedules and grade reports.
+   - `RichTable`: Styled data table with column alignment, tone highlights, empty state, and caption.
    - `AnnouncementList`: Filterable list of campus notifications.
    - `AppShell`: Full page layout shell combining sidebar, header, and content.
    - `PageHeader`: Standard page header with title, description, and action buttons.
@@ -167,6 +172,7 @@ The user interface follows atomic design hierarchy across four structured levels
    - Weekly Timetable (full-week class calendar with slot status).
    - Exam Schedule (table of upcoming examination slots, rooms, and seat numbers).
    - News and Announcements (campus bulletin board).
+   - Wrapped (shell wrapper adopting native FAP content via Shadow DOM slot).
 
 ---
 
