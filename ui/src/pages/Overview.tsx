@@ -132,7 +132,7 @@ export function OverviewPage({ home, shell }: OverviewPageProps) {
               {lang === "en" ? "Student Information" : "Thông tin sinh viên"}
             </span>
             <div className="flex items-center gap-4">
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-surface shadow-soft">
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white shadow-soft">
                 <Mascot className="size-12" />
               </span>
               <div className="min-w-0">

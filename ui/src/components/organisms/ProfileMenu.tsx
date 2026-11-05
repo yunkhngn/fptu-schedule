@@ -45,7 +45,7 @@ export function ProfileMenu({
           )}
           {...props}
         >
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white shadow-xs">
             <Mascot className="size-7" />
           </span>
           <span className="hidden min-w-0 text-left leading-tight sm:block">
