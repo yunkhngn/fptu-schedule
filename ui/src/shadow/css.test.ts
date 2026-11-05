@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { remToPx, splitDocumentCss } from "./css";
+import { remToPx, splitDocumentCss, buildFontFaceCss } from "./css";
 
 describe("css pipeline for shadow DOM", () => {
   describe("remToPx", () => {
@@ -7,6 +7,12 @@ describe("css pipeline for shadow DOM", () => {
       const input = "a{padding:0.5rem 1.25rem; margin:-0.5rem;}";
       const expected = "a{padding:8px 20px; margin:-8px;}";
       expect(remToPx(input)).toBe(expected);
+    });
+
+    it("supports custom base value", () => {
+      const input = "a{padding:2rem;}";
+      const expected = "a{padding:20px;}";
+      expect(remToPx(input, 10)).toBe(expected);
     });
 
     it("leaves calc expressions without rem untouched", () => {
@@ -33,6 +39,12 @@ describe("css pipeline for shadow DOM", () => {
           inherits: false;
           initial-value: 0px;
         }
+        :root {
+          --primary: blue;
+        }
+        :host {
+          display: block;
+        }
         .btn {
           color: red;
         }
@@ -45,8 +57,26 @@ describe("css pipeline for shadow DOM", () => {
       expect(documentCss).not.toContain(".btn");
 
       expect(shadowCss).toContain(".btn");
+      expect(shadowCss).toContain(":host {\n          --primary: blue;\n        }");
+      expect(shadowCss).toContain(":host {\n          display: block;\n        }");
+      expect(shadowCss).not.toContain(":root");
       expect(shadowCss).not.toContain("@font-face");
       expect(shadowCss).not.toContain("@property --tw-x");
+    });
+  });
+
+  describe("buildFontFaceCss", () => {
+    it("generates @font-face rules with configurable base URL", () => {
+      const css = buildFontFaceCss("chrome-extension://mock-id/dist/fonts/");
+      expect(css).toContain("@font-face");
+      expect(css).toContain("chrome-extension://mock-id/dist/fonts/inter-latin-wght-normal.woff2");
+      expect(css).toContain("chrome-extension://mock-id/dist/fonts/inter-vietnamese-wght-normal.woff2");
+      expect(css).toContain("font-family: 'Inter'");
+    });
+
+    it("appends trailing slash to baseUrl if missing", () => {
+      const css = buildFontFaceCss("chrome-extension://mock-id/dist/fonts");
+      expect(css).toContain("chrome-extension://mock-id/dist/fonts/inter-latin-wght-normal.woff2");
     });
   });
 });

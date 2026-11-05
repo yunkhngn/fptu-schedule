@@ -75,4 +75,19 @@ describe("mountShadow", () => {
     unmount();
     expect(document.getElementById("fptu-ui-document-styles")).toBeNull();
   });
+
+  it("injects font-face when fontBaseUrl is provided", () => {
+    const { unmount } = mountShadow({
+      css: "",
+      documentCss: "",
+      fontBaseUrl: "chrome-extension://mock-id/dist/fonts",
+    });
+
+    const styleEl = document.getElementById("fptu-ui-document-styles");
+    expect(styleEl).not.toBeNull();
+    expect(styleEl?.textContent).toContain("chrome-extension://mock-id/dist/fonts/inter-latin-wght-normal.woff2");
+
+    unmount();
+    expect(document.getElementById("fptu-ui-document-styles")).toBeNull();
+  });
 });

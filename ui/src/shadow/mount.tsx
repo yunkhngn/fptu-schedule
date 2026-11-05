@@ -10,19 +10,39 @@ export interface MountResult {
   unmount: () => void;
 }
 
+function generateFontFace(fontBaseUrl: string): string {
+  const cleanBase = fontBaseUrl.replace(/\/+$/, "");
+  return `
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('${cleanBase}/inter-latin-wght-normal.woff2') format('woff2-variations'),
+       url('${cleanBase}/inter-vietnamese-wght-normal.woff2') format('woff2-variations');
+}
+`.trim();
+}
+
 export function mountShadow(opts: MountOptions): MountResult {
   const HOST_ID = "fptu-ui-host";
   const DOC_STYLE_ID = "fptu-ui-document-styles";
 
   // Document-level styles (@property, @font-face)
-  if (opts.documentCss) {
+  let fullDocCss = opts.documentCss || "";
+  if (opts.fontBaseUrl) {
+    const fontCss = generateFontFace(opts.fontBaseUrl);
+    fullDocCss = fullDocCss ? `${fontCss}\n\n${fullDocCss}` : fontCss;
+  }
+
+  if (fullDocCss) {
     let docStyleEl = document.getElementById(DOC_STYLE_ID) as HTMLStyleElement | null;
     if (!docStyleEl) {
       docStyleEl = document.createElement("style");
       docStyleEl.id = DOC_STYLE_ID;
       document.head.appendChild(docStyleEl);
     }
-    docStyleEl.textContent = opts.documentCss;
+    docStyleEl.textContent = fullDocCss;
   }
 
   // Host element
