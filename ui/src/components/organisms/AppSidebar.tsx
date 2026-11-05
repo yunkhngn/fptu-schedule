@@ -6,16 +6,18 @@ import { NavItem } from "@/components/molecules/NavItem";
 import { Switch } from "@/components/atoms/Switch";
 import { BrandLogo, Mascot } from "@/components/atoms/Brand";
 import { useT } from "@/i18n";
-import type { ShellData } from "@/data/types";
+import type { ShellData, TopbarData } from "@/data/types";
 
 export interface AppSidebarProps {
   shell: ShellData;
+  topbar?: TopbarData | null;
   activePath: string;
   collapsed?: boolean;
   className?: string;
   onNavigate?: () => void;
   /** Turns the new interface off for every page. When omitted the card shows no switch. */
   onShowOriginal?: () => void;
+  onLogout?: () => void;
 }
 
 function SidebarGroup({
@@ -126,11 +128,13 @@ function SidebarGroup({
 
 export function AppSidebar({
   shell,
+  topbar,
   activePath,
   collapsed = false,
   className,
   onNavigate,
   onShowOriginal,
+  onLogout,
 }: AppSidebarProps) {
   const t = useT();
   const [logoFailed, setLogoFailed] = useState(false);
@@ -244,23 +248,26 @@ export function AppSidebar({
             </div>
           )}
           <NavItem
-            href="/tai-khoan"
+            href={topbar?.profile?.accountHref || "/tai-khoan"}
             icon={Settings2}
-            active={activePath === "/tai-khoan"}
+            active={activePath === "/tai-khoan" || activePath === topbar?.profile?.accountHref}
             collapsed={collapsed}
           >
-            Cài đặt tài khoản
+            {t("sidebar.account_settings")}
           </NavItem>
-          <button
-            type="button"
-            className={cn(
-              "group/item relative flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13.5px] font-medium transition-colors duration-200 ease-natural outline-none text-muted-foreground hover:bg-surface-2 hover:text-foreground cursor-pointer",
-              collapsed && "justify-center px-0"
-            )}
-          >
-            <LogOut className="size-[18px] shrink-0 text-muted-foreground group-hover/item:text-foreground" strokeWidth={1.75} />
-            {!collapsed && <span>Đăng xuất</span>}
-          </button>
+          {topbar?.profile?.canLogout !== false && (
+            <button
+              type="button"
+              onClick={onLogout}
+              className={cn(
+                "group/item relative flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13.5px] font-medium transition-colors duration-200 ease-natural outline-none text-muted-foreground hover:bg-surface-2 hover:text-foreground cursor-pointer",
+                collapsed && "justify-center px-0"
+              )}
+            >
+              <LogOut className="size-[18px] shrink-0 text-muted-foreground group-hover/item:text-foreground" strokeWidth={1.75} />
+              {!collapsed && <span>{t("sidebar.logout")}</span>}
+            </button>
+          )}
         </div>
       </div>
     </aside>

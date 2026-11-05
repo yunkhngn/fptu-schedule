@@ -9,6 +9,7 @@ import appCss from "./design/tokens.css?inline";
 import { AppShell } from "./components/templates/AppShell";
 import { renderPage } from "./pages";
 import { I18nProvider, normalizeLang } from "./i18n";
+import { logout, submitLanguage } from "./topbar/actions";
 import {
   readAppearance,
   applyAppearance,
@@ -277,6 +278,14 @@ async function bootInner(options?: BootOptions): Promise<void> {
   const topbar = typeof extractor?.readTopbar === "function" ? extractor.readTopbar(win.document) : null;
   const lang = normalizeLang(topbar?.language?.current);
 
+  const handleLogout = () => {
+    logout(win.document);
+  };
+
+  const handleSelectLanguage = (culture: string) => {
+    submitLanguage(win.document, culture);
+  };
+
   const renderTree = (themePref: ThemePreference) => {
     reactRoot.render(
       <RenderBoundary
@@ -289,8 +298,11 @@ async function bootInner(options?: BootOptions): Promise<void> {
         <I18nProvider lang={lang}>
           <AppShell
             shell={shell}
+            topbar={topbar}
             activePath={pathname}
             onShowOriginal={handleShowOriginal}
+            onLogout={handleLogout}
+            onSelectLanguage={handleSelectLanguage}
             themePreference={themePref}
             onThemeChange={handleThemeChange}
           >

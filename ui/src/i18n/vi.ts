@@ -52,6 +52,8 @@ export const vi: Record<string, string> = {
   "topbar.fullscreen": "Toàn màn hình",
   "topbar.toggle_sidebar": "Thu gọn / mở rộng thanh điều hướng",
   "topbar.main_campus": "Chính",
+  "topbar.my_account": "Tài khoản của tôi",
+  "topbar.logout": "Đăng xuất",
 
   // Sidebar
   "sidebar.collapse": "Thu gọn thanh điều hướng",
@@ -59,6 +61,8 @@ export const vi: Record<string, string> = {
   "sidebar.return_original": "FAP gốc",
   "sidebar.return_original_desc": "Quay lại giao diện cũ",
   "sidebar.quick_menu": "Menu nhanh",
+  "sidebar.account_settings": "Cài đặt tài khoản",
+  "sidebar.logout": "Đăng xuất",
 
   // Overview Page
   "overview.welcome": "Xin chào, {name}!",

@@ -161,3 +161,26 @@ export function markAllNotificationsRead(doc: Document): boolean {
   btn.click();
   return true;
 }
+
+export function logout(doc: Document): boolean {
+  if (!doc) return false;
+
+  const flagKey = "__fptuLoggingOut";
+  if ((doc as any)[flagKey]) return false;
+
+  const form = doc.querySelector(
+    'form[action*="/Auth/Logout"], form[action*="/Logout"], form[action$="/Logout"], form[action*="/Account/Logout"]'
+  ) as HTMLFormElement | null;
+  if (!form) return false;
+
+  (doc as any)[flagKey] = true;
+
+  const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]') as HTMLElement | null;
+  if (submitBtn) {
+    submitBtn.click();
+  } else {
+    form.submit();
+  }
+
+  return true;
+}

@@ -52,6 +52,8 @@ export const en: Record<string, string> = {
   "topbar.fullscreen": "Fullscreen",
   "topbar.toggle_sidebar": "Toggle sidebar navigation",
   "topbar.main_campus": "Main",
+  "topbar.my_account": "My Account",
+  "topbar.logout": "Sign out",
 
   // Sidebar
   "sidebar.collapse": "Collapse sidebar navigation",
@@ -59,6 +61,8 @@ export const en: Record<string, string> = {
   "sidebar.return_original": "Original FAP",
   "sidebar.return_original_desc": "Back to legacy view",
   "sidebar.quick_menu": "Quick menu",
+  "sidebar.account_settings": "Account settings",
+  "sidebar.logout": "Sign out",
 
   // Overview Page
   "overview.welcome": "Welcome back, {name}!",

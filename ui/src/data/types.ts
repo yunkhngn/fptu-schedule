@@ -83,7 +83,10 @@ export type ExamItem = {
   kind?: string;
 };
 
-export type PageData = { shell: ShellData } & (
+export type PageData = {
+  shell: ShellData;
+  topbar?: TopbarData | null;
+} & (
   | { page: "overview"; home: HomeData }
   | { page: "timetable"; sessions: ClassSession[]; weekStart: string }
   | { page: "exams"; exams: ExamItem[] }

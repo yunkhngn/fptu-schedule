@@ -16,6 +16,7 @@ import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 import { CampusMenu } from "@/components/molecules/CampusMenu";
 import { LanguageMenu } from "@/components/molecules/LanguageMenu";
 import { NotificationMenu } from "./NotificationMenu";
+import { ProfileMenu } from "./ProfileMenu";
 import { SearchDialog } from "./SearchDialog";
 import type { ThemePreference } from "@/theme/theme";
 import type { ShellData, TopbarData } from "@/data/types";
@@ -24,6 +25,7 @@ export interface TopNavigationProps {
   shell: ShellData;
   topbar?: TopbarData | null;
   onSelectLanguage?: (culture: string) => void;
+  onLogout?: () => void;
   onToggleSidebar?: () => void;
   className?: string;
   themePreference?: ThemePreference;
@@ -37,6 +39,7 @@ export function TopNavigation({
   shell,
   topbar,
   onSelectLanguage,
+  onLogout,
   onToggleSidebar,
   className,
   themePreference,
@@ -161,21 +164,13 @@ export function TopNavigation({
             )}
           </Button>
 
-          {/* User Profile Pill */}
-          <div className="ml-1 flex items-center gap-3 rounded-full py-1 pr-1 pl-1 transition-colors duration-200 outline-none hover:bg-surface-2 focus-visible:ring-3 focus-visible:ring-primary/30 sm:pr-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender">
-              <Mascot className="size-7" />
-            </span>
-            <span className="hidden min-w-0 text-left leading-tight sm:block">
-              <span className="block truncate text-[13px] font-semibold">
-                {shell.student.name}
-              </span>
-              <span className="block text-xs text-muted-foreground">
-                {shell.student.studentId}
-              </span>
-            </span>
-            <ChevronDown className="hidden size-3.5 text-muted-foreground sm:block" />
-          </div>
+          {/* User Profile Pill / Menu */}
+          <ProfileMenu
+            profile={topbar?.profile}
+            fallbackName={shell.student.name}
+            fallbackStudentId={shell.student.studentId}
+            onLogout={onLogout}
+          />
         </div>
       </div>
       <SearchDialog open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

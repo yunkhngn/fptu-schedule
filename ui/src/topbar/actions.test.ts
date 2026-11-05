@@ -5,6 +5,7 @@ import {
   readNotificationItems,
   watchNotificationList,
   markAllNotificationsRead,
+  logout,
 } from "./actions";
 
 describe("topbar actions: submitLanguage", () => {
@@ -163,5 +164,35 @@ describe("topbar actions: notifications", () => {
     list.innerHTML = `<span>Another</span>`;
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(triggered).toBe(false);
+  });
+});
+
+describe("topbar actions: logout", () => {
+  it("clicks submit button in logout form once and prevents double submit", () => {
+    document.body.innerHTML = `
+      <form action="/Auth/Logout" method="post">
+        <button type="submit">Sign out</button>
+      </form>
+    `;
+
+    const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+    let clickedCount = 0;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      clickedCount++;
+    });
+
+    expect(logout(document)).toBe(true);
+    expect(clickedCount).toBe(1);
+
+    // Second call blocked
+    expect(logout(document)).toBe(false);
+    expect(clickedCount).toBe(1);
+  });
+
+  it("returns false when logout form is missing or doc is null", () => {
+    const emptyDoc = document.implementation.createHTMLDocument();
+    expect(logout(emptyDoc)).toBe(false);
+    expect(logout(null as any)).toBe(false);
   });
 });

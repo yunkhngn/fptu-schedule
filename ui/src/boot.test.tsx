@@ -581,6 +581,76 @@ describe("boot lifecycle and fallback", () => {
       expect(updatedButton!.querySelector("svg.lucide-sun")).not.toBeNull();
     });
   });
+
+  it("passes topbar read from DOM into the interface, handling profile and logout", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = `
+      ${overviewHtml}
+      <form action="/Auth/Logout" method="post">
+        <button type="submit">Sign out</button>
+      </form>
+    `;
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      chrome: mockChrome,
+      FapPageData: {
+        ...(window as any).FapPageData,
+        readTopbar: vi.fn(() => ({
+          campus: { name: "Cơ sở Hà Nội (HN)", code: "HN", isMain: true },
+          language: {
+            current: "vi",
+            options: [
+              { culture: "vi", label: "Tiếng Việt" },
+              { culture: "en", label: "English" },
+            ],
+          },
+          notifications: { unread: 3 },
+          profile: {
+            name: "Lê Văn B",
+            studentId: "HE999999",
+            accountHref: "/Account/Manage",
+            canLogout: true,
+          },
+        })),
+      },
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+
+    const shadowRoot = host!.shadowRoot!;
+    await waitFor(() => {
+      expect(shadowRoot.textContent).toContain("Lê Văn B");
+      expect(shadowRoot.textContent).toContain("HE999999");
+    });
+  });
+
+  it("mounts without errors when readTopbar returns null for all fields", async () => {
+    const store: Record<string, unknown> = {};
+    const mockChrome = makeChrome(store);
+    document.body.innerHTML = overviewHtml;
+    const mockWin = {
+      location: { pathname: "/" },
+      document: window.document,
+      chrome: mockChrome,
+      FapPageData: {
+        ...(window as any).FapPageData,
+        readTopbar: vi.fn(() => ({
+          campus: null,
+          language: null,
+          notifications: null,
+          profile: null,
+        })),
+      },
+    } as unknown as Window;
+
+    await boot({ win: mockWin, chromeApi: mockChrome });
+    const host = document.getElementById("fptu-ui-host");
+    expect(host).not.toBe(null);
+  });
 });
 
 describe("content.js parser globals in VM", () => {

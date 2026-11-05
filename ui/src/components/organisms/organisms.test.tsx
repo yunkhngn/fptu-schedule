@@ -208,5 +208,18 @@ describe("organisms and templates suite", () => {
     expect(getByText("Lịch học các môn trong tuần")).not.toBeNull();
     expect(getByText("Export")).not.toBeNull();
   });
+
+  it("calls onLogout when clicking logout button in sidebar", () => {
+    const onLogout = vi.fn();
+    const { getByRole } = render(
+      <AppShell shell={mockShell} activePath="/" onLogout={onLogout}>
+        <div>Content</div>
+      </AppShell>
+    );
+
+    const logoutBtn = getByRole("button", { name: "Đăng xuất" });
+    fireEvent.click(logoutBtn);
+    expect(onLogout).toHaveBeenCalledTimes(1);
+  });
 });
 
