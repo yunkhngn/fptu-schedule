@@ -46,6 +46,7 @@ export const vi: Record<string, string> = {
   "topbar.notifications": "Thông báo",
   "topbar.mark_all_read": "Đã đọc tất cả",
   "topbar.loading_notifications": "Đang tải thông báo…",
+  "topbar.load_more": "Tải thêm",
   "topbar.no_notifications": "Không có thông báo mới",
   "topbar.load_failed": "Không tải được danh sách thông báo.",
   "topbar.open_on_fap": "Mở thông báo trên FAP",

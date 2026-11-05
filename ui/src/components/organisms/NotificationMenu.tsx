@@ -9,6 +9,7 @@ import {
   readNotificationItems,
   watchNotificationList,
   markAllNotificationsRead,
+  loadMoreNotifications,
   type NotificationItem,
 } from "@/topbar/actions";
 
@@ -23,6 +24,7 @@ export function NotificationMenu({ unread = 0, doc, className }: NotificationMen
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [unreadCount, setUnreadCount] = useState(unread);
   const hasOpenedRef = useRef(false);
 
@@ -44,6 +46,7 @@ export function NotificationMenu({ unread = 0, doc, className }: NotificationMen
     setItems(current.items);
     setLoading(current.loading);
     setFailed(current.failed);
+    setHasMore(current.hasMore);
   };
 
   const handleMarkAll = () => {
@@ -93,10 +96,12 @@ export function NotificationMenu({ unread = 0, doc, className }: NotificationMen
             items={items}
             loading={loading}
             failed={failed}
+            hasMore={hasMore}
             onUpdate={(res) => {
               setItems(res.items);
               setLoading(res.loading);
               setFailed(res.failed);
+              setHasMore(res.hasMore);
             }}
             onMarkAll={handleMarkAll}
             onClose={close}
@@ -113,7 +118,8 @@ interface NotificationPanelProps {
   items: NotificationItem[];
   loading: boolean;
   failed: boolean;
-  onUpdate: (res: { items: NotificationItem[]; loading: boolean; failed: boolean }) => void;
+  hasMore: boolean;
+  onUpdate: (res: { items: NotificationItem[]; loading: boolean; failed: boolean; hasMore: boolean }) => void;
   onMarkAll: () => void;
   onClose: () => void;
   t: (key: string) => string;
@@ -124,6 +130,7 @@ function NotificationPanel({
   items,
   loading,
   failed,
+  hasMore,
   onUpdate,
   onMarkAll,
   onClose,
@@ -200,6 +207,15 @@ function NotificationPanel({
               )}
             </a>
           ))}
+          {hasMore && doc && (
+            <button
+              type="button"
+              onClick={() => loadMoreNotifications(doc)}
+              className="block w-full px-4 py-3 text-center text-xs font-medium text-primary-strong transition-colors hover:bg-surface-2 cursor-pointer"
+            >
+              {t("topbar.load_more")}
+            </button>
+          )}
         </div>
       )}
     </div>

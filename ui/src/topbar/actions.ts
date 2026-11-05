@@ -32,17 +32,61 @@ export function openNotifications(doc: Document): boolean {
   return true;
 }
 
-export function readNotificationItems(doc: Document): {
+export interface NotificationRead {
   items: NotificationItem[];
   loading: boolean;
   failed: boolean;
-} {
-  if (!doc) return { items: [], loading: false, failed: false };
+  /** FAP offers a "Tải thêm" row: more notifications can be loaded. */
+  hasMore: boolean;
+}
+
+const MORE_TEXT = /^(tải thêm|xem thêm|load more|show more|see more)$/i;
+const TIME_TEXT =
+  /\b\d{1,2}\/\d{1,2}\/\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?|\bvừa xong\b|\b\d+\s*(?:giây|phút|giờ|ngày|tuần|tháng|năm)\s+trước\b|\bjust now\b|\b\d+\s*(?:seconds?|minutes?|hours?|days?|weeks?|months?)\s+ago\b/i;
+
+const squash = (text: string | null | undefined) => (text || "").replace(/\s+/g, " ").trim();
+
+function isLoadMoreRow(el: Element): boolean {
+  if (el.hasAttribute("data-notification-load-more") || el.querySelector("[data-notification-load-more]")) return true;
+  const cls = typeof el.className === "string" ? el.className : "";
+  if (/load-?more/i.test(cls)) return true;
+  return MORE_TEXT.test(squash(el.textContent));
+}
+
+/** The row's text without its controls and decorations: the title, with the time and the "Đã đọc" button taken out. */
+function titleOf(el: Element, time: string | undefined, defaultTitle: string): string {
+  const clone = el.cloneNode(true) as Element;
+  clone
+    .querySelectorAll("button, .btn, svg, i, img, script, style, small, time, .time, [data-time], .visually-hidden, [aria-hidden='true']")
+    .forEach((n) => n.remove());
+  let text = squash(clone.textContent);
+  if (time && text.includes(time)) text = squash(text.replace(time, ""));
+  const embedded = text.match(TIME_TEXT);
+  if (embedded && text.trim() === embedded[0].trim()) text = "";
+
+  if (!text) {
+    const labelled = el.querySelector("[title], [aria-label], [data-title]") as Element | null;
+    text = squash(
+      el.getAttribute("title") ||
+        el.getAttribute("aria-label") ||
+        el.getAttribute("data-title") ||
+        labelled?.getAttribute("title") ||
+        labelled?.getAttribute("aria-label") ||
+        labelled?.getAttribute("data-title") ||
+        ""
+    );
+  }
+  return text || defaultTitle;
+}
+
+export function readNotificationItems(doc: Document): NotificationRead {
+  const none: NotificationRead = { items: [], loading: false, failed: false, hasMore: false };
+  if (!doc) return none;
 
   const list = doc.querySelector(
     "[data-notification-list], .jidox-notification-bell__list, .notification-list"
   );
-  if (!list) return { items: [], loading: false, failed: false };
+  if (!list) return none;
 
   const fullText = (list.textContent || "").trim();
   if (
@@ -50,31 +94,36 @@ export function readNotificationItems(doc: Document): {
     fullText.includes("Không tải được") ||
     fullText.includes("Failed to load")
   ) {
-    return { items: [], loading: false, failed: true };
+    return { ...none, failed: true };
   }
 
   const dropdownItems = Array.from(list.querySelectorAll(".dropdown-item"));
   if (dropdownItems.length === 0) {
     if (fullText.includes("Đang tải") || fullText.includes("Loading")) {
-      return { items: [], loading: true, failed: false };
+      return { ...none, loading: true };
     }
-    return { items: [], loading: false, failed: false };
+    return none;
   }
 
-  // Check if the only dropdown item is a loading placeholder
-  if (
-    dropdownItems.length === 1 &&
-    (dropdownItems[0].textContent || "").includes("Đang tải")
-  ) {
-    return { items: [], loading: true, failed: false };
+  // Only a loading placeholder: FAP has not filled the list yet.
+  if (dropdownItems.length === 1 && (dropdownItems[0].textContent || "").includes("Đang tải")) {
+    return { ...none, loading: true };
   }
+
+  // FAP gives the title it shows when a notification has none (data-default-title on the bell).
+  const defaultTitle = squash(doc.querySelector("[data-default-title]")?.getAttribute("data-default-title")) || "Thông báo mới";
 
   const items: NotificationItem[] = [];
+  let hasMore = false;
 
   for (const el of dropdownItems) {
     const text = el.textContent || "";
     if (text.includes("Đang tải") || text.includes("Loading")) continue;
     if (text.includes("Không tải được") || text.includes("Failed to load")) continue;
+    if (isLoadMoreRow(el)) {
+      hasMore = true;
+      continue;
+    }
 
     const isUnread =
       el.classList.contains("unread") ||
@@ -92,32 +141,35 @@ export function readNotificationItems(doc: Document): {
       }
     }
 
+    // The time: an element marked as one, otherwise whatever in the text looks like a date or "x phút trước".
     let time: string | undefined;
-    const smallEl = el.querySelector("small, .time, [data-time]");
-    if (smallEl) {
-      time = smallEl.textContent?.trim() || undefined;
-    }
-
-    let title = "";
-    const titleSpan = el.querySelector("span:not(.time), p, h4, h5");
-    if (titleSpan) {
-      title = titleSpan.textContent?.trim() || "";
+    const marked = el.querySelector("small, time, .time, [data-time]");
+    const markedText = squash(marked?.textContent);
+    if (markedText) {
+      time = markedText;
     } else {
-      title = text.trim();
-      if (time && title.endsWith(time)) {
-        title = title.slice(0, -time.length).trim();
-      }
+      time = squash(squash(text).match(TIME_TEXT)?.[0]) || undefined;
     }
 
-    items.push({
-      title,
-      time,
-      href,
-      unread: isUnread,
-    });
+    items.push({ title: titleOf(el, time, defaultTitle), time, href, unread: isUnread });
   }
 
-  return { items, loading: false, failed: false };
+  return { items, loading: false, failed: false, hasMore };
+}
+
+/** Presses FAP's own "Tải thêm" so that it loads the next notifications into its list. */
+export function loadMoreNotifications(doc: Document): boolean {
+  if (!doc) return false;
+  const list = doc.querySelector(
+    "[data-notification-list], .jidox-notification-bell__list, .notification-list"
+  );
+  if (!list) return false;
+  const target = Array.from(list.querySelectorAll(".dropdown-item, button, a")).find((el) =>
+    isLoadMoreRow(el)
+  ) as HTMLElement | undefined;
+  if (!target) return false;
+  target.click();
+  return true;
 }
 
 export function watchNotificationList(

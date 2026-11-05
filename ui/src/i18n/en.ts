@@ -46,6 +46,7 @@ export const en: Record<string, string> = {
   "topbar.notifications": "Notifications",
   "topbar.mark_all_read": "Mark all as read",
   "topbar.loading_notifications": "Loading notifications…",
+  "topbar.load_more": "Load more",
   "topbar.no_notifications": "No new notifications",
   "topbar.load_failed": "Failed to load notifications.",
   "topbar.open_on_fap": "Open notifications on FAP",
